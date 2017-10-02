@@ -7,7 +7,7 @@ const Index = (props) => (
   <div className="Index">
     <h1>App Boilerplate!</h1>
     <p>Already have an account? <Link to="/login">Log In</Link>.</p>
-    <p>Or <Link to="/login">Create New Account</Link>.</p>
+    <p>Or <Link to="/signup">Create New Account</Link>.</p>
   </div>
 );
 
