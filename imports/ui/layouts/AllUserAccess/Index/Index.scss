@@ -1,0 +1,19 @@
+@import '../../../stylesheets/mixins';
+@import '../../../stylesheets/colors';
+
+.Index {
+  padding: 40px;
+  background: $primary;
+  text-align: center;
+  border-radius: 3px;
+  color: #fff;
+
+  h1 {
+    font-size: 28px;
+  }
+
+  a {
+    color: $accent-color;
+  }
+
+}
