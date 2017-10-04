@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/no-href*/
+/* eslint-disable jsx-a11y/no-href */
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -48,30 +48,54 @@ class App extends React.Component {
       <Router>
         {
           (!props.loading)
-          ?
+            ?
             <MuiThemeProvider>
               <div className="App">
                 <Switch>
                   <AllUserAccess exact path="/" component={Index} {...props} />
                   <ClientAdmin exact path="/dashboard" component={ClientDashboard} {...props} />
                   <ClientAdmin exact path="/documents" component={ClientDocuments} {...props} />
-                  <ClientAdmin exact path="/documents/new" component={ClientNewDocument} {...props} />
-                  <ClientAdmin exact path="/documents/edit/:_id" component={ClientEditDocument} {...props} />
-                  <ClientAdmin exact path="/documents/:_id" component={ClientViewDocument} {...props} />
+                  <ClientAdmin
+                    exact path="/documents/new"
+                    component={ClientNewDocument}
+                    {...props}
+                  />
+                  <ClientAdmin
+                    exact path="/documents/edit/:_id"
+                    component={ClientEditDocument}
+                    {...props}
+                  />
+                  <ClientAdmin
+                    exact path="/documents/:_id"
+                    component={ClientViewDocument}
+                    {...props}
+                  />
                   <ClientAdmin exact path="/profile" component={ClientProfile} {...props} />
                   <Public exact path="/signup" component={Signup} {...props} />
                   <Public exact path="/login" component={Login} {...props} />
                   <Public exact path="/logout" component={Logout} {...props} />
-                  <AllUserAccess name="verify-email" path="/verify-email/:token" component={VerifyEmail} />
-                  <AllUserAccess name="recover-password" path="/recover-password" component={RecoverPassword} />
-                  <AllUserAccess name="reset-password" path="/reset-password/:token" component={ResetPassword} />
+                  <AllUserAccess
+                    name="verify-email"
+                    path="/verify-email/:token"
+                    component={VerifyEmail}
+                  />
+                  <AllUserAccess
+                    name="recover-password"
+                    path="/recover-password"
+                    component={RecoverPassword}
+                  />
+                  <AllUserAccess
+                    name="reset-password"
+                    path="/reset-password/:token"
+                    component={ResetPassword}
+                  />
                   <AllUserAccess name="terms" path="/terms" component={Terms} />
                   <AllUserAccess name="privacy" path="/privacy" component={Privacy} />
                   <AllUserAccess component={NotFound} />
                 </Switch>
               </div>
             </MuiThemeProvider>
-          : ''
+            : ''
         }
       </Router>
     );
