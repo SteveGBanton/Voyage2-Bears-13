@@ -13,5 +13,6 @@
     "Slingshot": false,
     "SimpleSchema": false,
     "ValidatedMethod": false,
+    "HTTP": false,
   },
 }
