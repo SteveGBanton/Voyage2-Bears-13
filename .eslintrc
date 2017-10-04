@@ -3,6 +3,8 @@
   "rules": {
     "quotes": 0,
     "no-undef": [2],
+    "no-underscore-dangle": "off",
+    "import/no-unresolved": "off",
   },
   "globals": {
     "Meteor": false,
