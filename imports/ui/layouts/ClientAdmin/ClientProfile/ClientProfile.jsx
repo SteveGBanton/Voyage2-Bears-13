@@ -8,12 +8,12 @@ import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import Loading from '../../../components/Loading/Loading.jsx'
-
 import TextField from 'material-ui/TextField';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
+
+import Loading from '../../../components/Loading/Loading.jsx';
 
 import customFormValidator from '../../../../modules/custom-form-validator';
 
@@ -52,7 +52,7 @@ const messages = {
   newPassword: {
     password: "Keep your account safe: at least 9 characters required, at least one uppercase letter and one number. Special characters allowed: $%@#£€*?&",
   },
-}
+};
 
 class ClientProfile extends React.Component {
   constructor(props) {
@@ -75,21 +75,22 @@ class ClientProfile extends React.Component {
       },
       currentEmail: props.user.emails[0].address,
       verifiedEmail: props.user.emails[0].verified,
-    })
+    });
   }
 
+  /*
   componentDidMount() {
     const component = this;
   }
+  */
 
   resendVerification() {
     Meteor.call('users.sendVerificationEmail', (err) => {
       if (err) {
-        Bert.alert('Error sending verification email', 'danger')
+        Bert.alert('Error sending verification email', 'danger');
       } else {
-        Bert.alert('Verification email sent to address on file.', 'success')
+        Bert.alert('Verification email sent to address on file.', 'success');
       }
-
     });
   }
 
@@ -101,32 +102,30 @@ class ClientProfile extends React.Component {
   }
 
   formValidate() {
-
     const input = {
       emailAddress: this.emailAddress.input.value,
       firstName: this.firstName.input.value,
       lastName: this.lastName.input.value,
       currentPassword: this.currentPassword.input.value,
       newPassword: this.newPassword.input.value,
-    }
+    };
 
-    const formErrors = customFormValidator(input, rules, messages)
+    const formErrors = customFormValidator(input, rules, messages);
     let currentPwdRequired = true;
-    console.log(formErrors)
+    console.log(formErrors);
 
     if (this.newPassword.input.value && this.currentPassword.input.value === '') {
-      formErrors.currentPassword = 'Current password is required to change password'
+      formErrors.currentPassword = 'Current password is required to change password';
     } else {
-      currentPwdRequired = false
+      currentPwdRequired = false;
     }
 
     if (!formErrors && currentPwdRequired === false) {
-      this.handleSubmit()
-      this.setState({formErrors})
+      this.handleSubmit();
+      this.setState({ formErrors });
     } else {
-      this.setState({formErrors})
+      this.setState({ formErrors });
     }
-    return
   }
 
   handleSubmit() {
@@ -161,14 +160,18 @@ class ClientProfile extends React.Component {
     });
 
     if (this.newPassword.input.value) {
-      Accounts.changePassword(this.currentPassword.input.value, this.newPassword.input.value, (error) => {
-        if (error) {
-          Bert.alert(error.reason, 'danger');
-        } else {
-          this.currentPassword.input.value = '';
-          this.newPassword.input.value = '';
-        }
-      });
+      Accounts.changePassword(
+        this.currentPassword.input.value,
+        this.newPassword.input.value,
+        (error) => {
+          if (error) {
+            Bert.alert(error.reason, 'danger');
+          } else {
+            this.currentPassword.input.value = '';
+            this.newPassword.input.value = '';
+          }
+        },
+      );
     }
   }
 
@@ -182,92 +185,92 @@ class ClientProfile extends React.Component {
       ))}
     </div>);
 
-    //TODO - add other fields to OAuth user Profile.
+    // TODO - add other fields to OAuth user Profile.
   }
 
   renderPasswordUser(loading, user) {
     return (
-        <form className="profile-edit" onSubmit={event => event.preventDefault()}>
-          <div className="profile-edit-1">
+      <form className="profile-edit" onSubmit={event => event.preventDefault()}>
+        <div className="profile-edit-1">
 
-            <TextField
-              defaultValue={user.username}
-              disabled
-              name="userName"
-              floatingLabelText="Username (cannot be changed)"
-            />
+          <TextField
+            defaultValue={user.username}
+            disabled
+            name="userName"
+            floatingLabelText="Username (cannot be changed)"
+          />
 
-            <TextField
-              defaultValue={user.profile.name.first}
-              name="firstName"
-              floatingLabelText="First Name"
-              ref={input => (this.firstName = input)}
-              errorText={this.state.formErrors.firstName}
-            /><br/>
+          <TextField
+            defaultValue={user.profile.name.first}
+            name="firstName"
+            floatingLabelText="First Name"
+            ref={(input) => { this.firstName = input; }}
+            errorText={this.state.formErrors.firstName}
+          /><br />
 
-            <TextField
-              defaultValue={user.profile.name.last}
-              name="lastName"
-              floatingLabelText="Last Name"
-              ref={input => (this.lastName = input)}
-              errorText={this.state.formErrors.lastName}
-            /><br/>
+          <TextField
+            defaultValue={user.profile.name.last}
+            name="lastName"
+            floatingLabelText="Last Name"
+            ref={(input) => { this.lastName = input; }}
+            errorText={this.state.formErrors.lastName}
+          /><br />
+
+        </div>
+        <div className="profile-edit-2">
+
+          <TextField
+            defaultValue={user.emails[0].address}
+            name="emailAddress"
+            floatingLabelText="Email Address"
+            ref={(input) => { this.emailAddress = input; }}
+            errorText={this.state.formErrors.emailAddress}
+          />
+
+          {
+            (user.emails[0].verified === false)
+              ? (<IconButton
+                touch
+                tooltip="Not verified: click to resend verification email"
+                tooltipPosition="bottom-center"
+                onClick={this.resendVerification}
+              >
+                <FontIcon className="material-icons">email</FontIcon>
+              </IconButton>)
+              : (<IconButton
+                touch
+                tooltip="Email Verified"
+                tooltipPosition="bottom-center"
+              >
+                <FontIcon className="material-icons">checkmark</FontIcon>
+              </IconButton>)
+          }
+
+          <br />
+          <TextField
+            name="currentPassword"
+            type="password"
+            floatingLabelText="Current Password"
+            ref={(currentPassword) => { this.currentPassword = currentPassword; }}
+            errorText={this.state.formErrors.currentPassword}
+          /><br />
+
+          <TextField
+            name="newPassword"
+            type="password"
+            floatingLabelText="New Password"
+            ref={(newPassword) => { this.newPassword = newPassword; }}
+            errorText={this.state.formErrors.newPassword}
+          /><br /><br /><br />
+
+          <div>
+
+            <RaisedButton type="submit" onClick={this.formValidate}>Edit Profile</RaisedButton>
 
           </div>
-      <div className="profile-edit-2">
-
-        <TextField
-          defaultValue={user.emails[0].address}
-          name="emailAddress"
-          floatingLabelText="Email Address"
-          ref={input => (this.emailAddress = input)}
-          errorText={this.state.formErrors.emailAddress}
-        />
-
-        {
-          (user.emails[0].verified === false)
-          ? (<IconButton
-              touch={true}
-              tooltip="Not verified: click to resend verification email"
-              tooltipPosition="bottom-center"
-              onClick={this.resendVerification}
-             >
-               <FontIcon className="material-icons">email</FontIcon>
-             </IconButton>)
-          : (<IconButton
-              touch={true}
-              tooltip="Email Verified"
-              tooltipPosition="bottom-center"
-             >
-               <FontIcon className="material-icons">checkmark</FontIcon>
-             </IconButton>)
-        }
-
-          <br/>
-        <TextField
-          name="currentPassword"
-          type="password"
-          floatingLabelText="Current Password"
-          ref={currentPassword => (this.currentPassword = currentPassword)}
-          errorText={this.state.formErrors.currentPassword}
-        /><br/>
-
-        <TextField
-          name="newPassword"
-          type="password"
-          floatingLabelText="New Password"
-          ref={newPassword => (this.newPassword = newPassword)}
-          errorText={this.state.formErrors.newPassword}
-        /><br/><br/><br/>
-
-        <div>
-
-        <RaisedButton type="submit" onClick={this.formValidate}>Edit Profile</RaisedButton>
 
         </div>
-
-        </div>
-      </form>)
+      </form>);
   }
 
   renderProfileForm(loading, user) {
@@ -279,17 +282,17 @@ class ClientProfile extends React.Component {
 
   render() {
     const { loading, user } = this.props;
-    {console.log(this.props)}
+    console.log(this.props);
     return (<div className="Profile">
-        <h1>Edit Profile</h1>
-        {this.renderProfileForm(loading, user)}
+      <h1>Edit Profile</h1>
+      {this.renderProfileForm(loading, user)}
     </div>);
   }
 }
 
 ClientProfile.propTypes = {
   loading: PropTypes.bool.isRequired,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.shape({}).isRequired,
 };
 
 export default createContainer(() => {

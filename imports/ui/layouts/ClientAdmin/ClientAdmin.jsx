@@ -17,7 +17,6 @@ import Navigation from '../../components/Navigation/Navigation';
 import './ClientAdmin.scss';
 
 export default class ClientAdmin extends React.Component {
-
   constructor(props) {
     super(props);
     this.toggleMenu = this.toggleMenu.bind(this);
@@ -105,8 +104,8 @@ export default class ClientAdmin extends React.Component {
             {...rest}
             render={props => (
               authenticated
-              ? (React.createElement(component, { ...props, loggingIn, authenticated, user }))
-              : (<Redirect to="/logout" />)
+                ? (React.createElement(component, { ...props, loggingIn, authenticated, user }))
+                : (<Redirect to="/logout" />)
             )}
           />
         </div>
@@ -115,7 +114,7 @@ export default class ClientAdmin extends React.Component {
   }
 }
 
-ClientAdmin.defaultProps ={
+ClientAdmin.defaultProps = {
   user: {},
 };
 
@@ -123,5 +122,5 @@ ClientAdmin.propTypes = {
   loggingIn: PropTypes.bool.isRequired,
   authenticated: PropTypes.bool.isRequired,
   component: PropTypes.func.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.shape({}),
 };
