@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import './Index.scss';
 
-const Index = (props) => (
+const Index = () => (
   <div className="Index">
     <h1>App Boilerplate!</h1>
     <p>Already have an account? <Link to="/login">Log In</Link>.</p>

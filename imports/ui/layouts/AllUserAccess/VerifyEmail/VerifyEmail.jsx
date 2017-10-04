@@ -27,14 +27,14 @@ class VerifyEmail extends React.Component {
 
   render() {
     return (<div className="VerifyEmail">
-        {!this.state.error ? 'Verifying...' : this.state.error}
+      {!this.state.error ? 'Verifying...' : this.state.error}
     </div>);
   }
 }
 
 VerifyEmail.propTypes = {
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  match: PropTypes.shape({}).isRequired,
+  history: PropTypes.shape({}).isRequired,
 };
 
 export default VerifyEmail;

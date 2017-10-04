@@ -16,5 +16,6 @@
     "HTTP": false,
     "Bert": false,
     "document": false,
+    "window": false,
   },
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Page from '../../../components/Page/Page.jsx';
+import Page from '../../../components/Page/Page';
 
 const Terms = () => (
   <div className="Terms">
