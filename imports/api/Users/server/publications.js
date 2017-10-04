@@ -10,10 +10,10 @@ Meteor.publish('users.editProfile', function usersProfile() {
   });
 });
 
-Meteor.publish(null, function () {
+Meteor.publish(null, function publish() {
   // Publish custom fields a user should have access to on their own user obj.
   const options = {
-    fields: { current: 1 }
+    fields: { current: 1 },
   };
-  return Meteor.users.find({_id: this.userId}, options);
+  return Meteor.users.find({ _id: this.userId }, options);
 });

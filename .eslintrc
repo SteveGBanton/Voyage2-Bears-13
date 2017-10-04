@@ -12,5 +12,6 @@
     "Roles": false,
     "Slingshot": false,
     "SimpleSchema": false,
+    "ValidatedMethod": false,
   },
 }
