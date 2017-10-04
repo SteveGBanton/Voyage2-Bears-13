@@ -14,5 +14,7 @@
     "SimpleSchema": false,
     "ValidatedMethod": false,
     "HTTP": false,
+    "Bert": false,
+    "document": false,
   },
 }
