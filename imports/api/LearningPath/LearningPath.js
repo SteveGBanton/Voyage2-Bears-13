@@ -43,13 +43,9 @@ LearningPaths.schema = new SimpleSchema({
     label: "An instance of a resource",
   },
 
-  mentors: {
-    type: Array,
-    label: "An array of mentor IDs",
-  },
-  'mentors.$': {
+  mentor: {
     type: String,
-    label: "Mentor ID",
+    label: "The mentor's ID",
     regEx: SimpleSchema.RegEx.Id,
   },
 });
