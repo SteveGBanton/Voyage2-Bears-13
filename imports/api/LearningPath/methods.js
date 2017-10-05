@@ -48,17 +48,36 @@ const learningPathsUpdate = new ValidatedMethod({
     } catch (exception) {
       throw new Meteor.Error(
         'learning-paths.update.error',
-        `Error updating Learning Path. ${exception}`);
+        `Error updating Learning Path. ${exception}`,
+      );
     }
   },
 });
 
-export { learningPathsInsert, learningPathsUpdate };
+const learningPathsRemove = new ValidatedMethod({
+  name: 'learning-paths.remove',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run(lp) {
+    try {
+      return LearningPaths.remove(lp);
+    } catch (exception) {
+      throw new Meteor.Error(
+        'learning-paths.remove.error',
+        `Error removing Learning Path. ${exception}`,
+      );
+    }
+  },
+});
+
+export { learningPathsInsert, learningPathsUpdate, learningPathsRemove };
 
 rateLimit({
   methods: [
     'learning-paths.insert',
     'learning-paths.update',
+    'learning-paths.remove',
   ],
   limit: 5,
   timeRange: 1000,
