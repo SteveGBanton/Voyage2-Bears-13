@@ -6,7 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import Loading from '../../../components/Loading/Loading';
 
-export default class MyPaths extends React.Component {
+export default class MySavedPaths extends React.Component {
 
   constructor(props) {
     super(props);
@@ -21,9 +21,7 @@ export default class MyPaths extends React.Component {
 
             {/* TODO
 
-             Display all Paths user has created using RenderLearningPathList component.
-
-             Buttons to edit etc.
+             Display all Paths user has saved using RenderLearningPathList component.
 
              <RenderLearningPathList
                learningPathList={learningPathList}
@@ -39,7 +37,7 @@ export default class MyPaths extends React.Component {
 }
 
 // TODO edit proptypes
-MyPaths.propTypes = {
+MySavedPaths.propTypes = {
   loading: PropTypes.bool.isRequired,
   learningPathList: PropTypes.object,
   match: PropTypes.object.isRequired,
@@ -48,11 +46,11 @@ MyPaths.propTypes = {
 
 export default createContainer(({ match }) => {
 
-  // Load all paths user has created from DB.
-  // call subscription that only allows us to see the learning paths from this userId.
-  // Each learning path should have an ownerId property on it.
+  // Get Ids of paths user has saved from user object, add to local array using:
+  // const savedIds = Object.keys(user.savedLearningPaths);
+  // Get each learning path object from DB.
 
   return {
     // learningPathList: learningPathList
   };
-}, MyPaths);
+}, MySavedPaths);

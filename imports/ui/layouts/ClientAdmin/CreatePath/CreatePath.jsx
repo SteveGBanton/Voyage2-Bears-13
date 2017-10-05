@@ -10,36 +10,24 @@ class CreatePath extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      resources = [],
-      name = '',
-      description = '',
-    }
   }
 
   render() {
     const { loading, doc, history, isUserOwner } = this.props;
     return (
-        (!loading) ?
-          <div className="create-path">
+      <div className="create-path">
 
-            {/* TODO
-              Form To Create Paths
+        {/* TODO
 
-              Learning Path Name, description etc.
+          Form To Create Paths
 
-              Start by adding resource #1
+          Call
 
-              + button to add a new Resource
+          <LearningPathEditor />
 
-              Form validation to make sure everything is correct.
+        */}
 
-              Calls Meteor method to add to collection.
-
-            */}
-
-          </div>
-          : ''
+      </div>
     );
   }
 }
@@ -47,7 +35,6 @@ class CreatePath extends React.Component {
 // TODO edit proptypes
 CreatePath.propTypes = {
   loading: PropTypes.bool.isRequired,
-  doc: PropTypes.object,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };

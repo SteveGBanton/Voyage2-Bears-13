@@ -4,112 +4,57 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
-import Loading from '../../../components/Loading/Loading';
-
-/**
-
-  A learning path document may or may not be passed into this Editor component.
-
-  (The createPath component does not pass any document in, the editPath component does pass a document in)
-
-  Example learning path document:
-
-  CODEARCHBRANCH.
-
-  const learningPath = {
- _id: 'geab4ah4a',
- ownerId: 'feagea3qg4sh4s', // creator of learning path
- name: '',
- description: '',
- resources: [
-   {
-     _id: 'hahsnsngearya4q',
-     name: 'Resource 1',
-     description: 'description of this resource, up to 200 chars long',
-     url: 'http://example.com',
-     longContent: 'More optional content, up to 5K characters long.',
-     thumbnail: '',
-   },
-   {
-     _id: 'h3afaghagearya4q',
-     name: 'Resource 2',
-     description: 'description of this resource, up to 200 chars long',
-     url: 'http://example.com',
-     longContent: 'More optional content, up to 5K characters long.',
-     thumbnail: '',
-   },
-   {
-     _id: 'ghh3aheargea3ya4q',
-     name: 'Resource 3',
-     description: 'description of this resource, up to 200 chars long',
-     url: 'http://example.com',
-     longContent: 'More optional content, up to 5K characters long.',
-     thumbnail: '',
-   },
-   {
-     _id: 'jbs4sbsgearya4q',
-     name: 'Resource 4',
-     description: 'description of this resource, up to 200 chars long',
-     url: 'http://example.com',
-     longContent: 'More optional content, up to 5K characters long.',
-     thumbnail: '',
-   },
- ]
-}
-
-*/
-
 class LearningPathEditor extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      resources = [],
-      name = '',
-      description = '',
+      resources: [],
+      name: '',
+      description: '',
     }
   }
 
-  componentWillMount() {
-    // If editing a document that already exists, load the document into state before component loads.
-
-    this.setState({
-      resources: this.props.doc.resources;
-    })
-
-
-  }
   render() {
-    const { loading, doc, history, isUserOwner } = this.props;
+    const { learningPath, history, isUserOwner } = this.props;
     return (
-        (!loading) ?
-          <div className="create-path">
+      <div className="create-path">
 
-            {/* TODO
-              Form To Add / Edit Paths
+        {/* TODO
 
-              Learning Path Name, description etc.
+          Analagous to DocumentEditor component.
 
-              IF EDITING A DOC:
+          Form To Add OR Edit Paths
 
-                Current learning path resources are passed in as an array of objects.
+          Editing learning Path Name, description etc.
 
-                On
+          And all Resources within that learning path.
 
-                a forEach function creates a form field for each of these, editable.
+          IF EDITING A DOC:
 
-              Start by adding resource #1
+            Doc will be passed in to component.
 
-              + button to add a new Resource
+            Current learning path resources are passed in as an array of objects.
 
-              Form validation to make sure everything is correct.
+            Form fields are created for each one, default values loaded into forms.
 
-              Calls Meteor method to add to collection.
+            a forEach function creates a form field for each of these, editable.
 
-            */}
+          IF CREATING NEW DOC
 
-          </div>
-          : ''
+            Doc will NOT be passed in to component.
+
+            Start by adding resource #1
+
+            + button to add a new Resource
+
+          Form validation to make sure everything is correct.
+
+          Calls Meteor method to Add OR Update Learning Path in collection.
+
+        */}
+
+      </div>
     );
   }
 }
@@ -117,7 +62,7 @@ class LearningPathEditor extends React.Component {
 // TODO edit proptypes
 CreatePath.propTypes = {
   loading: PropTypes.bool.isRequired,
-  doc: PropTypes.object,
+  learningPath: PropTypes.object,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };

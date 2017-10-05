@@ -3,33 +3,37 @@ import PropTypes from 'prop-types';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
-import Loading from '../../components/Loading/Loading';
-
 export default class RenderLearningPathList extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      filtered: '',
-    }
+      filter: '',
+      filteredList: [],
+    };
   }
 
   render() {
-    const { loading, history, learningPathList } = this.props;
+    const { history, learningPathList, user } = this.props;
     return (
-        (!loading) ?
-          <div className="learning-path-list">
+      <div className="learning-path-list">
 
-            {/* TODO Renders a list of all Learning Path Names and descriptions
+        {/* TODO
 
-              Filter Options
+          Renders a list of all Learning Path Names and descriptions passed in
 
-              Link on each to go to the individual learning path view.
-            */}
+          Mark if each learning path is saved using a check on the user.savedLearningPaths prop.
 
-          </div>
-          : ''
+          Filter Options - Most Recent
+
+          If user is ownerId (ownerId === user._id) on one of the learning paths in the list, add Edit button beside it.
+
+          Link on each to go to the individual learning path view.
+
+        */}
+
+      </div>
     );
   }
 

@@ -13,6 +13,9 @@ import ClientAdmin from '../layouts/ClientAdmin/ClientAdmin';
 import Public from '../layouts/Public/Public';
 
 // ClientAdmin pages - logged in users can access
+import CreatePath from '../layouts/ClientAdmin/CreatePath/CreatePath';
+import EditPath from '../layouts/ClientAdmin/EditPath/EditPath';
+import MyPaths from '../layouts/ClientAdmin/MyPaths/MyPaths';
 import ClientDashboard from '../layouts/ClientAdmin/ClientDashboard/ClientDashboard';
 import ClientDocuments from '../layouts/ClientAdmin/ClientDocuments/ClientDocuments';
 import ClientNewDocument from '../layouts/ClientAdmin/ClientDocuments/ClientNewDocument/ClientNewDocument';
@@ -26,6 +29,9 @@ import Login from '../layouts/Public/Login/Login';
 import Logout from '../layouts/Public/Logout/Logout';
 
 // All users pages - logged in or not logged in users can access
+import LearningPaths from '../layouts/AllUserAccess/LearningPaths/LearningPaths';
+import LearningPathView from '../layouts/AllUserAccess/LearningPathView/LearningPathView';
+import ResourceDetailView from '../layouts/AllUserAccess/ResourceDetailView/ResourceDetailView';
 import Index from '../layouts/AllUserAccess/Index/Index';
 import NotFound from '../layouts/AllUserAccess/NotFound/NotFound';
 import Terms from '../layouts/AllUserAccess/Terms/Terms';
@@ -52,9 +58,59 @@ class App extends React.Component {
             <MuiThemeProvider>
               <div className="App">
                 <Switch>
-                  <AllUserAccess exact path="/" component={Index} {...props} />
-                  <ClientAdmin exact path="/dashboard" component={ClientDashboard} {...props} />
-                  <ClientAdmin exact path="/documents" component={ClientDocuments} {...props} />
+                  <AllUserAccess
+                    exact
+                    path="/"
+                    component={Index}
+                    {...props}
+                  />
+                  <AllUserAccess
+                    exact
+                    path="/learning-paths"
+                    component={LearningPaths}
+                    {...props}
+                  />
+                  <AllUserAccess
+                    exact
+                    path="/learning-path/:learningPathId"
+                    component={LearningPathView}
+                    {...props}
+                  />
+                  <AllUserAccess
+                    exact
+                    path="/learning-path/:learningPathId/resource/:resourceId"
+                    component={ResourceDetailView}
+                    {...props}
+                  />
+                  <ClientAdmin
+                    exact
+                    path="/create-path"
+                    component={CreatePath}
+                    {...props}
+                  />
+                  <ClientAdmin
+                    exact
+                    path="/learning-path/:learningPathId/edit"
+                    component={EditPath}
+                    {...props}
+                  />
+                  <ClientAdmin
+                    exact
+                    path="/my-paths"
+                    component={MyPaths}
+                    {...props}
+                  />
+                  <ClientAdmin
+                    exact
+                    path="/dashboard"
+                    component={ClientDashboard}
+                    {...props}
+                  />
+                  <ClientAdmin
+                    exact
+                    path="/documents"
+                    component={ClientDocuments}
+                    {...props} />
                   <ClientAdmin
                     exact path="/documents/new"
                     component={ClientNewDocument}
@@ -70,10 +126,30 @@ class App extends React.Component {
                     component={ClientViewDocument}
                     {...props}
                   />
-                  <ClientAdmin exact path="/profile" component={ClientProfile} {...props} />
-                  <Public exact path="/signup" component={Signup} {...props} />
-                  <Public exact path="/login" component={Login} {...props} />
-                  <Public exact path="/logout" component={Logout} {...props} />
+                  <ClientAdmin
+                    exact
+                    path="/profile"
+                    component={ClientProfile}
+                    {...props}
+                  />
+                  <Public
+                    exact
+                    path="/signup"
+                    component={Signup}
+                    {...props}
+                  />
+                  <Public
+                    exact
+                    path="/login"
+                    component={Login}
+                    {...props}
+                  />
+                  <Public
+                    exact
+                    path="/logout"
+                    component={Logout}
+                    {...props}
+                  />
                   <AllUserAccess
                     name="verify-email"
                     path="/verify-email/:token"
@@ -89,9 +165,19 @@ class App extends React.Component {
                     path="/reset-password/:token"
                     component={ResetPassword}
                   />
-                  <AllUserAccess name="terms" path="/terms" component={Terms} />
-                  <AllUserAccess name="privacy" path="/privacy" component={Privacy} />
-                  <AllUserAccess component={NotFound} />
+                  <AllUserAccess
+                    name="terms"
+                    path="/terms"
+                    component={Terms}
+                  />
+                  <AllUserAccess
+                    name="privacy"
+                    path="/privacy"
+                    component={Privacy}
+                  />
+                  <AllUserAccess
+                    component={NotFound}
+                  />
                 </Switch>
               </div>
             </MuiThemeProvider>
