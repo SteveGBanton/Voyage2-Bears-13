@@ -25,7 +25,7 @@ const learningPathsInsert = new ValidatedMethod({
     } catch (exception) {
       throw new Meteor.Error(
         'learning-paths.insert.error',
-        `Error inserting new Learning Path: ${exception}`,
+        `Error inserting new Learning Path. ${exception}`,
       );
     }
   },
@@ -46,7 +46,9 @@ const learningPathsUpdate = new ValidatedMethod({
     try {
       return LearningPaths.update({ _id: lp._id }, { $set: lp });
     } catch (exception) {
-      console.log("Problem with updating Learning Path:", err);
+      throw new Meteor.Error(
+        'learning-paths.update.error',
+        `Error updating Learning Path. ${exception}`);
     }
   },
 });
