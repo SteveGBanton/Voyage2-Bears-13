@@ -6,7 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import Loading from '../../../components/Loading/Loading';
 
-class CreatePath extends React.Component {
+export default class CreatePath extends React.Component {
 
   constructor(props) {
     super(props);
@@ -16,6 +16,7 @@ class CreatePath extends React.Component {
     const { loading, doc, history, isUserOwner } = this.props;
     return (
       <div className="create-path">
+        <h1>Create A Learning Path</h1>
 
         {/* TODO
 

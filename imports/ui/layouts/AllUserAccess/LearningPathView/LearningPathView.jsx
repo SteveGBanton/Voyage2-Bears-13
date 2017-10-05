@@ -9,6 +9,7 @@ import Loading from '../../../components/Loading/Loading';
 const LearningPathView = ({ loading, learningPathDoc, history, isUserOwner }) => (
   !loading ?
     <div className="learning-path-view">
+      <h1>View All Resources In A Learning Path</h1>
 
       {/* TODO add edit button to go to edit page for this path if user is owner.
 

@@ -9,6 +9,7 @@ import Loading from '../../../components/Loading/Loading';
 const Category = ({ loading, doc, history, categoryResults }) => (
   !loading ?
     <div className="category-page">
+      <h1>Learning Path Category Page</h1>
 
       {/* TODO
         Pass list of all learning paths to RenderPaths component

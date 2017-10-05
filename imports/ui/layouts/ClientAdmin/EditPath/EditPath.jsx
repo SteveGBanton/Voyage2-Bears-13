@@ -16,16 +16,18 @@ class EditPath extends React.Component {
   render() {
     const { loading, learningPathDoc, history, isUserOwner } = this.props;
     return (
-        (!loading) ?
-          <div className="create-path">
+      // Make sure user owns document, or else cannot edit it.
+        (!loading && isUserOwner) ?
+          <div className="edit-path">
+            <h1>Edit A Learning Path</h1>
 
             {/* TODO
 
               Form To Edit Paths
 
-              Call
+              Call:
 
-              <LearningPathEditor learningPath={}/>
+              <LearningPathEditor learningPath={learningPathDoc}/>
 
             */}
 
@@ -48,8 +50,10 @@ export default createContainer(({ match }) => {
 
   // Load document to edit from DB using URL.
   // /learning-path/:learningPathId/edit
+  // Also determine whether user is owner of the doc.
 
   return {
-    // learningPathDoc: learningPathDoc
+    // learningPathDoc: learningPathDoc,
+    // isUserOwner: isUserOwner,
   };
 }, EditPath);

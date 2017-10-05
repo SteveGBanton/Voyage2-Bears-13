@@ -9,6 +9,7 @@ import Loading from '../../../components/Loading/Loading';
 const ResourceDetailView = ({ loading, resourceDoc, history }) => (
   !loading ?
     <div className="learning-path-view">
+      <h1>View A Single Resource</h1>
 
       {/* TODO
 

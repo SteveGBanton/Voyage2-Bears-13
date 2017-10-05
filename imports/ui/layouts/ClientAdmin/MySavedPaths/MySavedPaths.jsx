@@ -6,7 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import Loading from '../../../components/Loading/Loading';
 
-export default class MySavedPaths extends React.Component {
+class MySavedPaths extends React.Component {
 
   constructor(props) {
     super(props);
@@ -17,7 +17,8 @@ export default class MySavedPaths extends React.Component {
     const { loading, learningPathList, history, user } = this.props;
     return (
         (!loading) ?
-          <div className="create-path">
+          <div className="saved-paths">
+            <h1>Learning Paths You Have Saved</h1>
 
             {/* TODO
 

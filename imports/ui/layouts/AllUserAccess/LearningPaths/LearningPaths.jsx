@@ -17,6 +17,7 @@ class LearningPaths extends React.Component {
     return (
         (!loading) ?
           <div className="all-learning-paths">
+            <h1>All Learning Paths</h1>
 
             {/* TODO Create learning path categories  */}
 
@@ -29,7 +30,7 @@ class LearningPaths extends React.Component {
 }
 
 // TODO edit proptypes
-LearningPathView.propTypes = {
+LearningPaths.propTypes = {
   loading: PropTypes.bool.isRequired,
   doc: PropTypes.object,
   match: PropTypes.object.isRequired,
@@ -47,4 +48,4 @@ export default createContainer(({ match }) => {
     // doc: learningPath,
     // isUserOwner: (!!learningPath.owner)
   };
-}, LearningPathView);
+}, LearningPaths);
