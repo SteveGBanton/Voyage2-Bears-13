@@ -44,44 +44,44 @@ export default function customFormValidator(input, rules, messages) {
           break;
         case 'minLength':
           if (input[field]) {
-            (!valMinLength(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].minLength
-            : null;
+            if (!valMinLength(input[field], rules[field][subrule])) {
+              formErrors[field] = messages[field].minLength;
+            }
           }
           break;
         case 'maxLength':
           if (input[field]) {
-            (!valMaxLength(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].maxlength
-            : null;
+            if (!valMaxLength(input[field], rules[field][subrule])) {
+              formErrors[field] = messages[field].maxlength;
+            }
           }
           break;
         case 'minValue':
           if (input[field]) {
-            (!valMinValue(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].minValue
-            : null;
+            if (!valMinValue(input[field], rules[field][subrule])) {
+              formErrors[field] = messages[field].minValue;
+            }
           }
           break;
         case 'maxValue':
           if (input[field]) {
-            (!valMaxValue(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].maxValue
-            : null;
+            if (!valMaxValue(input[field], rules[field][subrule])) {
+              formErrors[field] = messages[field].maxValue;
+            }
           }
           break;
         case 'email':
           if (input[field]) {
-            (!valEmail(input[field]))
-            ? formErrors[field] = messages[field].email
-            : null;
+            if (!valEmail(input[field])) {
+              formErrors[field] = messages[field].email;
+            }
           }
           break;
         case 'password':
           if (input[field]) {
-            (!valPassword(input[field]))
-            ? formErrors[field] = messages[field].password
-            : null;
+            if (!valPassword(input[field])) {
+              formErrors[field] = messages[field].password;
+            }
           }
           break;
         default:
