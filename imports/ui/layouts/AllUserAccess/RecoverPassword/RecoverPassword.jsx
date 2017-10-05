@@ -1,11 +1,11 @@
 import React from 'react';
 // import { Row, Col, Alert, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
 
-//import validate from '../../../modules/validate';
+// import validate from '../../../modules/validate';
 
 class RecoverPassword extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class RecoverPassword extends React.Component {
   }
 
   componentDidMount() {
-    const component = this;
+    // const component = this;
 
     // validate(component.form, {
     //   rules: {
@@ -77,7 +77,7 @@ class RecoverPassword extends React.Component {
 }
 
 RecoverPassword.propTypes = {
-  history: PropTypes.object.isRequired,
+  history: PropTypes.shape({}).isRequired,
 };
 
 export default RecoverPassword;

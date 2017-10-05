@@ -3,6 +3,8 @@
   "rules": {
     "quotes": 0,
     "no-undef": [2],
+    "no-underscore-dangle": "off",
+    "import/no-unresolved": "off",
   },
   "globals": {
     "Meteor": false,
@@ -10,5 +12,10 @@
     "Roles": false,
     "Slingshot": false,
     "SimpleSchema": false,
+    "ValidatedMethod": false,
+    "HTTP": false,
+    "Bert": false,
+    "document": false,
+    "window": false,
   },
 }

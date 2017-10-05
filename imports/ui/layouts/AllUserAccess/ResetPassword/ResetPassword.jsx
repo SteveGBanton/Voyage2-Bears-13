@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
 
-//import validate from '../../../modules/validate';
+// import validate from '../../../modules/validate';
 
 class ResetPassword extends React.Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class ResetPassword extends React.Component {
   }
 
   componentDidMount() {
-    const component = this;
+    // const component = this;
 
     // validate(component.form, {
     //   rules: {
@@ -93,8 +93,8 @@ with your new password.
 }
 
 ResetPassword.propTypes = {
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  match: PropTypes.shape({}).isRequired,
+  history: PropTypes.shape({}).isRequired,
 };
 
 export default ResetPassword;

@@ -45,43 +45,43 @@ export default function customFormValidator(input, rules, messages) {
         case 'minLength':
           if (input[field]) {
             (!valMinLength(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].minLength
-            : null;
+              ? formErrors[field] = messages[field].minLength
+              : null;
           }
           break;
         case 'maxLength':
           if (input[field]) {
             (!valMaxLength(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].maxlength
-            : null;
+              ? formErrors[field] = messages[field].maxlength
+              : null;
           }
           break;
         case 'minValue':
           if (input[field]) {
             (!valMinValue(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].minValue
-            : null;
+              ? formErrors[field] = messages[field].minValue
+              : null;
           }
           break;
         case 'maxValue':
           if (input[field]) {
             (!valMaxValue(input[field], rules[field][subrule]))
-            ? formErrors[field] = messages[field].maxValue
-            : null;
+              ? formErrors[field] = messages[field].maxValue
+              : null;
           }
           break;
         case 'email':
           if (input[field]) {
             (!valEmail(input[field]))
-            ? formErrors[field] = messages[field].email
-            : null;
+              ? formErrors[field] = messages[field].email
+              : null;
           }
           break;
         case 'password':
           if (input[field]) {
             (!valPassword(input[field]))
-            ? formErrors[field] = messages[field].password
-            : null;
+              ? formErrors[field] = messages[field].password
+              : null;
           }
           break;
         default:

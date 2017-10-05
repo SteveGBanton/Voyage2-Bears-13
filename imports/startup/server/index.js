@@ -4,5 +4,5 @@ import './fixtures';
 import './email';
 
 Meteor.users.deny({
-  update() { return true; }
+  update() { return true; },
 });
