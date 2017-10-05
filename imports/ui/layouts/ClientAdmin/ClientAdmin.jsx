@@ -62,41 +62,56 @@ export default class ClientAdmin extends React.Component {
                   />}
               />
             </Link>
-            <MenuItem
-              primaryText="Manage Students"
-              leftIcon={
-                <Person
-                  color="#757575"
-                  style={{ paddingLeft: "10px" }}
-                />}
-            />
             <Divider
               style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
             />
-            <MenuItem
-              primaryText="Make a copy"
-              leftIcon={
-                <ContentCopy
-                  color="#757575"
-                  style={{ paddingLeft: "10px" }}
-                />}
+
+            <Link to={`/create-path`}>
+              <MenuItem
+                primaryText="Create Learning Path"
+                leftIcon={
+                  <PersonAdd
+                    color="#757575"
+                    style={{ paddingLeft: "10px" }}
+                  />}
+              />
+            </Link>
+
+            <Link to={`/my-paths`}>
+              <MenuItem
+                primaryText="View My Paths"
+                leftIcon={
+                  <RemoveRedEye
+                    color="#757575"
+                    style={{ paddingLeft: "10px" }}
+                  />}
+              />
+            </Link>
+
+            <Link to={`/my-saved-paths`}>
+              <MenuItem
+                primaryText="View Saved Paths"
+                leftIcon={
+                  <RemoveRedEye
+                    color="#757575"
+                    style={{ paddingLeft: "10px" }}
+                  />}
+              />
+            </Link>
+
+            <Divider
+              style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
             />
-            <MenuItem
-              primaryText="Download"
-              leftIcon={
-                <Download
-                  color="#757575"
-                  style={{ paddingLeft: "10px" }}
-                />}
-            />
-            <MenuItem
-              primaryText="Remove"
-              leftIcon={
-                <Delete
-                  color="#757575"
-                  style={{ paddingLeft: "10px" }}
-                />}
-            />
+            <Link to={`/learning-paths`}>
+              <MenuItem
+                primaryText="Learning Paths (Public)"
+                leftIcon={
+                  <RemoveRedEye
+                    color="#757575"
+                    style={{ paddingLeft: "10px" }}
+                  />}
+              />
+            </Link>
           </Drawer>
         </div>
         <div className={(this.state.menuOpen) ? "inner-route" : "inner-route-full"}>
