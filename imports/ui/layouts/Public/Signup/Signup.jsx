@@ -208,9 +208,9 @@ export default class Signup extends React.Component {
       <div className="Signup">
 
         <h2>Create New Account</h2>
-        <OAuthLoginButtons
+        {/* <OAuthLoginButtons
           services={['']}
-        />
+        /> */}
 
         <form onSubmit={event => event.preventDefault()}>
 

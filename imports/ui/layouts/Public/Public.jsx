@@ -24,9 +24,13 @@ export default class Public extends React.Component {
   }
 }
 
+Public.defaultProps = {
+  user: null,
+};
+
 Public.propTypes = {
   loggingIn: PropTypes.bool.isRequired,
   authenticated: PropTypes.bool.isRequired,
   component: PropTypes.func.isRequired,
-  user: PropTypes.shape({}).isRequired,
+  user: PropTypes.shape({}),
 };

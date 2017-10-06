@@ -20,7 +20,6 @@ const createNewUser = new ValidatedMethod({
       const id = Accounts.createUser(newAdmin);
       return id;
     } catch (exception) {
-      Meteor.users.remove(id);
       throw new Meteor.Error('accounts.createuser.error',
         `Error creating new user. ${exception}`);
     }
