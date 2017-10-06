@@ -5,6 +5,8 @@
     "no-undef": [2],
     "no-underscore-dangle": "off",
     "import/no-unresolved": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/extensions": "off",
   },
   "globals": {
     "Meteor": false,
