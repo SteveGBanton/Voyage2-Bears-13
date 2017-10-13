@@ -60,9 +60,15 @@ class Index extends React.Component {
 
   toggleSearchFocus = (toggle) => {
     if (toggle) {
+<<<<<<< Updated upstream
       this.setState({searchFocused: toggle});
     } else {
       this.setState({searchFocused: toggle, searchInput: ''});
+=======
+      this.setState({searchFocused: toggle})
+    } else {
+      this.setState({searchFocused: toggle, searchInput: ''})
+>>>>>>> Stashed changes
     }
   }
 
