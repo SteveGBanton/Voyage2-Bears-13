@@ -10,7 +10,7 @@ import {
 import { debounce } from 'lodash';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 
-
+import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
@@ -19,22 +19,60 @@ import Chip from 'material-ui/Chip';
 import customFormValidator from '../../../modules/custom-form-validator';
 import './LearningPathEditor.scss';
 
-const rules = {
+const pathRules = {
   title: {
     required: true,
   },
-  body: {
+  description: {
     required: true,
   },
+  skills: {
+    required: true,
+  }
 };
 
-const messages = {
+const pathMessages = {
   title: {
-    required: 'Please enter a title for the Doc.',
+    required: 'Please enter a title for your Learning Path.',
   },
-  body: {
-    required: 'Please enter a body for the Doc.',
+  description: {
+    required: 'Please enter a short description to explain what this Learning Path teaches, and why it is important.',
   },
+  skills: {
+    required: 'Please enter at least one skill to tag what this Learning Path is about.',
+  }
+};
+
+const resourceRules = {
+  title: {
+    required: true,
+  },
+  description: {
+    required: true,
+  },
+  url: {
+    url: true,
+    required: true,
+  },
+  thumbnail: {
+    url: true,
+  }
+};
+
+const resourceMessages = {
+  title: {
+    required: 'Please enter a title for the Resource.',
+  },
+  description: {
+    required: 'Please enter a description for the Resource to explain why it is important.',
+  },
+  url: {
+    url: 'Must be a valid URL',
+    required: 'Please enter a valid URL.',
+  },
+  thumbnail: {
+    url: 'Must be a valid URL',
+  }
 };
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -119,7 +157,6 @@ const getItemStyle = (draggableStyle, isDragging) => ({
   ...draggableStyle,
 });
 
-
 export default class LearningPathEditor extends React.Component {
 
   constructor(props) {
@@ -131,30 +168,19 @@ export default class LearningPathEditor extends React.Component {
     this.removeAll = this.removeAll.bind(this);
     this.editThis = this.editThis.bind(this);
     this.getPageData = this.getPageData.bind(this);
+    this.addSkill = this.addSkill.bind(this);
+    this.clearSkills = this.clearSkills.bind(this);
+    this.removeOneSkill = this.removeOneSkill.bind(this);
 
     this.state = {
       editingIndex: null,
       name: '',
       description: '',
+      skills: [],
+      skillTemp: '',
       resources: [],
-      formErrors: {
-        title: '',
-        description: '',
-        resources: {
-          1: {
-            title: '',
-            description: '',
-            url: '',
-            thumbnail: '',
-          },
-          5: {
-            title: '',
-            description: '',
-            url: '',
-            thumbnail: '',
-          },
-        },
-      },
+      formErrors: {},
+      formErrorsResources: {},
     };
   }
 
@@ -173,6 +199,7 @@ export default class LearningPathEditor extends React.Component {
     this.setState({
       [result.source.droppableId]: [...items],
       formErrors: {},
+      formErrorsResources: {},
     });
   }
 
@@ -182,6 +209,8 @@ export default class LearningPathEditor extends React.Component {
       withDeletedIndex.splice(index, 1);
       this.setState({
         resources: [...withDeletedIndex],
+        formErrors: {},
+        formErrorsResources: {},
       });
     };
   }
@@ -189,6 +218,8 @@ export default class LearningPathEditor extends React.Component {
   removeAll() {
     this.setState({
       resources: [],
+      formErrors: {},
+      formErrorsResources: {},
     });
   }
 
@@ -199,23 +230,76 @@ export default class LearningPathEditor extends React.Component {
     var title = (/<title>(.*?)<\/title>/m).exec(response)[1];
   }
 
-  getPageData = debounce(function(index, field) {
+  formValidate() {
+
+    const input = {
+      title: this.state.title,
+      description: this.state.description,
+      skills: this.state.skills,
+      resources: this.state.resources,
+    };
+
+    // Call validator on title, description and skills:
+    const formErrors = customFormValidator(input, pathRules, pathMessages);
+
+    // Call validator on all Resources
+    const addResourcesErrors = {};
+    let isResourceError = false;
+    input.resources.forEach((resource, index) => {
+      const formErrorsResources = customFormValidator(resource, resourceRules, resourceMessages);
+      if (formErrorsResources) {
+        isResourceError = true;
+        addResourcesErrors[index] = formErrorsResources;
+      }
+    })
+
+    if (!formErrors & !isResourceError) {
+      this.handleSubmit(input);
+      this.setState({
+        formErrorsResources: {},
+        formErrors: {},
+      });
+    } else {
+      this.setState({
+        formErrorsResources: addResourcesErrors,
+        formErrors: formErrors,
+      });
+    }
+  }
+
+  handleSubmit(input) {
+    const pathToAdd = { ...input };
+    const { history } = this.props;
+    const existingPath = this.props.path && this.props.path._id;
+    const methodToCall = existingPath ? 'learningPaths.update' : 'learningPaths.insert';
+
+    if (existingPath) pathToAdd._id = existingPath;
+
+    Meteor.call(methodToCall, input, (error, documentId) => {
+      if (error) {
+        Bert.alert(error.reason, 'danger');
+      } else {
+        const confirmation = existingDocument ? 'Document updated!' : 'Document added!';
+        this.form.reset();
+        Bert.alert(confirmation, 'success');
+        history.push(`/documents/${documentId}`);
+      }
+    });
+  }
+
+  getPageData = debounce(function (index, field) {
     const urlInput = this.state.resources[index][field];
     const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
     const url = urlInput.match(urlRegex);
-    console.log(url);
 
     if (url) {
       Meteor.call('utility.remoteGet', url[0], (err, response) => {
         if (err) {
-          // TODO Add HTTP Timeout error.
           console.error(err);
           this.setState({
             loadingSite: false,
           });
         } else {
-          console.log(response);
-
           const titleGet = (/<title(.*?)>(.*?)<\/title>/m).exec(response.content);
           const title = (titleGet) ? titleGet[2] : null;
 
@@ -235,10 +319,15 @@ export default class LearningPathEditor extends React.Component {
               if (!images.includes(`${whichImg}.${regEx[0]}`) && !images.includes(`http://${whichImg}.${regEx[0]}`)) {
                 const getHTTP = whichImg.substring(0, 4);
                 const getForwardSlashes = whichImg.substring(0, 2);
+                const getRelative = whichImg.substring(0, 1);
                 if (getHTTP === 'http') {
                   images.push(`${whichImg}.${regEx[0]}`);
                 } else if (getForwardSlashes === '//') {
                   images.push(`http:${whichImg}.${regEx[0]}`);
+                } else if (getRelative === '/') {
+                  const domainRegex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im;
+                  const imageDomain = url[0].match(domainRegex);
+                  images.push(`${imageDomain[0]}${whichImg}.${regEx[0]}`);
                 } else {
                   images.push(`http://${whichImg}.${regEx[0]}`);
                 }
@@ -272,46 +361,14 @@ export default class LearningPathEditor extends React.Component {
 
   }, 700)
 
-  formValidate() {
-    const input = {
-      title: '',
-      description: '',
-      skills: [],
-      resources: [
-        {},
-      ],
-    };
-
-    const formErrors = customFormValidator(input, rules, messages);
-
-    if (!formErrors) {
-      this.handleSubmit(input);
-    } else {
-      this.setState({ formErrors });
-    }
-  }
-
-  handleSubmit(input) {
-    const pathToAdd = { ...input };
-    const { history } = this.props;
-    const existingPath = this.props.path && this.props.path._id;
-    const methodToCall = existingPath ? 'learningPaths.update' : 'learningPaths.insert';
-
-    if (existingPath) pathToAdd._id = existingPath;
-
-    Meteor.call(methodToCall, input, (error, documentId) => {
-      if (error) {
-        Bert.alert(error.reason, 'danger');
-      } else {
-        const confirmation = existingDocument ? 'Document updated!' : 'Document added!';
-        this.form.reset();
-        Bert.alert(confirmation, 'success');
-        history.push(`/documents/${documentId}`);
-      }
+  handlePathFieldChange(e, field) {
+    this.setState({
+      [field]: e.target.value,
     });
   }
 
   handleFieldChange(e, index, field) {
+    // Change resources
     const toUpdate = [...this.state.resources];
     toUpdate[index][field] = e.target.value;
 
@@ -358,10 +415,93 @@ export default class LearningPathEditor extends React.Component {
     };
   }
 
+  addSkill() {
+    const addSkills = [...this.state.skills];
+
+    if (this.state.skillTemp && !addSkills.includes(this.state.skillTemp)) {
+      addSkills.push(this.state.skillTemp);
+    }
+
+    this.setState({
+      skillTemp: '',
+      skills: [...addSkills],
+    })
+  }
+
+  clearSkills() {
+    this.setState({
+      skills: [],
+    })
+  }
+
+  removeOneSkill(index) {
+    return () => {
+      const toRemove = [...this.state.skills];
+      toRemove.splice(index, 1);
+      this.setState({
+        skills: [...toRemove],
+      })
+    }
+  }
+
   render() {
     const { path } = this.props;
     return (
       <div>
+        <div>
+          <TextField
+            value={this.state.title}
+            floatingLabelText="Learning Path Title"
+            onChange={e => this.handlePathFieldChange(e, 'title')}
+            errorText={(this.state.formErrors && this.state.formErrors.title) ? this.state.formErrors.title : ''}
+          />
+          <TextField
+            multiLine
+            rows={6}
+            rowsMax={6}
+            style={{ width: 300 }}
+            value={this.state.description}
+            floatingLabelText="Description"
+            onChange={e => this.handlePathFieldChange(e, 'description')}
+            errorText={(this.state.formErrors && this.state.formErrors.title) ? this.state.formErrors.title : ''}
+          />
+          <div>
+          </div>
+          <TextField
+            value={this.state.skillTemp}
+            floatingLabelText="Skills"
+            onChange={e => this.handlePathFieldChange(e, 'skillTemp')}
+            errorText={(this.state.formErrors && this.state.formErrors.title) ? this.state.formErrors.title : ''}
+          />
+          <FontIcon
+            color='rgba(0,0,0,0.3)'
+            hoverColor='rgba(0,0,0,0.7)'
+            className="material-icons pointer"
+            onClick={this.addSkill}
+          >
+            add
+          </FontIcon>
+          <FontIcon
+            color='rgba(0,0,0,0.3)'
+            hoverColor='rgba(0,0,0,0.7)'
+            className="material-icons pointer"
+            onClick={this.clearSkills}
+          >
+            clear
+          </FontIcon>
+        </div>
+        <div style={{ display: 'flex', flexFlow: 'row wrap' }}>
+          {this.state.skills.map((skillItem, index) => (
+            <Chip
+              style={{ margin: 5 }}
+              key={skillItem}
+              onRequestDelete={this.removeOneSkill(index)}
+            >
+              {skillItem}
+            </Chip>
+          ))}
+        </div>
+        <div>
         <RaisedButton
           style={{ margin: 6 }}
           onClick={this.addNewResource}
@@ -374,6 +514,13 @@ export default class LearningPathEditor extends React.Component {
         >
           Clear All
         </RaisedButton>
+        <RaisedButton
+          style={{ margin: 10 }}
+          onClick={this.formValidate}
+        >
+          Submit
+        </RaisedButton>
+        </div>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Droppable droppableId="resources">
             {(provided, snapshot) => (
@@ -408,7 +555,13 @@ export default class LearningPathEditor extends React.Component {
                                   drag_handle
                                 </FontIcon>
                                 <h4
-                                  style={{ marginRight: 10, width: 30, flex: '0 0 auto' }}
+                                  style={{
+                                    marginRight: 10,
+                                    width: 30,
+                                    flex: '0 0 auto',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                  }}
                                 >
                                   {`${index + 1}`}
                                 </h4>
@@ -433,21 +586,23 @@ export default class LearningPathEditor extends React.Component {
                               </div>
                               <div className="titleBoxButton">
                                 <Chip
-                                  style={{ marginRight: 5, fontSize: 10 }}
+                                  style={{ marginRight: 5 }}
                                 >
                                   {item.url.substring(0,45)}
                                 </Chip>
                               </div>
-                              {(this.state.formErrors[index]) ?
+                              {(this.state.formErrorsResources[index]) ?
                                 <Chip
                                   style={{
-                                    fontSize: 10, backgroundColor: 'red',
+                                    fontSize: 10,
+                                    backgroundColor: 'red',
+                                    color: 'white',
                                   }}
                                 >
-                                    errors
-                                    </Chip>
-                                    : ''
-                                  }
+                                  error
+                                </Chip>
+                                : ''
+                              }
                               {(this.state.resources[index].thumbnail) ?
                                 <div className="titleBoxButton">
                                   <img
@@ -482,7 +637,7 @@ export default class LearningPathEditor extends React.Component {
                                   value={this.state.resources[index].url}
                                   floatingLabelText="URL of Resource"
                                   onChange={e => this.handleFieldChange(e, index, 'url')}
-                                  errorText={(this.state.formErrors[index] && this.state.formErrors[index].url) ? this.state.formErrors[index].url : ''}
+                                  errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].url) ? this.state.formErrorsResources[index].url : ''}
                                 />
                                 {(this.state.loadingSite) ?
                                   <RefreshIndicator
@@ -508,7 +663,7 @@ export default class LearningPathEditor extends React.Component {
                                   value={this.state.resources[index].title}
                                   floatingLabelText="Title of Resource"
                                   onChange={e => this.handleFieldChange(e, index, 'title')}
-                                  errorText={(this.state.formErrors[index] && this.state.formErrors[index].title) ? this.state.formErrors[index].title : ''}
+                                  errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].title) ? this.state.formErrorsResources[index].title : ''}
                                 />
                                 <TextField
                                   style={{ width: '80%' }}
@@ -520,7 +675,7 @@ export default class LearningPathEditor extends React.Component {
                                   value={this.state.resources[index].description}
                                   floatingLabelText="Description of Resource"
                                   onChange={e => this.handleFieldChange(e, index, 'description')}
-                                  errorText={(this.state.formErrors[index] && this.state.formErrors[index].description) ? this.state.formErrors[index].description : ''}
+                                  errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].description) ? this.state.formErrorsResources[index].description : ''}
                                 />
                                 <div>
                                 <TextField
@@ -529,7 +684,7 @@ export default class LearningPathEditor extends React.Component {
                                   value={this.state.resources[index].thumbnail}
                                   floatingLabelText="Thumbnail Image URL (Optional)"
                                   onChange={e => this.handleFieldChange(e, index, 'thumbnail')}
-                                  errorText={(this.state.formErrors[index] && this.state.formErrors[index].thumbnail) ? this.state.formErrors[index].thumbnail : ''}
+                                  errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].thumbnail) ? this.state.formErrorsResources[index].thumbnail : ''}
                                 />
                                 {(this.state.resources[index].thumbnail) ?
                                   <img
