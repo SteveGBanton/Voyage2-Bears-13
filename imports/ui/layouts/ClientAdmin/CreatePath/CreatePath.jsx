@@ -4,7 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
-import Loading from '../../../components/Loading/Loading';
+import LearningPathEditor from '../../../components/LearningPathEditor/LearningPathEditor';
 
 export default class CreatePath extends React.Component {
 
@@ -13,29 +13,18 @@ export default class CreatePath extends React.Component {
   }
 
   render() {
-    const { loading, doc, history, isUserOwner } = this.props;
+    const { path, history, isUserOwner } = this.props;
     return (
       <div className="create-path">
         <h1>Create A Learning Path</h1>
 
-        {/* TODO
-
-          Form To Create Paths
-
-          Call
-
-          <LearningPathEditor />
-
-        */}
+        <LearningPathEditor history={history} />
 
       </div>
     );
   }
 }
 
-// TODO edit proptypes
 CreatePath.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
