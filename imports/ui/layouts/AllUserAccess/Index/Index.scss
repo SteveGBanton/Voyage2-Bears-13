@@ -2,18 +2,105 @@
 @import '../../../stylesheets/colors';
 
 .Index {
-  padding: 40px;
-  background: $primary;
-  text-align: center;
-  border-radius: 3px;
-  color: #fff;
+  margin: auto;
+  width: 100%;
 
-  h1 {
-    font-size: 28px;
+  h3 {
+    font-size: 18px;
   }
 
   a {
     color: $accent-color;
   }
 
+}
+
+.Index-header {
+  padding: 30px;
+  padding-bottom: 75px;
+  background: $primary;
+  text-align: center;
+  color: #fff;
+  background-size: cover;
+  background-position: 50% 50%;
+  // text-shadow: 1.5px 3px rgba(0,0,0,0.1);
+}
+
+.Index-search {
+  margin: 10px 0;
+  .Index-searchInputWrap {
+    margin: 3px auto 0 auto;
+    max-width: 480px;
+    .Index-searchInput {
+      outline: none;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+      border: solid 1px white;
+      border-radius: 50%;
+      padding: 3px;
+      font-size: 22px;
+      width: 48px;
+      height: 48px;
+      transition: all 0.25s cubic-bezier(.25,.8,.25,1);
+      &:hover {
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+      }
+      &:focus {
+        width: 95%;
+        border-radius: 3px;
+        transition: width 0.35s cubic-bezier(.25,.8,.25,1);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        &::-webkit-input-placeholder {
+          opacity: 0;
+          transition: opacity 0.25s cubic-bezier(.25,.8,.25,1);
+        }
+      }
+      &::-webkit-input-placeholder {
+        transition: opacity 0.5s cubic-bezier(.25,.8,.25,1);
+        text-align: center;
+        font-size: 25px;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+
+.Index-featured {
+  margin: 10px;
+  margin-top: -55px;
+
+  .Index-featuredCardWrap {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: auto;
+
+    .Inedx-featuredCard {
+      flex: 1;
+      min-width: 200px;
+      border: solid white 1px;
+      margin: 5px;
+
+      .Index-featuredCardImg {
+        vertical-align: top;
+        height: 150px;
+        width: 100%;
+        background-size: cover;
+        background-position: 50% 50%;
+        opacity: 0.85;
+        transition: opacity 0.5s cubic-bezier(.25,.8,.25,1);
+      }
+
+      &:hover{
+        cursor: pointer;
+        box-shadow: 0 7px 14px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22)!important;
+        transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+        .Index-featuredCardImg {
+          opacity: 1;
+          transition: opacity 0.5s cubic-bezier(.25,.8,.25,1);
+        }
+      }
+
+    }
+  }
 }
