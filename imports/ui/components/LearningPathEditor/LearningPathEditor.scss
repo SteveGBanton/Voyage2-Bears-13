@@ -1,0 +1,81 @@
+.learning-path-editor {
+  display: flex;
+}
+
+.drag-container {
+}
+
+.innerDroppable {
+  width: 95%;
+  margin: 5px;
+}
+
+.innerDroppable-hover {
+  width: 95%;
+  margin: 5px;
+}
+
+.draggableComponents {
+  border-radius: 2px;
+  user-select: none;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.droppedComponents {
+  border-radius: 2px;
+  user-select: none;
+}
+
+// Individual list items
+.titleBox {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row nowrap;
+}
+
+.titleBoxLeft {
+  flex: 1 1;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.titleBoxButton {
+  flex: 0 0;
+  margin-left: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: row wrap;
+}
+
+.chipBox {
+  width: 100%;
+}
+
+.titleBoxLeft-1 {
+  flex: 1 1;
+  min-width: 0px;
+  width: 100%;
+  word-break: break-all;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.fields-box {
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
