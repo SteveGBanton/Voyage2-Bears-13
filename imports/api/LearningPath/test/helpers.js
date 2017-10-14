@@ -15,8 +15,8 @@ function generateSingleResource() {
   return {
     title: faker.lorem.sentence(),
     description: faker.lorem.paragraph(),
-    url: faker.internet.url(),
-    thumbnail: faker.image.image(),
+    url: `https://fakeurl.com/${Random.id()}`,
+    thumbnail: `https://fakeurl.com/${Random.id()}.jpg`,
   };
 }
 
@@ -33,6 +33,7 @@ function generateInvalidField(type) {
     Array,
     Object,
   ];
+  if (type === Object) _.pull(DATA_TYPES, Array); // Since Arrays are Objects
 
   return _.sample(DATA_TYPES.filter(elem => elem !== type))();
 }
@@ -66,6 +67,14 @@ function checkInvalidTypeError(field, type, method, opts) {
   assert.throws(() => {
     method._execute(mockUser, toInsert);
   }, `${capitalizeField(field)} must be of type ${type.name}`);
+}
+
+function checkInvalidIdError(method) {
+  const toInsert = generateData();
+  toInsert._id = 'hello world';
+  assert.throws(() => {
+    method._execute(mockUser, toInsert);
+  }, 'ID must be a valid alphanumeric ID');
 }
 
 function checkBelowLenStrError(field, len, method, opts) {
@@ -102,9 +111,11 @@ function checkInvalidArrayElemsError(field, type, method, opts) {
 
 export {
   mockUser,
+  generateInvalidField,
   generateData,
   checkOmittedFieldError,
   checkInvalidTypeError,
+  checkInvalidIdError,
   checkBelowLenStrError,
   checkBelowSkillArrayCountError,
   checkBelowResourceArrayCountError,

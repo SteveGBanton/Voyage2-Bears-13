@@ -6,18 +6,20 @@
 
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
+import { assert } from 'meteor/practicalmeteor:chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 
 import LearningPaths from '../LearningPath';
-import resourceSchema from '../resource-schema';
 import { learningPathsInsert, learningPathsUpdate, learningPathsRemove } from '../methods';
 
 import {
   mockUser,
+  generateInvalidField,
   generateData,
   checkOmittedFieldError,
   checkInvalidTypeError,
+  checkInvalidIdError,
   checkBelowLenStrError,
   checkBelowSkillArrayCountError,
   checkBelowResourceArrayCountError,
@@ -124,6 +126,10 @@ if (Meteor.isServer) {
         checkOmittedFieldError('_id', learningPathsUpdate, { includeId: true });
       });
 
+      it('should throw an error if not given an ID in proper format', function () {
+        checkInvalidIdError(learningPathsUpdate);
+      });
+
       it('should throw an error if not given a Title', function () {
         checkOmittedFieldError('title', learningPathsUpdate, { includeId: true });
       });
@@ -138,6 +144,10 @@ if (Meteor.isServer) {
 
       it('should throw an error if not given Resources', function () {
         checkOmittedFieldError('resources', learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if given a non-String to ID', function () {
+        checkInvalidTypeError('_id', String, learningPathsUpdate, { includeId: true });
       });
 
       it('should throw an error if given a non-String to Title', function () {
@@ -174,6 +184,41 @@ if (Meteor.isServer) {
 
       it('should throw an error if any resources are not an Object', function () {
         checkInvalidArrayElemsError('resources', Object, learningPathsUpdate, { includeId: true });
+      });
+    });
+
+    describe('learningPathsRemove', function () {
+      let stub;
+      beforeEach(function () {
+        stub = sandbox.stub(LearningPaths, 'remove');
+      });
+
+      afterEach(function () {
+        stub = null;
+      });
+
+      it('should call LearningPaths.remove', function () {
+        const toRemove = { _id: Random.id() };
+        learningPathsRemove._execute(mockUser, toRemove);
+        sandbox.assert.calledWith(stub, toRemove);
+      });
+
+      it('should throw an error if not given an ID', function () {
+        assert.throws(() => {
+          learningPathsRemove._execute(mockUser, {});
+        }, 'ID is required');
+      });
+
+      it('should throw an error if given a non-String to ID', function () {
+        assert.throws(() => {
+          learningPathsRemove._execute(mockUser, { _id: generateInvalidField(String) });
+        }, 'ID must be of type String');
+      });
+
+      it('should throw an error if not given an ID in the proper format', function () {
+        assert.throws(() => {
+          learningPathsRemove._execute(mockUser, { _id: 'hello world' });
+        }, 'ID must be a valid alphanumeric ID');
       });
     });
   });
