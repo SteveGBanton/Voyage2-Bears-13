@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
@@ -23,6 +25,12 @@ LearningPaths.schema = new SimpleSchema({
     label: "The name of this learning path",
   },
 
+  mentor: {
+    type: String,
+    label: "The mentor's ID",
+    regEx: SimpleSchema.RegEx.Id,
+  },
+
   description: {
     type: String,
     label: "Description of the learning path",
@@ -31,22 +39,36 @@ LearningPaths.schema = new SimpleSchema({
   skills: {
     type: Array,
     label: "Skills focused on in the path",
+    min: 1,
   },
-  'skills.$': String,
+  'skills.$': {
+    type: String,
+    label: "Skill name",
+  },
 
   resources: {
     type: Array,
     label: "All resources in this path",
+    min: 1,
   },
   'resources.$': {
     type: resourceSchema,
-    label: "An instance of a resource",
+    label: "Resource instance",
   },
 
-  mentor: {
+  createdAt: {
     type: String,
-    label: "The mentor's ID",
-    regEx: SimpleSchema.RegEx.Id,
+    label: 'The date this document was created.',
+    autoValue() {
+      if (this.isInsert) return (new Date()).toISOString();
+    },
+  },
+  updatedAt: {
+    type: String,
+    label: 'The date this document was last updated.',
+    autoValue() {
+      if (this.isInsert || this.isUpdate) return (new Date()).toISOString();
+    },
   },
 });
 

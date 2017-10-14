@@ -11,11 +11,11 @@ const learningPathsInsert = new ValidatedMethod({
   name: 'learning-paths.insert',
   validate: new SimpleSchema({
     // mentor: { type: String } // check to see if user has mentor privileges
-    title: { type: String },
+    title: { type: String, min: 10 },
     description: { type: String },
     skills: { type: Array, minCount: 1 },
     'skills.$': { type: String },
-    resource: { type: Array, minCount: 1 },
+    resources: { type: Array, minCount: 1 },
     'resources.$': { type: resourceSchema },
   }).validator(),
   run(lp) {

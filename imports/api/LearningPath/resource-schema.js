@@ -1,17 +1,8 @@
 /* eslint-disable consistent-return */
 
-import { Random } from 'meteor/random';
 import SimpleSchema from 'simpl-schema';
 
 const resourceSchema = new SimpleSchema({
-  _id: {
-    type: String,
-    label: "ID of resource",
-    autoValue() {
-      if (!this.isSet) return Random.id();
-    },
-  },
-
   title: {
     type: String,
     label: "Name of resource",
@@ -20,19 +11,35 @@ const resourceSchema = new SimpleSchema({
   description: {
     type: String,
     label: "Description of resource",
-    min: 200,
   },
 
   url: {
     type: String,
     label: "URL to resource",
-    regEx: SimpleSchema.RegEx.Domain,
+    regEx: SimpleSchema.RegEx.Url,
   },
 
   thumbnail: {
     type: String,
     label: "Image URL for resource",
-    regEx: SimpleSchema.RegEx.Domain,
+    regEx: SimpleSchema.RegEx.Url,
+  },
+
+  createdAt: {
+    type: String,
+    label: 'The date this resource was created',
+    required: false,
+    autoValue() {
+      if (!this.isSet) new Date().toISOString();
+    },
+  },
+  updatedAt: {
+    type: String,
+    label: 'The date this resource was last updated',
+    required: false,
+    autoValue() {
+      if (!this.isSet || this.isUpdate) return (new Date()).toISOString();
+    },
   },
 });
 
