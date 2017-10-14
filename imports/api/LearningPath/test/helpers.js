@@ -37,60 +37,67 @@ function generateInvalidField(type) {
   return _.sample(DATA_TYPES.filter(elem => elem !== type))();
 }
 
-function generateData() {
-  return {
+function generateData(opts = { includeId: false }) {
+  const data = {
     title: faker.lorem.sentence(),
     description: faker.lorem.paragraph(),
     skills: generateSkills(),
     resources: generateResources(),
   };
+  if (opts.includeId) data._id = Random.id();
+
+  return data;
 }
 
-function checkOmittedFieldError(field, method) {
-  const toInsert = generateData();
+function capitalizeField(field) {
+  return field !== '_id' ? _.capitalize(field) : 'ID';
+}
+
+function checkOmittedFieldError(field, method, opts) {
+  const toInsert = generateData(opts);
   assert.throws(() => {
     method._execute(mockUser, { ..._.omit(toInsert, [field]) });
-  }, `${_.capitalize(field)} is required`);
+  }, `${capitalizeField(field)} is required`);
 }
 
-function checkInvalidTypeError(field, type, method) {
-  const toInsert = generateData();
+function checkInvalidTypeError(field, type, method, opts) {
+  const toInsert = generateData(opts);
   toInsert[field] = generateInvalidField(type);
   assert.throws(() => {
     method._execute(mockUser, toInsert);
-  }, `${_.capitalize(field)} must be of type ${type.name}`);
+  }, `${capitalizeField(field)} must be of type ${type.name}`);
 }
 
-function checkBelowLenStrError(field, len, method) {
-  const toInsert = generateData();
+function checkBelowLenStrError(field, len, method, opts) {
+  const toInsert = generateData(opts);
   toInsert[field] = faker.lorem.sentence().slice(0, _.random(0, _.max([0, len - 1])));
   assert.throws(() => {
     method._execute(mockUser, toInsert);
-  }, `${_.capitalize(field)} must be at least ${len} characters`);
+  }, `${capitalizeField(field)} must be at least ${len} characters`);
 }
 
-function checkBelowSkillArrayCountError(count, method) {
-  const toInsert = generateData();
+function checkBelowSkillArrayCountError(count, method, opts) {
+  const toInsert = generateData(opts);
   toInsert.skills = _.times(_.random(0, _.max([0, count - 1])), () => faker.lorem.sentence());
   assert.throws(() => {
     method._execute(mockUser, toInsert);
   }, `You must specify at least ${count} values`);
 }
 
-function checkBelowResourceArrayCountError(count, method) {
-  const toInsert = generateData();
+function checkBelowResourceArrayCountError(count, method, opts) {
+  const toInsert = generateData(opts);
   toInsert.skills = _.times(_.random(0, _.max([0, count - 1])), () => generateSingleResource());
   assert.throws(() => {
     method._execute(mockUser, toInsert);
   }, `You must specify at least ${count} values`);
 }
 
-function checkInvalidArrayElemsError(field, type, method) {
-  const toInsert = generateData();
+function checkInvalidArrayElemsError(field, type, method, opts) {
+  const toInsert = generateData(opts);
   toInsert[field] = _.times(_.random(1, MAX_GENERATED), () => generateInvalidField(type));
   assert.throws(() => {
     method._execute(mockUser, toInsert);
-  }, `${_.capitalize(field)} must be of type ${type.name}`);
+  }, `${capitalizeField(field)} must be of type ${type.name}`);
 }
 
 export {

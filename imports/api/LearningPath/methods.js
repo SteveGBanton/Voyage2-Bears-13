@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import SimpleSchema from 'simpl-schema';
+import _ from 'lodash';
 
 import rateLimit from '../../modules/rate-limit';
 
@@ -35,16 +36,18 @@ const learningPathsUpdate = new ValidatedMethod({
   name: 'learning-paths.update',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    title: { type: String },
+    title: { type: String, min: 10 },
     description: { type: String },
-    skills: { type: Array },
+    skills: { type: Array, minCount: 1 },
     'skills.$': { type: String },
-    resource: { type: Array },
+    resources: { type: Array, minCount: 1 },
     'resources.$': { type: resourceSchema },
   }).validator(),
   run(lp) {
     try {
-      return LearningPaths.update({ _id: lp._id }, { $set: lp });
+      const _id = lp._id;
+      const lpArg = _.omit(lp, ['_id']);
+      return LearningPaths.update({ _id }, { $set: lpArg });
     } catch (exception) {
       throw new Meteor.Error(
         'learning-paths.update.error',

@@ -6,12 +6,11 @@
 
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
-import { assert } from 'meteor/practicalmeteor:chai';
-import { faker } from 'meteor/practicalmeteor:faker';
 import sinon from 'sinon';
 import _ from 'lodash';
 
 import LearningPaths from '../LearningPath';
+import resourceSchema from '../resource-schema';
 import { learningPathsInsert, learningPathsUpdate, learningPathsRemove } from '../methods';
 
 import {
@@ -96,6 +95,85 @@ if (Meteor.isServer) {
 
       it('should throw an error if no resources are given', function () {
         checkBelowResourceArrayCountError(1, learningPathsInsert);
+      });
+
+      it('should throw an error if any resources are not an Object', function () {
+        checkInvalidArrayElemsError('resources', Object, learningPathsInsert);
+      });
+    });
+
+    describe('learningPathsUpdate', function () {
+      let stub;
+      beforeEach(function () {
+        stub = sandbox.stub(LearningPaths, 'update');
+      });
+
+      afterEach(function () {
+        stub = null;
+      });
+
+      it('should call `LearningPaths.update`', function () {
+        const toUpdate = generateData({ includeId: true });
+        const expectedId = { _id: toUpdate._id };
+        const expectedObj = { $set: _.omit(toUpdate, ['_id']) };
+        learningPathsUpdate._execute(mockUser, toUpdate);
+        sandbox.assert.calledWith(stub, expectedId, expectedObj);
+      });
+
+      it('should throw an error if not given an ID', function () {
+        checkOmittedFieldError('_id', learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if not given a Title', function () {
+        checkOmittedFieldError('title', learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if not given a Description', function () {
+        checkOmittedFieldError('description', learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if not given Skills', function () {
+        checkOmittedFieldError('skills', learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if not given Resources', function () {
+        checkOmittedFieldError('resources', learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if given a non-String to Title', function () {
+        checkInvalidTypeError('title', String, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if given a non-String to Description', function () {
+        checkInvalidTypeError('description', String, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if given a non-Array to Skills', function () {
+        checkInvalidTypeError('skills', Array, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if given a non-Array to Resources', function () {
+        checkInvalidTypeError('resources', Array, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if Title is given a string under the min length', function () {
+        checkBelowLenStrError('title', 10, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if no skills are given', function () {
+        checkBelowSkillArrayCountError(1, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if any skills are not Strings', function () {
+        checkInvalidArrayElemsError('skills', String, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if no resources are given', function () {
+        checkBelowResourceArrayCountError(1, learningPathsUpdate, { includeId: true });
+      });
+
+      it('should throw an error if any resources are not an Object', function () {
+        checkInvalidArrayElemsError('resources', Object, learningPathsUpdate, { includeId: true });
       });
     });
   });
