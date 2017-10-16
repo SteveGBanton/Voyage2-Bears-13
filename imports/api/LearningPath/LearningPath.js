@@ -22,24 +22,21 @@ LearningPaths.deny({
 LearningPaths.schema = new SimpleSchema({
   title: {
     type: String,
-    label: "The name of this learning path",
+    min: 10,
   },
 
   mentor: {
     type: String,
-    label: "The mentor's ID",
     regEx: SimpleSchema.RegEx.Id,
   },
 
   description: {
     type: String,
-    label: "Description of the learning path",
   },
 
   skills: {
     type: Array,
-    label: "Skills focused on in the path",
-    min: 1,
+    minCount: 1,
   },
   'skills.$': {
     type: String,
@@ -49,7 +46,7 @@ LearningPaths.schema = new SimpleSchema({
   resources: {
     type: Array,
     label: "All resources in this path",
-    min: 1,
+    minCount: 1,
   },
   'resources.$': {
     type: resourceSchema,
@@ -60,14 +57,15 @@ LearningPaths.schema = new SimpleSchema({
     type: String,
     label: 'The date this document was created.',
     autoValue() {
-      if (this.isInsert) return (new Date()).toISOString();
+      if (!this.isSet || this.isInsert) return (new Date()).toISOString();
     },
   },
   updatedAt: {
     type: String,
     label: 'The date this document was last updated.',
     autoValue() {
-      if (this.isInsert || this.isUpdate) return (new Date()).toISOString();
+      if (!this.isSet || this.isInsert ||
+        this.value || this.isUpdate) return (new Date()).toISOString();
     },
   },
 });

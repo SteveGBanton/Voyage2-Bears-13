@@ -47,7 +47,8 @@ const learningPathsUpdate = new ValidatedMethod({
     try {
       const _id = lp._id;
       const lpArg = _.omit(lp, ['_id']);
-      return LearningPaths.update({ _id }, { $set: lpArg });
+      LearningPaths.update({ _id }, { $set: lpArg });
+      return _id;
     } catch (exception) {
       throw new Meteor.Error(
         'learning-paths.update.error',
@@ -66,10 +67,7 @@ const learningPathsRemove = new ValidatedMethod({
     try {
       return LearningPaths.remove(lp);
     } catch (exception) {
-      throw new Meteor.Error(
-        'learning-paths.remove.error',
-        `Error removing Learning Path. ${exception}`,
-      );
+      throw new Meteor.Error(500, exception);
     }
   },
 });

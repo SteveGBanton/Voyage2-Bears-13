@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor --settings settings-development.json",
-    "test": "meteor test --driver-package practicalmeteor:mocha"
+    "test": "meteor test --driver-package practicalmeteor:mocha --port 3030"
   },
   "dependencies": {
     "@cleverbeagle/dates": "^0.4.0",

@@ -27,7 +27,7 @@ const resourceSchema = new SimpleSchema({
     type: String,
     required: false,
     autoValue() {
-      if (!this.isSet) new Date().toISOString();
+      if (!this.isSet) return (new Date()).toISOString();
     },
   },
   updatedAt: {
