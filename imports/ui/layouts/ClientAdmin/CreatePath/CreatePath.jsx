@@ -13,7 +13,7 @@ export default class CreatePath extends React.Component {
   }
 
   render() {
-    const { path, history, isUserOwner } = this.props;
+    const { history } = this.props;
     return (
       <div className="create-path">
         <h1>Create A Learning Path</h1>

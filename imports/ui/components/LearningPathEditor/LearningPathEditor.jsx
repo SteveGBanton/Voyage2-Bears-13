@@ -7,14 +7,14 @@ import {
   Droppable,
   Draggable,
 } from 'react-beautiful-dnd';
-import { debounce } from 'lodash';
+import { debounce, kebabCase } from 'lodash';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 
-import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import FontIcon from 'material-ui/FontIcon';
-import Paper from 'material-ui/Paper';
 import Chip from 'material-ui/Chip';
+import RaisedButton from 'material-ui/RaisedButton';
+import Paper from 'material-ui/Paper';
 
 import customFormValidator from '../../../modules/custom-form-validator';
 import './LearningPathEditor.scss';
@@ -26,9 +26,9 @@ const pathRules = {
   description: {
     required: true,
   },
-  skills: {
+  "skills.0": {
     required: true,
-  }
+  },
 };
 
 const pathMessages = {
@@ -38,9 +38,9 @@ const pathMessages = {
   description: {
     required: 'Please enter a short description to explain what this Learning Path teaches, and why it is important.',
   },
-  skills: {
-    required: 'Please enter at least one skill to tag what this Learning Path is about.',
-  }
+  "skills.0": {
+    required: 'Please enter at least one skill/topic to tag what this Learning Path is about.',
+  },
 };
 
 const resourceRules = {
@@ -56,7 +56,7 @@ const resourceRules = {
   },
   thumbnail: {
     url: true,
-  }
+  },
 };
 
 const resourceMessages = {
@@ -72,70 +72,10 @@ const resourceMessages = {
   },
   thumbnail: {
     url: 'Must be a valid URL',
-  }
+  },
 };
 
-import RaisedButton from 'material-ui/RaisedButton';
-
-// const PathExample = {
-//   title: {
-//     type: String,
-//     label: "The name of this learning path",
-//   },
-//   description: {
-//     type: String,
-//     label: "Description of the learning path",
-//   },
-//   skills: {
-//     type: Array,
-//     label: "Skills focused on in the path",
-//   },
-//   'skills.$': String,
-//   resources: {
-//     type: Array,
-//     label: "All resources in this path",
-//   },
-//   'resources.$': {
-//     type: resourceSchema,
-//     label: "An instance of a resource",
-//   },
-//   mentor: {
-//     type: String,
-//     label: "The mentor's ID",
-//     regEx: SimpleSchema.RegEx.Id,
-//   },
-// }
-//
-// const ResourceExample = {
-//   _id: {
-//     type: String,
-//     label: "ID of resource",
-//     autoValue() {
-//       if (!this.isSet) return Random.id();
-//     },
-//   },
-//   title: {
-//     type: String,
-//     label: "Name of resource",
-//   },
-//   description: {
-//     type: String,
-//     label: "Description of resource",
-//     min: 200,
-//   },
-//   url: {
-//     type: String,
-//     label: "URL to resource",
-//     regEx: SimpleSchema.RegEx.Domain,
-//   },
-//   thumbnail: {
-//     type: String,
-//     label: "Image URL for resource",
-//     regEx: SimpleSchema.RegEx.Domain,
-//   }
-// }
-
-// help with reordering
+// reordering drag and drop items on drop
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -144,6 +84,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
+// styling drag and drop items
 const getItemStyle = (draggableStyle, isDragging) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
@@ -227,11 +168,10 @@ export default class LearningPathEditor extends React.Component {
     const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     const url = content.match(urlRegex);
 
-    var title = (/<title>(.*?)<\/title>/m).exec(response)[1];
+    const title = (/<title>(.*?)<\/title>/m).exec(response)[1];
   }
 
   formValidate() {
-
     const input = {
       title: this.state.title,
       description: this.state.description,
@@ -242,6 +182,8 @@ export default class LearningPathEditor extends React.Component {
     // Call validator on title, description and skills:
     const formErrors = customFormValidator(input, pathRules, pathMessages);
 
+    console.log(formErrors);
+
     // Call validator on all Resources
     const addResourcesErrors = {};
     let isResourceError = false;
@@ -251,7 +193,7 @@ export default class LearningPathEditor extends React.Component {
         isResourceError = true;
         addResourcesErrors[index] = formErrorsResources;
       }
-    })
+    });
 
     if (!formErrors & !isResourceError) {
       this.handleSubmit(input);
@@ -262,7 +204,7 @@ export default class LearningPathEditor extends React.Component {
     } else {
       this.setState({
         formErrorsResources: addResourcesErrors,
-        formErrors: formErrors,
+        formErrors,
       });
     }
   }
@@ -301,21 +243,34 @@ export default class LearningPathEditor extends React.Component {
           });
         } else {
           const titleGet = (/<title(.*?)>(.*?)<\/title>/m).exec(response.content);
-          const title = (titleGet) ? titleGet[2] : null;
+          const descriptionGet = (/<meta name="description" content="(.*?)"/m).exec(response.content);
+
+          const titleAndDescription = [
+            ['title', ((titleGet) ? titleGet[2] : null)],
+            ['description', ((descriptionGet) ? descriptionGet[1] : null)]
+          ];
 
           const images = [];
 
           const regExes = [
-            ['png', /(content="([^"><]*?).png(\?[^"><]*?)?")|(src="([^"><]*?).png(\?[^"><]*?)?")/gim],
+            ['png', /(content="([^"><]*?).png(\?[^"><]*?)?")|(href="([^"><]*?).png(\?[^"><]*?)?")|(src="([^"><]*?).png(\?[^"><]*?)?")/gim],
             ['jpg', /(content="([^"><]*?).jpg(\?[^"><]*?)?")|(src="([^"><]*?).jpg(\?[^"><]*?)?")/gim],
             ['gif', /(content="([^"><]*?).gif(\?[^"><]*?)?")|(src="([^"><]*?).gif(\?[^"><]*?)?")/gim],
           ]
 
+          /**
+            Get list of image URLs in html retrieved from URL.
+            Trying to grab image labeled as 'main image' by website,
+            typically used in content= and html= tags at the top of the page.
+            First image is used currently, but may use this code to allow
+            user to select from multiple images later on.
+          */
           regExes.forEach((regEx) => {
             for (let i = 1; i < 3; i += 1) {
               const logoImg = (regEx[1]).exec(response.content);
               if (logoImg === null) break;
-              const whichImg = (logoImg[2]) ? logoImg[2] : logoImg[5];
+              const whichImg = (logoImg[2]) ? logoImg[2] : (logoImg[5]) ? (logoImg[5]) : logoImg[8];
+              if (whichImg === null) break;
               if (!images.includes(`${whichImg}.${regEx[0]}`) && !images.includes(`http://${whichImg}.${regEx[0]}`)) {
                 const getHTTP = whichImg.substring(0, 4);
                 const getForwardSlashes = whichImg.substring(0, 2);
@@ -336,16 +291,21 @@ export default class LearningPathEditor extends React.Component {
           });
 
           const toUpdate = [...this.state.resources];
+          // Use the first image found on the page
           if (images[0]) toUpdate[index].thumbnail = images[0];
-          if (title) {
-            var parser = new DOMParser;
-            var dom = parser.parseFromString(
-                '<!doctype html><body>' + title,
-                'text/html');
-            var decodedString = dom.body.textContent;
 
-            toUpdate[index].title = decodedString;
-          }
+          // Decode HTML strings to display special title characters correctly
+          titleAndDescription.forEach((item) => {
+            if (item[1]) {
+              var parser = new DOMParser;
+              var dom = parser.parseFromString(
+                  '<!doctype html><body>' + item[1],
+                  'text/html');
+              var decodedString = dom.body.textContent;
+
+              toUpdate[index][item[0]] = decodedString;
+            }
+          })
 
           this.setState({
             resources: [...toUpdate],
@@ -377,10 +337,10 @@ export default class LearningPathEditor extends React.Component {
     });
 
     if (field === 'url') {
-      this.getPageData(index, field)
+      this.getPageData(index, field);
       this.setState({
         loadingSite: true,
-      })
+      });
     }
   }
 
@@ -389,7 +349,7 @@ export default class LearningPathEditor extends React.Component {
     const newResource = {
       _id: Random.id(),
       title: 'Title of Resource',
-      description: 'Add description here',
+      description: '',
       url: 'http://www.example.com',
       thumbnail: '',
     };
@@ -418,20 +378,22 @@ export default class LearningPathEditor extends React.Component {
   addSkill() {
     const addSkills = [...this.state.skills];
 
-    if (this.state.skillTemp && !addSkills.includes(this.state.skillTemp)) {
-      addSkills.push(this.state.skillTemp);
+    if (this.state.skillTemp && !addSkills.includes(kebabCase(this.state.skillTemp))) {
+      addSkills.push(kebabCase(this.state.skillTemp));
     }
 
     this.setState({
+      formErrors: {},
       skillTemp: '',
       skills: [...addSkills],
-    })
+    });
   }
 
   clearSkills() {
     this.setState({
+      formErrors: {},
       skills: [],
-    })
+    });
   }
 
   removeOneSkill(index) {
@@ -440,96 +402,124 @@ export default class LearningPathEditor extends React.Component {
       toRemove.splice(index, 1);
       this.setState({
         skills: [...toRemove],
-      })
-    }
+        formErrors: {},
+      });
+    };
   }
 
   render() {
     const { path } = this.props;
     return (
       <div>
-        <div>
+        <div className="path-description-input">
+          <Paper className="paper-box">
+          <h4>Enter a Goal / Title</h4>
+          <p>If somebody follows this Learning Path to the end, what will they learn, or what will they become?</p>
+          <p>eg. 'Become A React Native Developer', 'Learn Ruby'</p>
+
           <TextField
             value={this.state.title}
-            floatingLabelText="Learning Path Title"
+            floatingLabelText="Goal / Title"
             onChange={e => this.handlePathFieldChange(e, 'title')}
             errorText={(this.state.formErrors && this.state.formErrors.title) ? this.state.formErrors.title : ''}
           />
-          <TextField
-            multiLine
-            rows={6}
-            rowsMax={6}
-            style={{ width: 300 }}
-            value={this.state.description}
-            floatingLabelText="Description"
-            onChange={e => this.handlePathFieldChange(e, 'description')}
-            errorText={(this.state.formErrors && this.state.formErrors.title) ? this.state.formErrors.title : ''}
-          />
-          <div>
-          </div>
-          <TextField
-            value={this.state.skillTemp}
-            floatingLabelText="Skills"
-            onChange={e => this.handlePathFieldChange(e, 'skillTemp')}
-            errorText={(this.state.formErrors && this.state.formErrors.title) ? this.state.formErrors.title : ''}
-          />
-          <FontIcon
-            color='rgba(0,0,0,0.3)'
-            hoverColor='rgba(0,0,0,0.7)'
-            className="material-icons pointer"
-            onClick={this.addSkill}
-          >
-            add
-          </FontIcon>
-          <FontIcon
-            color='rgba(0,0,0,0.3)'
-            hoverColor='rgba(0,0,0,0.7)'
-            className="material-icons pointer"
-            onClick={this.clearSkills}
-          >
-            clear
-          </FontIcon>
-        </div>
-        <div style={{ display: 'flex', flexFlow: 'row wrap' }}>
-          {this.state.skills.map((skillItem, index) => (
-            <Chip
-              style={{ margin: 5 }}
-              key={skillItem}
-              onRequestDelete={this.removeOneSkill(index)}
-            >
-              {skillItem}
-            </Chip>
-          ))}
-        </div>
-        <div>
-        <RaisedButton
-          style={{ margin: 6 }}
-          onClick={this.addNewResource}
-        >
-          + Add New
-        </RaisedButton>
-        <RaisedButton
-          style={{ margin: 10 }}
-          onClick={this.removeAll}
-        >
-          Clear All
-        </RaisedButton>
-        <RaisedButton
-          style={{ margin: 10 }}
-          onClick={this.formValidate}
-        >
-          Submit
-        </RaisedButton>
+          </Paper>
+          <Paper className="paper-box">
+            <h4>Add a Description</h4>
+            <p>A great description answers these two questions:</p>
+            <p>1. Why is this Learning Path a great way to reach this Goal?</p>
+            <p>2. Are there any pre-requisites required before starting?</p>
+            <TextField
+              multiLine
+              rows={3}
+              rowsMax={10}
+              style={{ width: '70%' }}
+              value={this.state.description}
+              floatingLabelText="Description"
+              onChange={e => this.handlePathFieldChange(e, 'description')}
+              errorText={(this.state.formErrors && this.state.formErrors.description) ? this.state.formErrors.description : ''}
+            />
+          </Paper>
+          <Paper className="paper-box">
+            <h4>Add Skills Learned</h4>
+            <p>What skills will somebody learn if they follow your Learning Path?</p>
+            <p>eg. react, react native, npm, webpack etc.</p>
+            <div className="skill-input">
+              <TextField
+                style={{ width: 200 }}
+                value={this.state.skillTemp}
+                floatingLabelText="Skills / Topics"
+                onChange={e => this.handlePathFieldChange(e, 'skillTemp')}
+                errorText={(this.state.formErrors && this.state.formErrors["skills.0"]) ? this.state.formErrors["skills.0"] : ''}
+              />
+              <FontIcon
+                color="rgba(0,0,0,0.3)"
+                hoverColor="rgba(0,0,0,0.7)"
+                className="material-icons pointer"
+                onClick={this.addSkill}
+              >
+                add
+              </FontIcon>
+              <FontIcon
+                color="rgba(0,0,0,0.3)"
+                hoverColor="rgba(0,0,0,0.7)"
+                className="material-icons pointer"
+                onClick={this.clearSkills}
+              >
+                clear
+              </FontIcon>
+            </div>
+            <div className="skill-list">
+              {this.state.skills.map((skillItem, index) => (
+                <Chip
+                  style={{ margin: 2 }}
+                  key={skillItem}
+                  onRequestDelete={this.removeOneSkill(index)}
+                >
+                  {skillItem}
+                </Chip>
+            ))}
+            </div>
+          </Paper>
+
+          <Paper className="paper-box">
+            <h4>Add Resources</h4>
+            <p>Provide Resources that create a path to reach the Goal.</p>
+            <p>Add great online courses, articles, guides, references.</p>
+            <p>NOTE: You can also nest Learning Paths. Add the link to another Learning Path to simplify goals that require more steps!</p>
+
+            <div className="resource-buttons">
+              <RaisedButton
+                style={{ marginRight: 10 }}
+                onClick={this.addNewResource}
+              >
+              + Add New
+              </RaisedButton>
+                <RaisedButton
+                  style={{ marginRight: 10  }}
+                  onClick={this.removeAll}
+                >
+                Clear All
+              </RaisedButton>
+                <RaisedButton
+                  style={{ marginRight: 10 }}
+                  onClick={this.formValidate}
+                >
+                Submit
+              </RaisedButton>
+            </div>
+          </Paper>
         </div>
         <DragDropContext onDragEnd={this.onDragEnd}>
+          <div className="grab-cursor">
           <Droppable droppableId="resources">
             {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
-                className="drag-container"
+                className="inner-droppable"
               >
                 <div
-                  className={(snapshot.isDraggingOver) ? "innerDroppable-hover" : "innerDroppable"}
+                  className="inner-droppable"
                   style={{ height: (this.state.resources.length * 80), paddingBottom: 400 }}
                 >
                   {this.state.resources.map((item, index) => (
@@ -542,11 +532,11 @@ export default class LearningPathEditor extends React.Component {
                               provided.draggableStyle,
                               snapshot.isDragging,
                             )}
-                            className="droppedComponents"
+                            className="dropped-components"
                             {...provided.dragHandleProps}
                           >
-                            <div className="titleBox">
-                              <div className="titleBoxLeft">
+                            <div className="title-box">
+                              <div className="title-box-left">
                                 <FontIcon
                                   className="material-icons pointer"
                                   color="rgba(0,0,0,0.2)"
@@ -554,17 +544,9 @@ export default class LearningPathEditor extends React.Component {
                                 >
                                   drag_handle
                                 </FontIcon>
-                                <h4
-                                  style={{
-                                    marginRight: 10,
-                                    width: 30,
-                                    flex: '0 0 auto',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                  }}
-                                >
+                                <p className="heading-number">
                                   {`${index + 1}`}
-                                </h4>
+                                </p>
                                 <FontIcon
                                   hoverColor="rgba(0,0,0,0.5)"
                                   onClick={this.editThis(index)}
@@ -578,17 +560,15 @@ export default class LearningPathEditor extends React.Component {
                                 >
                                   edit
                                 </FontIcon>
-                                <h4
-                                  style={{ marginRight: 15 }}
-                                >
+                                <p className="heading-title">
                                   {item.title}
-                                </h4>
+                                </p>
                               </div>
-                              <div className="titleBoxButton">
+                              <div className="title-box-button">
                                 <Chip
                                   style={{ marginRight: 5 }}
                                 >
-                                  {item.url.substring(0,45)}
+                                  {item.url.substring(0, 45)}
                                 </Chip>
                               </div>
                               {(this.state.formErrorsResources[index]) ?
@@ -604,7 +584,7 @@ export default class LearningPathEditor extends React.Component {
                                 : ''
                               }
                               {(this.state.resources[index].thumbnail) ?
-                                <div className="titleBoxButton">
+                                <div className="title-box-button">
                                   <img
                                     alt=""
                                     src={this.state.resources[index].thumbnail}
@@ -615,7 +595,7 @@ export default class LearningPathEditor extends React.Component {
                                 :
                                 ''
                               }
-                              <div className="titleBoxButton">
+                              <div className="title-box-button">
                                 <FontIcon
                                   onClick={this.deleteOne(index)}
                                   className="material-icons pointer"
@@ -630,26 +610,26 @@ export default class LearningPathEditor extends React.Component {
                             {(this.state.editingIndex === index) ?
                               <div className="fields-box">
                                 <div>
-                                <TextField
-                                  style={{ width: '60%' }}
-                                  onMouseDown={e => e.stopPropagation()}
-                                  onKeyDown={e => e.stopPropagation()}
-                                  value={this.state.resources[index].url}
-                                  floatingLabelText="URL of Resource"
-                                  onChange={e => this.handleFieldChange(e, index, 'url')}
-                                  errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].url) ? this.state.formErrorsResources[index].url : ''}
-                                />
-                                {(this.state.loadingSite) ?
-                                  <RefreshIndicator
-                                    size={30}
-                                    left={10}
-                                    top={0}
-                                    status="loading"
-                                    style={{
-                                      display: 'inline-block',
-                                      position: 'relative',
-                                    }}
+                                  <TextField
+                                    style={{ width: '60%' }}
+                                    onMouseDown={e => e.stopPropagation()}
+                                    onKeyDown={e => e.stopPropagation()}
+                                    value={this.state.resources[index].url}
+                                    floatingLabelText="URL of Resource"
+                                    onChange={e => this.handleFieldChange(e, index, 'url')}
+                                    errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].url) ? this.state.formErrorsResources[index].url : ''}
                                   />
+                                  {(this.state.loadingSite) ?
+                                    <RefreshIndicator
+                                      size={30}
+                                      left={10}
+                                      top={0}
+                                      status="loading"
+                                      style={{
+                                        display: 'inline-block',
+                                        position: 'relative',
+                                      }}
+                                    />
                                   :
                                   ''
                                 }
@@ -668,7 +648,7 @@ export default class LearningPathEditor extends React.Component {
                                 <TextField
                                   style={{ width: '80%' }}
                                   multiLine
-                                  rows={6}
+                                  rows={3}
                                   rowsMax={6}
                                   onMouseDown={e => e.stopPropagation()}
                                   onKeyDown={e => e.stopPropagation()}
@@ -678,21 +658,21 @@ export default class LearningPathEditor extends React.Component {
                                   errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].description) ? this.state.formErrorsResources[index].description : ''}
                                 />
                                 <div>
-                                <TextField
-                                  onMouseDown={e => e.stopPropagation()}
-                                  onKeyDown={e => e.stopPropagation()}
-                                  value={this.state.resources[index].thumbnail}
-                                  floatingLabelText="Thumbnail Image URL (Optional)"
-                                  onChange={e => this.handleFieldChange(e, index, 'thumbnail')}
-                                  errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].thumbnail) ? this.state.formErrorsResources[index].thumbnail : ''}
-                                />
-                                {(this.state.resources[index].thumbnail) ?
-                                  <img
-                                    alt=""
-                                    src={this.state.resources[index].thumbnail}
-                                    style={{ maxWidth: 200, maxHeight: 130, marginLeft: 15 }}
-                                    onError={this.invalidImage}
+                                  <TextField
+                                    onMouseDown={e => e.stopPropagation()}
+                                    onKeyDown={e => e.stopPropagation()}
+                                    value={this.state.resources[index].thumbnail}
+                                    floatingLabelText="Thumbnail Image URL (Optional)"
+                                    onChange={e => this.handleFieldChange(e, index, 'thumbnail')}
+                                    errorText={(this.state.formErrorsResources[index] && this.state.formErrorsResources[index].thumbnail) ? this.state.formErrorsResources[index].thumbnail : ''}
                                   />
+                                  {(this.state.resources[index].thumbnail) ?
+                                    <img
+                                      alt=""
+                                      src={this.state.resources[index].thumbnail}
+                                      style={{ maxWidth: 200, maxHeight: 130, marginLeft: 15 }}
+                                      onError={this.invalidImage}
+                                    />
                                   :
                                   ''
                                 }
@@ -714,6 +694,7 @@ export default class LearningPathEditor extends React.Component {
               </div>
               )}
           </Droppable>
+          </div>
 
 
           {/* TODO
