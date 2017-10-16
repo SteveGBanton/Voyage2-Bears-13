@@ -446,7 +446,7 @@ export default class LearningPathEditor extends React.Component {
             <p>eg. react, react native, npm, webpack etc.</p>
             <div className="skill-input">
               <TextField
-                style={{ width: 200 }}
+                style={{ width: 250 }}
                 value={this.state.skillTemp}
                 floatingLabelText="Skills / Topics"
                 onChange={e => this.handlePathFieldChange(e, 'skillTemp')}
