@@ -1,5 +1,18 @@
+import PropTypes from 'prop-types';
 
 export default function customFormValidator(input, rules, messages) {
+  function valString(field) {
+    return (typeof field === 'string');
+  }
+
+  function valNumber(field) {
+    return (typeof Number(field) === 'number' && !(isNaN(Number(field))));
+  }
+
+  function valBool(field) {
+    return (typeof field === 'boolean');
+  }
+
   function valMaxLength(string, length) {
     return string.length <= Number(length);
   }
@@ -32,56 +45,89 @@ export default function customFormValidator(input, rules, messages) {
     return true;
   }
 
+  function getField(inputField) {
+    const correctField = inputField.split('.');
+    // Only works to verify up to 2 levels deep
+    if (correctField.length === 2) {
+      return input[correctField[0]][correctField[1]];
+    }
+    if (correctField.length === 3) {
+      return input[correctField[0]][correctField[1]][correctField[2]];
+    }
+    return input[correctField[0]];
+  }
+
   const formErrors = {};
 
   Object.keys(rules).forEach((field) => {
     Object.keys(rules[field]).forEach((subrule) => {
       switch (subrule) {
         case 'required':
-          if (!input[field]) {
+          if (!getField(field)) {
             formErrors[field] = messages[field].required;
           }
           break;
         case 'minLength':
-          if (input[field]) {
-            if (!valMinLength(input[field], rules[field][subrule])) {
-              formErrors[field] = messages[field].minLength;
-            }
+          if (getField(field)) {
+            (!valMinLength(getField(field), rules[field][subrule]))
+            ? formErrors[field] = messages[field].minLength
+            : null;
           }
           break;
         case 'maxLength':
-          if (input[field]) {
-            if (!valMaxLength(input[field], rules[field][subrule])) {
-              formErrors[field] = messages[field].maxlength;
-            }
+          if (getField(field)) {
+            (!valMaxLength(getField(field), rules[field][subrule]))
+            ? formErrors[field] = messages[field].maxlength
+            : null;
           }
           break;
         case 'minValue':
-          if (input[field]) {
-            if (!valMinValue(input[field], rules[field][subrule])) {
-              formErrors[field] = messages[field].minValue;
-            }
+          if (getField(field)) {
+            (!valMinValue(getField(field), rules[field][subrule]))
+            ? formErrors[field] = messages[field].minValue
+            : null;
           }
           break;
         case 'maxValue':
-          if (input[field]) {
-            if (!valMaxValue(input[field], rules[field][subrule])) {
-              formErrors[field] = messages[field].maxValue;
-            }
+          if (getField(field)) {
+            (!valMaxValue(getField(field), rules[field][subrule]))
+            ? formErrors[field] = messages[field].maxValue
+            : null;
           }
           break;
         case 'email':
-          if (input[field]) {
-            if (!valEmail(input[field])) {
-              formErrors[field] = messages[field].email;
-            }
+          if (getField(field)) {
+            (!valEmail(getField(field)))
+            ? formErrors[field] = messages[field].email
+            : null;
           }
           break;
         case 'password':
-          if (input[field]) {
-            if (!valPassword(input[field])) {
-              formErrors[field] = messages[field].password;
-            }
+          if (getField(field)) {
+            (!valPassword(getField(field)))
+            ? formErrors[field] = messages[field].password
+            : null;
+          }
+          break;
+        case 'string':
+          if (getField(field)) {
+            (!valString(getField(field)))
+            ? formErrors[field] = messages[field].string
+            : null;
+          }
+          break;
+        case 'bool':
+          if (getField(field)) {
+            (!valBool(getField(field)))
+            ? formErrors[field] = messages[field].bool
+            : null;
+          }
+          break;
+        case 'number':
+          if (getField(field)) {
+            (!valNumber(getField(field)))
+            ? formErrors[field] = messages[field].number
+            : null;
           }
           break;
         default:
