@@ -1,5 +1,4 @@
 import { Random } from 'meteor/random';
-import { faker } from 'meteor/practicalmeteor:faker';
 import { assert } from 'meteor/practicalmeteor:chai';
 import sinon from 'sinon';
 import _ from 'lodash';
@@ -10,15 +9,16 @@ import { learningPathsInsert, learningPathsUpdate, learningPathsRemove } from '.
 
 // Method helpers
 
-const MAX_GENERATED = 10;
-
 const mockUser = { userId: Random.id() };
 
 function generateSkills(opts = { min: NaN, max: NaN }) {
   const SKILLS = ['JavaScript', 'Ruby', 'HTML5', 'React', 'Git'];
-  return _.times(_.random(
-    opts.min ? opts.min : 1,
-    opts.max ? opts.max : MAX_GENERATED), _.sample(SKILLS));
+  const DEFAULT_MAX = 3;
+
+  const min = _.isFinite(opts.min) ? opts.min : 1;
+  const max = _.isFinite(opts.max) ? opts.max : DEFAULT_MAX;
+
+  return _.times(_.random(min, _.max([max, min])), _.sample(SKILLS));
 }
 
 function generateSingleResource() {
@@ -30,8 +30,13 @@ function generateSingleResource() {
   };
 }
 
-function generateResources() {
-  return _.times(_.random(1, MAX_GENERATED), () => generateSingleResource());
+function generateResources(opts = { min: NaN, max: NaN }) {
+  const DEFAULT_MAX = 10;
+
+  const min = _.isFinite(opts.min) ? opts.min : 1;
+  const max = _.isFinite(opts.max) ? opts.max : DEFAULT_MAX;
+
+  return _.times(_.random(min, _.max([min, max])), () => generateSingleResource());
 }
 
 // type is data type of the field
@@ -65,27 +70,28 @@ function capitalizeField(field) {
   return field !== '_id' ? _.capitalize(field) : 'ID';
 }
 
-function generateRandomLengthString(len) {
+function generateRandomLengthString(opts = { max: NaN, min: NaN }) {
   // Range of letters in ASCII map from codes 65 to 90 (uppercase)
   // And codes 96 to 122
   const LETTERS = [
     ..._.map(_.range(65, 91), code => String.fromCharCode(code)),
     ..._.map(_.range(96, 122), code => String.fromCharCode(code)),
   ];
+  const DEFAULT_MAX = 20;
+
+  const min = _.isFinite(opts.min) ? opts.min : 1;
+  const max = _.isFinite(opts.max) ? opts.max : DEFAULT_MAX;
 
   return _.join(
-    _.times(
-      _.random(
-        _.max(0, len - 1),
-      ),
-      _.sample(LETTERS),
-    ),
-  );
+    _.times(_.random(min, _.max([min, max])),
+      () => _.sample(LETTERS)), '');
 }
 
 function generateInvalidArray(type) {
+  const DEFAULT_MAX = 3;
+
   return _.times(
-    _.random(1, MAX_GENERATED), () => generateInvalidField(type),
+    _.random(1, DEFAULT_MAX), () => generateInvalidField(type),
   );
 }
 
@@ -142,26 +148,42 @@ export function checkInvalidIdError(method, opts = { isRemoveMethod: false }) {
 
 export function checkBelowLenStrError(field, len, method, opts) {
   const toInsert = generateData(opts);
-  toInsert[field] = generateRandomLengthString(len);
+  toInsert[field] = generateRandomLengthString({ max: len - 1, min: 1 });
   assert.throws(() => {
     method(mockUser, toInsert);
   }, `${capitalizeField(field)} must be at least ${len} characters`);
 }
 
-export function checkEmptySkillArrayError(method, opts) {
+export function checkAboveLenStrError(field, len, method, opts) {
   const toInsert = generateData(opts);
-  toInsert.skills = [];
+  toInsert[field] = generateRandomLengthString({ max: len + 1, min: len + 1 });
+  assert.throws(() => {
+    method(mockUser, toInsert);
+  }, `${capitalizeField(field)} cannot exceed ${len} characters`);
+}
+
+export function checkEmptyArrayError(field, method, opts) {
+  const toInsert = generateData(opts);
+  toInsert[field] = [];
   assert.throws(() => {
     method(mockUser, toInsert);
   }, 'You must specify at least 1 values');
 }
 
-export function checkEmptyResourceArrayError(method, opts) {
+export function checkMaxSkillArrayError(len, method, opts) {
   const toInsert = generateData(opts);
-  toInsert.skills = [];
+  toInsert.skills = generateSkills({ min: len + 1, max: len + 1 });
   assert.throws(() => {
     method(mockUser, toInsert);
-  }, 'You must specify at least 1 values');
+  }, `You cannot specify more than ${len} values`);
+}
+
+export function checkMaxResourceArrayError(len, method, opts) {
+  const toInsert = generateData(opts);
+  toInsert.resources = generateResources({ min: len + 1, max: len + 1 });
+  assert.throws(() => {
+    method(mockUser, toInsert);
+  }, `You cannot specify more than ${len} values`);
 }
 
 export function checkInvalidArrayElemsError(field, type, method, opts = { excludeUser: false }) {

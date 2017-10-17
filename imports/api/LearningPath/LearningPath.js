@@ -7,6 +7,11 @@ import resourceSchema from './resource-schema';
 
 const LearningPaths = new Mongo.Collection('LearningPaths');
 
+export const MAX_SKILLS = 3;
+export const MAX_RESOURCES = 10;
+export const MIN_TITLE_LENGTH = 10;
+export const MAX_TITLE_LENGTH = 30;
+
 LearningPaths.allow({
   insert: () => false,
   update: () => false,
@@ -20,9 +25,15 @@ LearningPaths.deny({
 });
 
 LearningPaths.schema = new SimpleSchema({
+  _id: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
+  },
+
   title: {
     type: String,
-    min: 10,
+    min: MIN_TITLE_LENGTH,
+    max: MAX_TITLE_LENGTH,
   },
 
   mentor: {
@@ -37,32 +48,29 @@ LearningPaths.schema = new SimpleSchema({
   skills: {
     type: Array,
     minCount: 1,
+    maxCount: MAX_SKILLS,
   },
   'skills.$': {
     type: String,
-    label: "Skill name",
   },
 
   resources: {
     type: Array,
-    label: "All resources in this path",
     minCount: 1,
+    maxCount: MAX_RESOURCES,
   },
   'resources.$': {
     type: resourceSchema,
-    label: "Resource instance",
   },
 
   createdAt: {
     type: String,
-    label: 'The date this document was created.',
     autoValue() {
       if (!this.isSet || this.isInsert) return (new Date()).toISOString();
     },
   },
   updatedAt: {
     type: String,
-    label: 'The date this document was last updated.',
     autoValue() {
       if (!this.isSet || this.isInsert ||
         this.value || this.isUpdate) return (new Date()).toISOString();
@@ -70,6 +78,6 @@ LearningPaths.schema = new SimpleSchema({
   },
 });
 
-LearningPaths.attachSchema(LearningPaths.schema);
+LearningPaths.attachSchema(LearningPaths.schema.omit('_id'));
 
 export default LearningPaths;

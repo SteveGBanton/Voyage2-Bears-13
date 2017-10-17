@@ -6,21 +6,15 @@ import _ from 'lodash';
 import rateLimit from '../../modules/rate-limit';
 
 import LearningPaths from './LearningPath';
-import resourceSchema from './resource-schema';
+
+const insertSchema = LearningPaths.schema.omit('_id', 'mentor', 'createdAt', 'updatedAt');
+const updateSchema = LearningPaths.schema.omit('mentor', 'createdAt', 'updatedAt');
+const removeSchema = LearningPaths.schema.pick('_id');
 
 const learningPathsInsert = new ValidatedMethod({
   name: 'learning-paths.insert',
-  validate: new SimpleSchema({
-    // mentor: { type: String } // check to see if user has mentor privileges
-    title: { type: String, min: 10 },
-    description: { type: String },
-    skills: { type: Array, minCount: 1 },
-    'skills.$': { type: String },
-    resources: { type: Array, minCount: 1 },
-    'resources.$': { type: resourceSchema },
-  }).validator(),
+  validate: insertSchema.validator(),
   run(lp) {
-    // Change when code for mentor privileges
     try {
       return LearningPaths.insert({ mentor: this.userId, ...lp });
     } catch (exception) {
@@ -34,15 +28,7 @@ const learningPathsInsert = new ValidatedMethod({
 
 const learningPathsUpdate = new ValidatedMethod({
   name: 'learning-paths.update',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    title: { type: String, min: 10 },
-    description: { type: String },
-    skills: { type: Array, minCount: 1 },
-    'skills.$': { type: String },
-    resources: { type: Array, minCount: 1 },
-    'resources.$': { type: resourceSchema },
-  }).validator(),
+  validate: updateSchema.validator(),
   run(lp) {
     try {
       const _id = lp._id;
@@ -60,9 +46,7 @@ const learningPathsUpdate = new ValidatedMethod({
 
 const learningPathsRemove = new ValidatedMethod({
   name: 'learning-paths.remove',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
+  validate: removeSchema.validator(),
   run(lp) {
     try {
       return LearningPaths.remove(lp);

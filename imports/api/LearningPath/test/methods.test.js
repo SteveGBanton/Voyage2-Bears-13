@@ -6,10 +6,14 @@
 //       Not sure if we'll use it, but it's here just to be safe.
 
 import { Meteor } from 'meteor/meteor';
-import { assert } from 'meteor/practicalmeteor:chai';
 import sinon from 'sinon';
 
-import LearningPaths from '../LearningPath';
+import LearningPaths, {
+  MAX_SKILLS,
+  MAX_RESOURCES,
+  MIN_TITLE_LENGTH,
+  MAX_TITLE_LENGTH,
+} from '../LearningPath';
 import { learningPathsInsert, learningPathsUpdate, learningPathsRemove } from '../methods';
 
 import {
@@ -21,8 +25,10 @@ import {
   checkInvalidTypeError,
   checkInvalidIdError,
   checkBelowLenStrError,
-  checkEmptySkillArrayError,
-  checkEmptyResourceArrayError,
+  checkAboveLenStrError,
+  checkEmptyArrayError,
+  checkMaxSkillArrayError,
+  checkMaxResourceArrayError,
   checkInvalidArrayElemsError,
 } from './helpers';
 
@@ -85,11 +91,19 @@ if (Meteor.isServer) {
       });
 
       it('should throw an error if Title is given a string under the min length', function () {
-        checkBelowLenStrError('title', 10, _execute);
+        checkBelowLenStrError('title', MIN_TITLE_LENGTH, _execute);
+      });
+
+      it('should throw an error if Title is given a string over the max length', function () {
+        checkAboveLenStrError('title', MAX_TITLE_LENGTH, _execute);
       });
 
       it('should throw an error if no skills are given', function () {
-        checkEmptySkillArrayError(_execute);
+        checkEmptyArrayError('skills', _execute);
+      });
+
+      it('should throw an error if there are more skills than the maximum given', function () {
+        checkMaxSkillArrayError(MAX_SKILLS, _execute);
       });
 
       it('should throw an error if any skills are not Strings', function () {
@@ -97,7 +111,11 @@ if (Meteor.isServer) {
       });
 
       it('should throw an error if no resources are given', function () {
-        checkEmptyResourceArrayError(_execute);
+        checkEmptyArrayError('resources', _execute);
+      });
+
+      it('should throw an error if there are more resources than the maximum given', function () {
+        checkMaxResourceArrayError(MAX_RESOURCES, _execute);
       });
 
       it('should throw an error if any resources are not an Object', function () {
@@ -172,11 +190,19 @@ if (Meteor.isServer) {
       });
 
       it('should throw an error if Title is given a string under the min length', function () {
-        checkBelowLenStrError('title', 10, _execute, { includeId: true });
+        checkBelowLenStrError('title', MIN_TITLE_LENGTH, _execute, { includeId: true });
+      });
+
+      it('should throw an error if Title is given a string over the max length', function () {
+        checkAboveLenStrError('title', MAX_TITLE_LENGTH, _execute, { includedId: true });
       });
 
       it('should throw an error if no skills are given', function () {
-        checkEmptySkillArrayError(_execute, { includeId: true });
+        checkEmptyArrayError('skills', _execute, { includeId: true });
+      });
+
+      it('should throw an error if skills given are more than maximum', function () {
+        checkMaxSkillArrayError(MAX_SKILLS, _execute, { includeId: true });
       });
 
       it('should throw an error if any skills are not Strings', function () {
@@ -184,7 +210,11 @@ if (Meteor.isServer) {
       });
 
       it('should throw an error if no resources are given', function () {
-        checkEmptyResourceArrayError(_execute, { includeId: true });
+        checkEmptyArrayError('resources', _execute, { includeId: true });
+      });
+
+      it('should throw an error if resources given are more than maximum', function () {
+        checkMaxResourceArrayError(MAX_RESOURCES, _execute, { includeId: true });
       });
 
       it('should throw an error if any resources are not an Object', function () {
