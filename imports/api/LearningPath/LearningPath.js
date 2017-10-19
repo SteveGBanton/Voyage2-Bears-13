@@ -60,7 +60,7 @@ LearningPaths.schema = new SimpleSchema({
     maxCount: MAX_RESOURCES,
   },
   'resources.$': {
-    type: resourceSchema,
+    type: resourceSchema.omit(['createdAt', 'updatedAt']),
   },
 
   createdAt: {

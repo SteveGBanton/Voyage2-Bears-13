@@ -6,251 +6,101 @@
 //       Not sure if we'll use it, but it's here just to be safe.
 
 import { Meteor } from 'meteor/meteor';
+import { Random } from 'meteor/random';
+import { assert } from 'meteor/practicalmeteor:chai';
 import sinon from 'sinon';
 
-import LearningPaths, {
-  MAX_SKILLS,
-  MAX_RESOURCES,
-  MIN_TITLE_LENGTH,
-  MAX_TITLE_LENGTH,
-} from '../LearningPath';
+import LearningPaths from '../LearningPath';
 import { learningPathsInsert, learningPathsUpdate, learningPathsRemove } from '../methods';
 
-import {
-  checkCalledInsert,
-  checkCalledUpdate,
-  checkCalledRemove,
-  checkUpdateReturnId,
-  checkOmittedFieldError,
-  checkInvalidTypeError,
-  checkInvalidIdError,
-  checkBelowLenStrError,
-  checkAboveLenStrError,
-  checkEmptyArrayError,
-  checkMaxSkillArrayError,
-  checkMaxResourceArrayError,
-  checkInvalidArrayElemsError,
-} from './helpers';
-
 if (Meteor.isServer) {
-  const sandbox = sinon.createSandbox();
+  const mockUser = { userId: Random.id() };
+  const mockData = {
+    title: 'Learning Path Title',
+    description: 'Learning Path description',
+    skills: ['JS', 'HTML', 'CSS'],
+    resources: [
+      {
+        title: 'Resource Title1',
+        description: 'Resource description1',
+        url: 'https://fakeurl1.com',
+        thumbnail: 'https://fakeurl1.com/thumbnail.jpg',
+      },
+      {
+        title: 'Resource Title2',
+        description: 'Resource description2',
+        url: 'https://fakeurl2.com',
+        thumbnail: 'https://fakeurl2.com/thumbnail.jpg',
+      },
+    ],
+  };
 
-  afterEach(function () {
-    sandbox.restore();
+  describe('learningPathsInsert', function () {
+    it('should call LearningPaths.insert', function () {
+      const stub = sinon.stub(LearningPaths, 'insert');
+      learningPathsInsert._execute(mockUser, mockData);
+      sinon.assert.calledWith(stub, { mentor: mockUser.userId, ...mockData });
+      stub.restore();
+    });
   });
 
-  describe('LearningPath methods', function () {
-    describe('learningPathsInsert', function () {
-      const _execute = learningPathsInsert._execute.bind(learningPathsInsert);
-      let stub;
+  describe('learningPathsUpdate', function () {
+    it('should call LearningPaths.update', function () {
+      const lpId = { _id: Random.id() };
+      const findStub = sinon.stub(LearningPaths, 'findOne');
+      findStub.withArgs(lpId).returns({ mentor: mockUser.userId });
+      const updateStub = sinon.stub(LearningPaths, 'update');
 
-      beforeEach(function () {
-        // Replaces LearningPaths.insert with a fake method
-        // This will watch it and see if it gets called
-        stub = sandbox.stub(LearningPaths, 'insert');
-      });
+      learningPathsUpdate._execute(mockUser, { ...lpId, ...mockData });
+      sinon.assert.calledWith(updateStub, lpId, { $set: mockData });
 
-      afterEach(function () {
-        stub = null;
-      });
-
-      it('should call `LearningPaths.insert`', function () {
-        checkCalledInsert(sandbox, stub, _execute);
-      });
-
-      it('should throw an error if not given a Title', function () {
-        checkOmittedFieldError('title', _execute);
-      });
-
-      it('should throw an error if not given a Description', function () {
-        checkOmittedFieldError('description', _execute);
-      });
-
-      it('should throw an error if not given Skills', function () {
-        checkOmittedFieldError('skills', _execute);
-      });
-
-      it('should throw an error if not given Resources', function () {
-        checkOmittedFieldError('resources', _execute);
-      });
-
-      it('should throw an error if given a non-String to Title', function () {
-        checkInvalidTypeError('title', String, _execute);
-      });
-
-      it('should throw an error if given a non-String to Description', function () {
-        checkInvalidTypeError('description', String, _execute);
-      });
-
-      it('should throw an error if given a non-Array to Skills', function () {
-        checkInvalidTypeError('skills', Array, _execute);
-      });
-
-      it('should throw an error if given a non-Array to Resources', function () {
-        checkInvalidTypeError('resources', Array, _execute);
-      });
-
-      it('should throw an error if Title is given a string under the min length', function () {
-        checkBelowLenStrError('title', MIN_TITLE_LENGTH, _execute);
-      });
-
-      it('should throw an error if Title is given a string over the max length', function () {
-        checkAboveLenStrError('title', MAX_TITLE_LENGTH, _execute);
-      });
-
-      it('should throw an error if no skills are given', function () {
-        checkEmptyArrayError('skills', _execute);
-      });
-
-      it('should throw an error if there are more skills than the maximum given', function () {
-        checkMaxSkillArrayError(MAX_SKILLS, _execute);
-      });
-
-      it('should throw an error if any skills are not Strings', function () {
-        checkInvalidArrayElemsError('skills', String, _execute);
-      });
-
-      it('should throw an error if no resources are given', function () {
-        checkEmptyArrayError('resources', _execute);
-      });
-
-      it('should throw an error if there are more resources than the maximum given', function () {
-        checkMaxResourceArrayError(MAX_RESOURCES, _execute);
-      });
-
-      it('should throw an error if any resources are not an Object', function () {
-        checkInvalidArrayElemsError('resources', Object, _execute);
-      });
+      updateStub.restore();
+      findStub.restore();
     });
 
-    describe('learningPathsUpdate', function () {
-      const _execute = learningPathsUpdate._execute.bind(learningPathsUpdate);
-      let stub;
+    it('should not update if user is not mentor', function () {
+      const lpId = { _id: Random.id() };
+      const stub = sinon.stub(LearningPaths, 'findOne');
+      let fakeMentor;
+      do {
+        fakeMentor = Random.id();
+      } while (fakeMentor === mockUser.userId);
+      stub.withArgs(lpId).returns({ mentor: fakeMentor });
 
-      beforeEach(function () {
-        // Replaces LearningPaths.update with a fake method
-        // This will watch it and see if it gets called
-        stub = sandbox.stub(LearningPaths, 'update');
-      });
+      assert.throws(() => {
+        learningPathsUpdate._execute(mockUser, { ...lpId, ...mockData });
+      }, /Unauthorized access/);
 
-      afterEach(function () {
-        stub = null;
-      });
+      stub.restore();
+    });
+  });
 
-      it('should call `LearningPaths.update`', function () {
-        checkCalledUpdate(sandbox, stub);
-      });
+  describe('learningPathsRemove', function () {
+    it('should call LearningPaths.remove', function () {
+      const lpId = { _id: Random.id() };
+      const findStub = sinon.stub(LearningPaths, 'findOne');
+      findStub.withArgs(lpId).returns({ mentor: mockUser.userId });
+      const removeStub = sinon.stub(LearningPaths, 'remove');
 
-      it('should return the ID Of the LearningPath', function () {
-        checkUpdateReturnId();
-      });
+      learningPathsRemove._execute(mockUser, lpId);
+      sinon.assert.calledWith(removeStub, lpId);
 
-      it('should throw an error if not given an ID', function () {
-        checkOmittedFieldError('_id', _execute, { includeId: true });
-      });
-
-      it('should throw an error if not given an ID in proper format', function () {
-        checkInvalidIdError(_execute);
-      });
-
-      it('should throw an error if not given a Title', function () {
-        checkOmittedFieldError('title', _execute, { includeId: true });
-      });
-
-      it('should throw an error if not given a Description', function () {
-        checkOmittedFieldError('description', _execute, { includeId: true });
-      });
-
-      it('should throw an error if not given Skills', function () {
-        checkOmittedFieldError('skills', _execute, { includeId: true });
-      });
-
-      it('should throw an error if not given Resources', function () {
-        checkOmittedFieldError('resources', _execute, { includeId: true });
-      });
-
-      it('should throw an error if given a non-String to ID', function () {
-        checkInvalidTypeError('_id', String, _execute, { includeId: true });
-      });
-
-      it('should throw an error if given a non-String to Title', function () {
-        checkInvalidTypeError('title', String, _execute, { includeId: true });
-      });
-
-      it('should throw an error if given a non-String to Description', function () {
-        checkInvalidTypeError('description', String, _execute, { includeId: true });
-      });
-
-      it('should throw an error if given a non-Array to Skills', function () {
-        checkInvalidTypeError('skills', Array, _execute, { includeId: true });
-      });
-
-      it('should throw an error if given a non-Array to Resources', function () {
-        checkInvalidTypeError('resources', Array, _execute, { includeId: true });
-      });
-
-      it('should throw an error if Title is given a string under the min length', function () {
-        checkBelowLenStrError('title', MIN_TITLE_LENGTH, _execute, { includeId: true });
-      });
-
-      it('should throw an error if Title is given a string over the max length', function () {
-        checkAboveLenStrError('title', MAX_TITLE_LENGTH, _execute, { includedId: true });
-      });
-
-      it('should throw an error if no skills are given', function () {
-        checkEmptyArrayError('skills', _execute, { includeId: true });
-      });
-
-      it('should throw an error if skills given are more than maximum', function () {
-        checkMaxSkillArrayError(MAX_SKILLS, _execute, { includeId: true });
-      });
-
-      it('should throw an error if any skills are not Strings', function () {
-        checkInvalidArrayElemsError('skills', String, _execute, { includeId: true });
-      });
-
-      it('should throw an error if no resources are given', function () {
-        checkEmptyArrayError('resources', _execute, { includeId: true });
-      });
-
-      it('should throw an error if resources given are more than maximum', function () {
-        checkMaxResourceArrayError(MAX_RESOURCES, _execute, { includeId: true });
-      });
-
-      it('should throw an error if any resources are not an Object', function () {
-        checkInvalidArrayElemsError('resources', Object, _execute, { includeId: true });
-      });
+      removeStub.restore();
+      findStub.restore();
     });
 
-    describe('learningPathsRemove', function () {
-      const _execute = learningPathsRemove._execute.bind(learningPathsRemove);
-      let stub;
+    it('should not remove if user is not mentor', function () {
+      const lpId = { _id: Random.id() };
+      const stub = sinon.stub(LearningPaths, 'findOne');
+      let fakeMentor;
+      do {
+        fakeMentor = Random.id();
+      } while (fakeMentor === mockUser.userId);
+      stub.withArgs(lpId).returns({ mentor: fakeMentor });
 
-      beforeEach(function () {
-        // Replaces LearningPaths.remove with a fake method
-        // This will watch it and see if it gets called
-        stub = sandbox.stub(LearningPaths, 'remove');
-      });
-
-      afterEach(function () {
-        stub = null;
-      });
-
-      it('should call LearningPaths.remove', function () {
-        checkCalledRemove(sandbox, stub);
-      });
-
-      it('should throw an error if not given an ID', function () {
-        checkOmittedFieldError('_id', _execute, { isRemoveMethod: true });
-      });
-
-      it('should throw an error if given a non-String to ID', function () {
-        checkInvalidTypeError('_id', String, _execute, { isRemoveMethod: true });
-      });
-
-      it('should throw an error if not given an ID in the proper format', function () {
-        checkInvalidIdError(_execute, { isRemoveMethod: true });
-      });
+      assert.throws(() => {
+        learningPathsRemove._execute(mockUser, lpId);
+      }, /Unauthorized access/);
     });
   });
 }
