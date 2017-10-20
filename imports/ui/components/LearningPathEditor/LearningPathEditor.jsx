@@ -108,7 +108,7 @@ export default class LearningPathEditor extends React.Component {
     this.onDragEnd = this.onDragEnd.bind(this);
     this.removeAll = this.removeAll.bind(this);
     this.editThis = this.editThis.bind(this);
-    this.getPageData = this.getPageData.bind(this);
+    this.getPageData = debounce(this.getPageData.bind(this), 700);
     this.addSkill = this.addSkill.bind(this);
     this.clearSkills = this.clearSkills.bind(this);
     this.removeOneSkill = this.removeOneSkill.bind(this);
@@ -229,7 +229,7 @@ export default class LearningPathEditor extends React.Component {
     });
   }
 
-  getPageData = debounce(function (index, field) {
+  getPageData(index, field) {
     const urlInput = this.state.resources[index][field];
     const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
     const url = urlInput.match(urlRegex);
@@ -319,7 +319,7 @@ export default class LearningPathEditor extends React.Component {
       });
     }
 
-  }, 700)
+  }
 
   handlePathFieldChange(e, field) {
     this.setState({
