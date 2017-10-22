@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 // import { check } from 'meteor/check';
+import SimpleSchema from 'simpl-schema';
 import { ServiceConfiguration } from 'meteor/service-configuration';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
@@ -8,7 +9,8 @@ import rateLimit from '../../../modules/rate-limit';
 export const oauthVerifyConfigurationMethod = new ValidatedMethod({
   name: 'oauth.verifyConfiguration',
   validate: new SimpleSchema({
-    services: { type: [String] },
+    services: { type: Array },
+    'services.$': { type: String }
   }).validator(),
   run({ services }) {
     try {

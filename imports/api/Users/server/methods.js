@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { Accounts } from 'meteor/accounts-base';
+import SimpleSchema from 'simpl-schema';
 import editProfile from './edit-profile';
 import rateLimit from '../../../modules/rate-limit';
 

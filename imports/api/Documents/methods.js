@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
+import SimpleSchema from 'simpl-schema';
 import Documents from './Documents';
 import rateLimit from '../../modules/rate-limit';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
