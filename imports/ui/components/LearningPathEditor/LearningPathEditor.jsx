@@ -17,7 +17,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
 
 import customFormValidator from '../../../modules/custom-form-validator';
-import './LearningPathEditor.scss';
+
+if (Meteor.isClient) {
+  import './LearningPathEditor.scss';
+}
 
 const pathRules = {
   title: {
@@ -495,10 +498,10 @@ export default class LearningPathEditor extends React.Component {
               >
               + Add New
               </RaisedButton>
-                <RaisedButton
-                  style={{ marginRight: 10  }}
-                  onClick={this.removeAll}
-                >
+              <RaisedButton
+                style={{ marginRight: 10  }}
+                onClick={this.removeAll}
+              >
                 Clear All
               </RaisedButton>
                 <RaisedButton

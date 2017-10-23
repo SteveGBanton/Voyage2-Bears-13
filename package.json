@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "meteor --settings settings-development.json",
-    "test": "jest"
+    "test": "meteor test --driver-package practicalmeteor:mocha --port 3030"
   },
   "dependencies": {
     "@cleverbeagle/dates": "^0.4.0",
@@ -42,6 +42,9 @@
     "eslint-plugin-react": "^7.0.1",
     "faker": "^4.1.0",
     "jest": "^20.0.3",
-    "namor": "^1.0.1"
+    "jsx-chai": "^4.0.0",
+    "namor": "^1.0.1",
+    "react-addons-test-utils": "^15.6.2",
+    "sinon": "^4.0.1"
   }
 }

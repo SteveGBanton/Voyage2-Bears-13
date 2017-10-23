@@ -36,4 +36,6 @@ mdg:validated-method
 aldeed:simple-schema
 http@1.2.12
 edgee:slingshot
+practicalmeteor:faker
 practicalmeteor:mocha
+practicalmeteor:chai
