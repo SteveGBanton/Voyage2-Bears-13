@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 import Navigation from '../../components/Navigation/Navigation';
 
 const AllUserAccess = ({ loggingIn, authenticated, component, ...rest }) => (
-  <div className="all-access" style={{ marginTop: '55px' }}>
+  <div className="all-access">
     <Navigation {...this.props} />
     <Route
       {...rest}
