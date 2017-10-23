@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 
 export default function customFormValidator(input, rules, messages) {
   function valString(field) {
@@ -27,6 +26,14 @@ export default function customFormValidator(input, rules, messages) {
 
   function valMaxValue(number, max) {
     return Number(number) <= Number(max);
+  }
+
+  function valURL(url) {
+    if (url !== '') {
+      const re = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/g;
+      return re.test(url);
+    }
+    return true;
   }
 
   function valEmail(email) {
@@ -69,65 +76,72 @@ export default function customFormValidator(input, rules, messages) {
           break;
         case 'minLength':
           if (getField(field)) {
-            (!valMinLength(getField(field), rules[field][subrule]))
-            ? formErrors[field] = messages[field].minLength
-            : null;
+            if (!valMinLength(getField(field), rules[field][subrule])) {
+              formErrors[field] = messages[field].minLength;
+            }
           }
           break;
         case 'maxLength':
           if (getField(field)) {
-            (!valMaxLength(getField(field), rules[field][subrule]))
-            ? formErrors[field] = messages[field].maxlength
-            : null;
+            if (!valMaxLength(getField(field), rules[field][subrule])) {
+              formErrors[field] = messages[field].maxlength;
+            }
           }
           break;
         case 'minValue':
           if (getField(field)) {
-            (!valMinValue(getField(field), rules[field][subrule]))
-            ? formErrors[field] = messages[field].minValue
-            : null;
+            if (!valMinValue(getField(field), rules[field][subrule])) {
+              formErrors[field] = messages[field].minValue;
+            }
           }
           break;
         case 'maxValue':
           if (getField(field)) {
-            (!valMaxValue(getField(field), rules[field][subrule]))
-            ? formErrors[field] = messages[field].maxValue
-            : null;
+            if (!valMaxValue(getField(field), rules[field][subrule])) {
+              formErrors[field] = messages[field].maxValue;
+            }
           }
           break;
         case 'email':
           if (getField(field)) {
-            (!valEmail(getField(field)))
-            ? formErrors[field] = messages[field].email
-            : null;
+            if (!valEmail(getField(field))) {
+              formErrors[field] = messages[field].email;
+            }
           }
           break;
         case 'password':
           if (getField(field)) {
-            (!valPassword(getField(field)))
-            ? formErrors[field] = messages[field].password
-            : null;
+            if (!valPassword(getField(field))) {
+              formErrors[field] = messages[field].password;
+            }
           }
           break;
         case 'string':
           if (getField(field)) {
-            (!valString(getField(field)))
-            ? formErrors[field] = messages[field].string
-            : null;
+            if (!valString(getField(field))) {
+              formErrors[field] = messages[field].string;
+            }
+          }
+          break;
+        case 'url':
+          if (getField(field)) {
+            if (!valURL(getField(field))) {
+              formErrors[field] = messages[field].url;
+            }
           }
           break;
         case 'bool':
           if (getField(field)) {
-            (!valBool(getField(field)))
-            ? formErrors[field] = messages[field].bool
-            : null;
+            if (!valBool(getField(field))) {
+              formErrors[field] = messages[field].bool;
+            }
           }
           break;
         case 'number':
           if (getField(field)) {
-            (!valNumber(getField(field)))
-            ? formErrors[field] = messages[field].number
-            : null;
+            if (!valNumber(getField(field))) {
+              formErrors[field] = messages[field].number;
+            }
           }
           break;
         default:
