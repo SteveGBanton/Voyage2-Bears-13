@@ -21,12 +21,14 @@ if (Meteor.isServer) {
     skills: ['JS', 'HTML', 'CSS'],
     resources: [
       {
+        _id: Random.id(),
         title: 'Resource Title1',
         description: 'Resource description1',
         url: 'https://fakeurl1.com',
         thumbnail: 'https://fakeurl1.com/thumbnail.jpg',
       },
       {
+        _id: Random.id(),
         title: 'Resource Title2',
         description: 'Resource description2',
         url: 'https://fakeurl2.com',
