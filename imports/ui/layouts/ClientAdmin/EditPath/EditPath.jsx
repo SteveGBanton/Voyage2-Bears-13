@@ -8,32 +8,21 @@ import LearningPaths from '../../../../api/LearningPath/LearningPath';
 import Loading from '../../../components/Loading/Loading';
 import LearningPathEditor from '../../../components/LearningPathEditor/LearningPathEditor';
 
-class EditPath extends React.Component {
+const EditPath = ({ loading, learningPathDoc, history }) => (
+  (!loading) ?
+    <div className="edit-path">
+      <h1>Edit A Learning Path</h1>
 
-  constructor(props) {
-    super(props);
-  }
+      {(learningPathDoc && learningPathDoc.mentor === Meteor.userId()) ?
+        <LearningPathEditor path={learningPathDoc} history={history} />
+        :
+        'Sorry, only the creator can edit this Learning Path.'
+      }
 
-  render() {
-    const { loading, learningPathDoc, history } = this.props;
-    return (
-      // Make sure user owns document, or else cannot edit it.
-        (!loading) ?
-          <div className="edit-path">
-            <h1>Edit A Learning Path</h1>
-
-            {(learningPathDoc && learningPathDoc.mentor === Meteor.userId()) ?
-              <LearningPathEditor path={learningPathDoc} history={history} />
-              :
-              'Sorry, only the creator can edit this Learning Path.'
-            }
-
-          </div>
-          :
-          <Loading />
-    );
-  }
-}
+    </div>
+    :
+    <Loading />
+);
 
 // TODO edit proptypes
 EditPath.propTypes = {
