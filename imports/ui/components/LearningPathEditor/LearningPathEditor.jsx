@@ -17,7 +17,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
 
 import customFormValidator from '../../../modules/custom-form-validator';
-import './LearningPathEditor.scss';
+
+if (Meteor.isClient) {
+  import './LearningPathEditor.scss';
+}
 
 const pathRules = {
   title: {
