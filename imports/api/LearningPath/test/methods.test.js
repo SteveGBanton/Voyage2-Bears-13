@@ -101,6 +101,8 @@ if (Meteor.isServer) {
       assert.throws(() => {
         learningPathsRemove._execute(mockUser, lpId);
       }, /Unauthorized access/);
+
+      stub.restore();
     });
   });
 }
