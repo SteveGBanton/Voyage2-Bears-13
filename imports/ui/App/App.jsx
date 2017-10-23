@@ -84,7 +84,7 @@ const App = (props) => {
                     />
                     <ClientAdmin
                       exact
-                      path="/learning-path/:learningPathId/edit"
+                      path="/my-paths/edit/:learningPathId"
                       component={EditPath}
                       {...props}
                     />
