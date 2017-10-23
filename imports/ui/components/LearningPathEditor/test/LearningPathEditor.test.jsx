@@ -9,14 +9,7 @@ import LearningPathEditor from '../LearningPathEditor';
 chai.use(jsxChai);
 
 describe('my module', function () {
-  it('test mocha - makes sure 1 equals 1', function () {
-    const number = 1;
-    const actual = (number === (2 - 1));
-    const expected = true;
-    expect(actual).to.equal(expected);
-  });
-
-  it('test mocha - make sure div can be detected inside JSX', function () {
+  it('jsx test - div can be detected inside JSX', function () {
     const actual = (
       <div>
         <h1>Hello!</h1>
