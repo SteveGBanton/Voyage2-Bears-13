@@ -40,6 +40,7 @@ import Privacy from '../layouts/AllUserAccess/Privacy/Privacy';
 import RecoverPassword from '../layouts/AllUserAccess/RecoverPassword/RecoverPassword';
 import ResetPassword from '../layouts/AllUserAccess/ResetPassword/ResetPassword';
 import VerifyEmail from '../layouts/AllUserAccess/VerifyEmail/VerifyEmail';
+import UserView from '../layouts/AllUserAccess/UserView/UserView';
 
 import './App.scss';
 
@@ -74,6 +75,12 @@ const App = (props) => {
                       exact
                       path="/learning-path/:learningPathId/resource/:resourceId"
                       component={ResourceDetailView}
+                      {...props}
+                    />
+                    <AllUserAccess
+                      exact
+                      path="/user/:username/"
+                      component={UserView}
                       {...props}
                     />
                     <ClientAdmin
