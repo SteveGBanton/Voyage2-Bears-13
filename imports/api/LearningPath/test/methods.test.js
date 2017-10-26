@@ -11,13 +11,31 @@ import { assert } from 'meteor/practicalmeteor:chai';
 import sinon from 'sinon';
 
 import LearningPaths from '../LearningPath';
-import { learningPathsInsert, learningPathsUpdate, learningPathsRemove } from '../methods';
+import {
+  learningPathsInsert,
+  learningPathsUpdate,
+  learningPathsRemove,
+  learningPathsUpvote,
+  learningPathsDownvote,
+} from '../methods';
+
+function getMockMentor(mockUser) {
+  let mockMentor;
+  do {
+    mockMentor = Random.id();
+  } while (mockMentor === mockUser.userId);
+
+  return mockMentor;
+}
 
 if (Meteor.isServer) {
-  const mockUser = { userId: Random.id() };
+  const userId = Random.id();
+  const mockUser = { user: { _id: userId }, userId };
+  const mockMentor = getMockMentor(mockUser);
   const mockData = {
     title: 'Learning Path Title',
     description: 'Learning Path description',
+    thumbnail: 'https://fakeurl.com/thumbnail.jpg',
     skills: ['JS', 'HTML', 'CSS'],
     resources: [
       {
@@ -35,72 +53,236 @@ if (Meteor.isServer) {
     ],
   };
 
+  let sandbox;
+  beforeEach(function () {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(function () {
+    sandbox.restore();
+  });
+
   describe('learningPathsInsert', function () {
+    let insertStub;
+
+    beforeEach(function () {
+      insertStub = sandbox.stub(LearningPaths, 'insert');
+    });
+
     it('should call LearningPaths.insert', function () {
-      const stub = sinon.stub(LearningPaths, 'insert');
       learningPathsInsert._execute(mockUser, mockData);
-      sinon.assert.calledWith(stub, { mentor: mockUser.userId, ...mockData });
-      stub.restore();
+      sinon.assert.calledWith(insertStub, {
+        mentor: mockUser.userId,
+        aggregatedVotes: 0,
+        voted: {},
+        ...mockData,
+      });
     });
   });
 
   describe('learningPathsUpdate', function () {
+    let findStub;
+    let updateStub;
+
+    beforeEach(function () {
+      findStub = sandbox.stub(LearningPaths, 'findOne');
+      updateStub = sandbox.stub(LearningPaths, 'update');
+    });
+
     it('should call LearningPaths.update', function () {
       const lpId = { _id: Random.id() };
-      const findStub = sinon.stub(LearningPaths, 'findOne');
+
       findStub.withArgs(lpId).returns({ mentor: mockUser.userId });
-      const updateStub = sinon.stub(LearningPaths, 'update');
 
       learningPathsUpdate._execute(mockUser, { ...lpId, ...mockData });
       sinon.assert.calledWith(updateStub, lpId, { $set: mockData });
-
-      updateStub.restore();
-      findStub.restore();
     });
 
     it('should not update if user is not mentor', function () {
       const lpId = { _id: Random.id() };
-      const stub = sinon.stub(LearningPaths, 'findOne');
-      let fakeMentor;
-      do {
-        fakeMentor = Random.id();
-      } while (fakeMentor === mockUser.userId);
-      stub.withArgs(lpId).returns({ mentor: fakeMentor });
+
+      findStub.withArgs(lpId).returns({ mentor: mockMentor });
 
       assert.throws(() => {
         learningPathsUpdate._execute(mockUser, { ...lpId, ...mockData });
       }, /Unauthorized access/);
-
-      stub.restore();
     });
   });
 
   describe('learningPathsRemove', function () {
+    let findStub;
+    let removeStub;
+
+    beforeEach(function () {
+      findStub = sandbox.stub(LearningPaths, 'findOne');
+      removeStub = sandbox.stub(LearningPaths, 'remove');
+    });
+
     it('should call LearningPaths.remove', function () {
       const lpId = { _id: Random.id() };
-      const findStub = sinon.stub(LearningPaths, 'findOne');
+
       findStub.withArgs(lpId).returns({ mentor: mockUser.userId });
-      const removeStub = sinon.stub(LearningPaths, 'remove');
 
       learningPathsRemove._execute(mockUser, lpId);
       sinon.assert.calledWith(removeStub, lpId);
-
-      removeStub.restore();
-      findStub.restore();
     });
 
     it('should not remove if user is not mentor', function () {
       const lpId = { _id: Random.id() };
-      const stub = sinon.stub(LearningPaths, 'findOne');
-      let fakeMentor;
-      do {
-        fakeMentor = Random.id();
-      } while (fakeMentor === mockUser.userId);
-      stub.withArgs(lpId).returns({ mentor: fakeMentor });
+
+      findStub.withArgs(lpId).returns({ mentor: mockMentor });
 
       assert.throws(() => {
         learningPathsRemove._execute(mockUser, lpId);
-      }, /Unauthorized access/);
+      }, 'Unauthorized access');
+    });
+  });
+
+  describe('learningPathsUpvote', function () {
+    let findStub;
+    let updateStub;
+
+    beforeEach(function () {
+      findStub = sandbox.stub(LearningPaths, 'findOne');
+      updateStub = sandbox.stub(LearningPaths, 'update');
+    });
+
+    it('should increase the aggregatedVotes', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: {}, aggregatedVotes: 0 });
+
+      const expected = { voted: { [mockUser.userId]: 1 }, aggregatedVotes: 1 };
+
+      learningPathsUpvote._execute(mockUser, lpId);
+      sinon.assert.calledWith(updateStub, lpId, { $set: expected });
+    });
+
+    it('should remove the vote if user unvotes', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: { [mockUser.userId]: 1 },
+        aggregatedVotes: 1,
+      });
+
+      const expected = { voted: {}, aggregatedVotes: 0 };
+
+      learningPathsUpvote._execute(mockUser, lpId);
+      sinon.assert.calledWith(updateStub, lpId, { $set: expected });
+    });
+
+    it('should remove user downvote and increase the aggregatedVotes', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: { [mockUser.userId]: -1 },
+        aggregatedVotes: -1,
+      });
+
+      const expected = { voted: { [mockUser.userId]: 1 }, aggregatedVotes: 1 };
+
+      learningPathsUpvote._execute(mockUser, lpId);
+      sinon.assert.calledWith(updateStub, lpId, { $set: expected });
+    });
+
+    it('should throw an error if a user is not logged on when voting', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: {},
+        aggregatedVotes: 0,
+      });
+
+      assert.throws(() => {
+        learningPathsUpvote._execute({ user: null }, lpId);
+      }, 'You must be logged in to vote');
+    });
+
+    it('should throw an error if a mentor votes on their own path', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: {},
+        aggregatedVotes: 0,
+      });
+
+      assert.throws(() => {
+        learningPathsUpvote._execute({ user: { _id: mockMentor }, userId: mockMentor }, lpId);
+      }, 'Cannot vote own created Learning Path');
+    });
+  });
+
+  describe('learningPathsDownvote', function () {
+    let findStub;
+    let updateStub;
+
+    beforeEach(function () {
+      findStub = sandbox.stub(LearningPaths, 'findOne');
+      updateStub = sandbox.stub(LearningPaths, 'update');
+    });
+
+    it('should decrease the aggregatedVotes', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: {}, aggregatedVotes: 0 });
+
+      const expected = { voted: { [mockUser.userId]: -1 }, aggregatedVotes: -1 };
+
+      learningPathsDownvote._execute(mockUser, lpId);
+      sinon.assert.calledWith(updateStub, lpId, { $set: expected });
+    });
+
+    it('should remove the vote if user unvotes', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: { [mockUser.userId]: -1 },
+        aggregatedVotes: -1,
+      });
+
+      const expected = { voted: {}, aggregatedVotes: 0 };
+
+      learningPathsDownvote._execute(mockUser, lpId);
+      sinon.assert.calledWith(updateStub, lpId, { $set: expected });
+    });
+
+    it('should remove user upvote and decrease the aggregatedVotes', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: { [mockUser.userId]: 1 },
+        aggregatedVotes: 1,
+      });
+
+      const expected = { voted: { [mockUser.userId]: -1 }, aggregatedVotes: -1 };
+
+      learningPathsDownvote._execute(mockUser, lpId);
+      sinon.assert.calledWith(updateStub, lpId, { $set: expected });
+    });
+
+    it('should throw an error if a user is not logged on when voting', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: {},
+        aggregatedVotes: 0,
+      });
+
+      assert.throws(() => {
+        learningPathsDownvote._execute({ user: null }, lpId);
+      }, 'You must be logged in to vote');
+    });
+
+    it('should throw an error if a mentor votes on their own path', function () {
+      const lpId = { _id: Random.id() };
+      findStub.withArgs(lpId).returns({
+        mentor: mockMentor,
+        voted: {},
+        aggregatedVotes: 0,
+      });
+
+      assert.throws(() => {
+        learningPathsDownvote._execute({ user: { _id: mockMentor }, userId: mockMentor }, lpId);
+      }, 'Cannot vote own created Learning Path');
     });
   });
 }

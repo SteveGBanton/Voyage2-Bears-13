@@ -7,8 +7,8 @@ import resourceSchema from './resource-schema';
 
 const LearningPaths = new Mongo.Collection('LearningPaths');
 
-export const MAX_SKILLS = 3;
-export const MAX_RESOURCES = 10;
+const MAX_SKILLS = 3;
+const MAX_RESOURCES = 10;
 export const MIN_TITLE_LENGTH = 10;
 export const MAX_TITLE_LENGTH = 30;
 
@@ -43,6 +43,19 @@ LearningPaths.schema = new SimpleSchema({
 
   description: {
     type: String,
+  },
+
+  thumbnail: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Url,
+  },
+
+  aggregatedVotes: {
+    type: Number,
+  },
+
+  voted: {
+    type: Object,
   },
 
   skills: {
