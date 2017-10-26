@@ -11,10 +11,10 @@ const createNewUser = new ValidatedMethod({
     email: { type: String },
     password: { type: String },
     username: { type: String },
-    profile: { type: Object },
-    "profile.name": { type: Object },
-    "profile.name.first": { type: String },
-    "profile.name.last": { type: String },
+    // profile: { type: Object },
+    // "profile.name": { type: Object },
+    // "profile.name.first": { type: String },
+    // "profile.name.last": { type: String },
   }).validator(),
   run(newAdmin) {
     try {

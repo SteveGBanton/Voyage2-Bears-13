@@ -20,12 +20,12 @@ import customFormValidator from '../../../../modules/custom-form-validator';
 import './ClientProfile.scss';
 
 const rules = {
-  firstName: {
-    required: true,
-  },
-  lastName: {
-    required: true,
-  },
+  // firstName: {
+  //   required: true,
+  // },
+  // lastName: {
+  //   required: true,
+  // },
   emailAddress: {
     required: true,
     email: true,
@@ -36,12 +36,12 @@ const rules = {
 };
 
 const messages = {
-  firstName: {
-    required: 'What\'s your first name?',
-  },
-  lastName: {
-    required: 'What\'s your last name?',
-  },
+  // firstName: {
+  //   required: 'What\'s your first name?',
+  // },
+  // lastName: {
+  //   required: 'What\'s your last name?',
+  // },
   emailAddress: {
     required: 'Need an email address here.',
     email: 'Is this email address correct?',
@@ -66,23 +66,18 @@ class ClientProfile extends React.Component {
     this.formValidate = this.formValidate.bind(this);
 
     this.state = ({
-      formErrors: {
-        firstName: "",
-        lastName: "",
-        emailAddress: "",
-        currentPassword: "",
-        newPassword: "",
-      },
+      formErrors: {},
       currentEmail: props.user.emails[0].address,
       verifiedEmail: props.user.emails[0].verified,
     });
   }
 
-  /*
-  componentDidMount() {
-    const component = this;
+  getUserType(user) {
+    const userToCheck = user;
+    delete userToCheck.services.resume;
+    const service = Object.keys(userToCheck.services)[0];
+    return service === 'password' ? 'password' : 'oauth';
   }
-  */
 
   resendVerification() {
     Meteor.call('users.sendVerificationEmail', (err) => {
@@ -92,13 +87,6 @@ class ClientProfile extends React.Component {
         Bert.alert('Verification email sent to address on file.', 'success');
       }
     });
-  }
-
-  getUserType(user) {
-    const userToCheck = user;
-    delete userToCheck.services.resume;
-    const service = Object.keys(userToCheck.services)[0];
-    return service === 'password' ? 'password' : 'oauth';
   }
 
   formValidate() {
@@ -112,7 +100,6 @@ class ClientProfile extends React.Component {
 
     const formErrors = customFormValidator(input, rules, messages);
     let currentPwdRequired = true;
-    console.log(formErrors);
 
     if (this.newPassword.input.value && this.currentPassword.input.value === '') {
       formErrors.currentPassword = 'Current password is required to change password';
@@ -201,7 +188,7 @@ class ClientProfile extends React.Component {
           />
 
           <TextField
-            defaultValue={user.profile.name.first}
+            defaultValue={(user.profile && user.profile.name && user.profile.name.first) ? user.profile.name.first : ''}
             name="firstName"
             floatingLabelText="First Name"
             ref={(input) => { this.firstName = input; }}
@@ -209,7 +196,7 @@ class ClientProfile extends React.Component {
           /><br />
 
           <TextField
-            defaultValue={user.profile.name.last}
+            defaultValue={(user.profile && user.profile.name && user.profile.name.last) ? user.profile.name.last : ''}
             name="lastName"
             floatingLabelText="Last Name"
             ref={(input) => { this.lastName = input; }}
