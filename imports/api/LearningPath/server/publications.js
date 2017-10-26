@@ -1,10 +1,17 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
+import  SimpleSchema from 'simpl-schema';
 import LearningPaths from '../LearningPath';
 
-Meteor.publish('learning-paths', () => {
+const FIND_ALL_OPTS = {
+  sort: {},
+  skip: 0,
+  limit: Infinity,
+};
+
+Meteor.publish('learning-paths', (query = {}, opts = FIND_ALL_OPTS) => {
   try {
-    return LearningPaths.find({});
+    return LearningPaths.find(query, opts);
   } catch (exception) {
     throw new Meteor.Error(
       'learning-paths.error',
@@ -13,10 +20,10 @@ Meteor.publish('learning-paths', () => {
   }
 });
 
-Meteor.publish('learning-paths.mentor', () => {
+Meteor.publish('learning-paths.mentor', (query = {}, opts = FIND_ALL_OPTS) => {
   try {
     if (!this.userId) return this.ready();
-    return LearningPaths.find({ mentor: this.userId });
+    return LearningPaths.find({ mentor: this.userId, ...query }, opts);
   } catch (exception) {
     throw new Meteor.Error(
       'learning-paths.mentor.error',
@@ -27,8 +34,8 @@ Meteor.publish('learning-paths.mentor', () => {
 
 Meteor.publish('learning-paths.view', (lpId) => {
   try {
-    check(lpId, String);
-    return LearningPaths.find({ _id: lpId });
+    check(lpId, SimpleSchema.RegEx.Id);
+    return LearningPaths.findOne({ _id: lpId });
   } catch (exception) {
     throw new Meteor.Error(
       'learning-paths.view.error',
@@ -40,9 +47,9 @@ Meteor.publish('learning-paths.view', (lpId) => {
 // Return Learning Path if it has a particular resource
 Meteor.publish('learning-paths.resource', (lpId, resourceId) => {
   try {
-    check(lpId, String);
-    check(resourceId, String);
-    return LearningPaths.find({
+    check(lpId, SimpleSchema.RegEx.Id);
+    check(resourceId, SimpleSchema.RegEx.Id);
+    return LearningPaths.findOne({
       _id: lpId,
       resources: {
         $elemMatch: { $eq: resourceId },
