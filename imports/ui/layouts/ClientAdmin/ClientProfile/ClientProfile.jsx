@@ -67,8 +67,8 @@ class ClientProfile extends React.Component {
 
     this.state = ({
       formErrors: {},
-      currentEmail: props.user.emails[0].address,
-      verifiedEmail: props.user.emails[0].verified,
+      currentEmail: (props.user.emails) ? props.user.emails[0].address : '',
+      verifiedEmail: (props.user.emails) ? props.user.emails[0].verified : '',
     });
   }
 
@@ -207,7 +207,7 @@ class ClientProfile extends React.Component {
         <div className="profile-edit-2">
 
           <TextField
-            defaultValue={user.emails[0].address}
+            defaultValue={(user.emails) ? user.emails[0].address : ''}
             name="emailAddress"
             floatingLabelText="Email Address"
             ref={(input) => { this.emailAddress = input; }}

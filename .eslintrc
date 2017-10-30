@@ -6,7 +6,7 @@
     "no-underscore-dangle": "off",
     "import/no-unresolved": "off",
     "import/no-extraneous-dependencies": "off",
-    "import/extensions": "off",
+    "import/extensions": "off"
   },
   "globals": {
     "Meteor": false,
@@ -19,5 +19,6 @@
     "Bert": false,
     "document": false,
     "window": false,
-  },
+    "location": false
+  }
 }

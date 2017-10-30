@@ -43,8 +43,7 @@ import VerifyEmail from '../layouts/AllUserAccess/VerifyEmail/VerifyEmail';
 
 import './App.scss';
 
-const App = (props) => {
-  return (
+const App = (props) => (
     <Router>
       {
           (!props.loading)
@@ -189,7 +188,6 @@ const App = (props) => {
         }
     </Router>
   );
-};
 
 
 App.defaultProps = {

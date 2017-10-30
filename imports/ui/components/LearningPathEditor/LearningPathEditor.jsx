@@ -588,7 +588,7 @@ export default class LearningPathEditor extends React.Component {
                               <div className="title-box">
                                 <div className="title-box-left">
                                   <FontIcon
-                                    className="material-icons pointer"
+                                    className="material-icons"
                                     color="rgba(0,0,0,0.2)"
                                     style={{ marginRight: 10 }}
                                   >
