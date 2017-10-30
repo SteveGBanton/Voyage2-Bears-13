@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
-import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { debounce, kebabCase } from 'lodash';
 
@@ -216,7 +215,6 @@ export default class Signup extends React.Component {
     });
   }
 
-
   render() {
     return (
       <Paper className="Signup">
@@ -280,28 +278,10 @@ export default class Signup extends React.Component {
           : ''
         }
 
-          {/* <TextField
-          name="firstName"
-          floatingLabelText="First Name"
-          errorText=""
-          ref={input => (this.firstName = input)}
-          errorText={this.state.formErrors.firstName}
-        /><br/>
-
-        <TextField
-          name="lastName"
-          floatingLabelText="Last Name"
-          ref={input => (this.lastName = input)}
-          errorText=""
-          errorText={this.state.formErrors.lastName}
-        /><br/> */}
-
-          {/* email address field is called username to help password managers */}
           <TextField
             name="username"
             floatingLabelText="Email Address"
-            ref={input => (this.emailAddress = input)}
-            errorText=""
+            ref={(input) => { this.emailAddress = input; }}
             errorText={this.state.formErrors.emailAddress}
           /><br />
 
@@ -309,8 +289,7 @@ export default class Signup extends React.Component {
             name="password"
             type="password"
             floatingLabelText="Password"
-            ref={password => (this.password = password)}
-            errorText=""
+            ref={(password) => { this.password = password; }}
             errorText={this.state.formErrors.password}
           />
 
