@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import { Card, CardTitle } from 'material-ui/Card';
 
 import './Index.scss';
 
@@ -50,34 +49,34 @@ const tempFeaturedArr = [
 class Index extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       searchFocused: false,
       featured: [],
       searchInput: '',
-    }
+    };
   }
 
-  toggleSearchFocus = (toggle) => {
+  toggleSearchFocus(toggle) {
     if (toggle) {
-      this.setState({searchFocused: toggle});
+      this.setState({ searchFocused: toggle });
     } else {
-      this.setState({searchFocused: toggle, searchInput: ''});
+      this.setState({ searchFocused: toggle, searchInput: '' });
     }
   }
 
-  handleChange_searchInput = (e) => {
-    this.setState({searchInput: e.target.value});
+  handleChangeSearchInput(e) {
+    this.setState({ searchInput: e.target.value });
   }
 
   render() {
-    const featured = tempFeaturedArr.map((x, i) =>
-      <Card className="Inedx-featuredCard" key={i}>
+    const featured = tempFeaturedArr.map(x =>
+      (<Card className="Inedx-featuredCard" key={x.skill}>
         {/* <CardMedia> */}
-          <div className="Index-featuredCardImg" style={{backgroundImage: `url(${x.img ? x.img : 'books.jpg'})`}} alt={x.skill} />
+        <div className="Index-featuredCardImg" style={{ backgroundImage: `url(${x.img ? x.img : 'books.jpg'})` }} alt={x.skill} />
         {/* </CardMedia> */}
         <CardTitle title={x.skill} subtitle={x.description} />
-    </Card>
+      </Card>),
     );
 
     return (
@@ -101,20 +100,20 @@ class Index extends React.Component {
               <input
                 onFocus={() => this.toggleSearchFocus(true)}
                 onBlur={() => this.toggleSearchFocus(false)}
-                onChange={this.handleChange_searchInput}
+                onChange={this.handleChangeSearchInput}
                 value={this.state.searchInput}
                 type="text"
                 placeholder="⌕"
                 className="Index-searchInput"
               />
+            </div>
           </div>
         </div>
+        <div className="Index-featured">
+          {/* <h2 className="Index-featuredTitle">Featured</h2> */}
+          <div className="Index-featuredCardWrap">{featured}</div>
+        </div>
       </div>
-      <div className="Index-featured">
-        {/* <h2 className="Index-featuredTitle">Featured</h2> */}
-        <div className="Index-featuredCardWrap">{featured}</div>
-      </div>
-    </div>
     );
   }
 }
