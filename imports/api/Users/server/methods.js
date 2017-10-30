@@ -11,10 +11,10 @@ const createNewUser = new ValidatedMethod({
     email: { type: String },
     password: { type: String },
     username: { type: String },
-    // profile: { type: Object },
-    // "profile.name": { type: Object },
-    // "profile.name.first": { type: String },
-    // "profile.name.last": { type: String },
+    profile: { type: Object, optional: true },
+    "profile.name": { type: Object, optional: true },
+    "profile.name.first": { type: String, optional: true },
+    "profile.name.last": { type: String, optional: true },
   }).validator(),
   run(newAdmin) {
     try {
@@ -41,9 +41,9 @@ const usersEditProfile = new ValidatedMethod({
     previousEmailAddress: { type: String },
     emailAddress: { type: String },
     profile: { type: Object },
-    "profile.name": { type: Object },
-    "profile.name.first": { type: String },
-    "profile.name.last": { type: String },
+    "profile.name": { type: Object, optional: true },
+    "profile.name.first": { type: String, optional: true },
+    "profile.name.last": { type: String, optional: true },
   }).validator(),
   run(profile) {
     return editProfile({ userId: this.userId, profile })
@@ -51,6 +51,25 @@ const usersEditProfile = new ValidatedMethod({
       .catch((exception) => {
         throw new Meteor.Error('500', exception);
       });
+  },
+});
+
+const usersAddUsername = new ValidatedMethod({
+  name: 'users.addUsername',
+  validate: new SimpleSchema({
+    username: { type: String },
+  }).validator(),
+  run({username}) {
+    try {
+      Meteor.users.update(this.userId, {
+        $set: {
+          username,
+        },
+      });
+      return username;
+    } catch (exception) {
+      throw new Meteor.Error('users.addUsername', `Error adding username. ${exception}`);
+    }
   },
 });
 
@@ -64,13 +83,20 @@ const usersCheckUsername = new ValidatedMethod({
   },
 });
 
-export { createNewUser, usersSendVerificationEmail, usersEditProfile, usersCheckUsername };
+export {
+  createNewUser,
+  usersSendVerificationEmail,
+  usersEditProfile,
+  usersCheckUsername,
+  usersAddUsername,
+};
 
 rateLimit({
   methods: [
     'users.editProfile',
     'users.createNewAdminUser',
     'users.checkUsername',
+    'users.addUsername',
   ],
   limit: 5,
   timeRange: 1000,

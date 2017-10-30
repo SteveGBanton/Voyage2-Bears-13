@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { debounce, kebabCase } from 'lodash';
@@ -16,48 +15,31 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { orange500 } from 'material-ui/styles/colors';
 
 const signupFormRules = {
-  emailAddress: {
-    required: true,
-    maxLength: 40,
-    email: true,
-  },
   username: {
     required: true,
     maxLength: 22,
   },
-  password: {
-    required: true,
-    password: true,
-  },
 };
 
 const signupErrorMessages = {
-  emailAddress: {
-    required: "This field is required",
-    email: "Please enter a valid email",
-  },
   username: {
     required: "This field is required",
-  },
-  password: {
-    required: "This field is required",
-    password: "Keep your account safe: at least 9 characters required, at least one uppercase letter and one number. Special characters allowed: $%@#£€*?&",
+    maxLength: "Must be less than 22 characters",
   },
 };
 
-export default class Signup extends React.Component {
+export default class AddUsername extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.createUsername = debounce(this.createUsername.bind(this), 700);
     this.formValidate = this.formValidate.bind(this);
     this.editUsername = this.editUsername.bind(this);
-    this.editUsernameWithOrgName = this.editUsernameWithOrgName.bind(this);
 
     this.state = ({
       formErrors: {},
-      username: "",
-      usernameClean: "",
+      username: '',
+      usernameClean: '',
       userNameVerified: false,
       usernameLoading: false,
     });
@@ -107,8 +89,6 @@ export default class Signup extends React.Component {
 
   formValidate() {
     const input = {
-      emailAddress: this.emailAddress.input.value,
-      password: this.password.input.value,
       username: this.state.username,
     };
 
@@ -130,29 +110,15 @@ export default class Signup extends React.Component {
   handleSubmit() {
     const { history } = this.props;
 
-    const newAdmin = {
-      email: this.emailAddress.input.value,
-      password: this.password.input.value,
+    const updateUsername = {
       username: this.state.username,
     };
 
-    Meteor.call('users.createNewUser', newAdmin, (error, res) => {
+    Meteor.call('users.addUsername', updateUsername, (error, res) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
-        console.log(error);
       } else {
-        Meteor.loginWithPassword(
-          this.emailAddress.input.value,
-          this.password.input.value,
-          (loginError) => {
-            if (loginError) {
-              Bert.alert('Error Logging In', 'danger');
-            } else {
-              Meteor.call('users.sendVerificationEmail');
-              Bert.alert('Welcome!', 'success');
-              history.push(`/dashboard`);
-            }
-          });
+        Bert.alert('Thanks!', 'success');
       }
     });
   }
@@ -164,79 +130,13 @@ export default class Signup extends React.Component {
     this.setState({ "formErrors.username": "" });
   }
 
-  editUsernameWithOrgName() {
-    this.createUsername('orgName');
-    this.setState({ usernameLoading: true });
-    this.setState({ "formErrors.username": "" });
-  }
-
-  signUpFacebook() {
-    Meteor.loginWithFacebook({
-      requestPermissions: ['public_profile', 'email'],
-    }, (err) => {
-      if (err) {
-        console.log(err);
-        // handle error
-      } else {
-        console.log(Meteor.user());
-        // successful login!
-      }
-    });
-  }
-
-  signUpGoogle() {
-    Meteor.loginWithGoogle({
-      requestPermissions: ['email'],
-    }, (err) => {
-      if (err) {
-        console.log(err);
-        // handle error
-      } else {
-        console.log(Meteor.user());
-        // successful login!
-      }
-    });
-  }
-
   render() {
     return (
       <Paper className="Signup">
 
-        <h2>Create New Account</h2>
+        <h2>Please Choose A Username...</h2>
 
         <form onSubmit={event => event.preventDefault()}>
-
-          <RaisedButton
-            type="submit"
-            fullWidth
-            onClick={this.signUpFacebook}
-            style={{ margin: '10px 0 0 0' }}
-            backgroundColor="#3b5998"
-          >
-            <span style={{ color: 'white' }}>
-            Facebook Sign Up
-          </span>
-          </RaisedButton>
-
-          <RaisedButton
-            type="submit"
-            fullWidth
-            onClick={this.signUpGoogle}
-            style={{ margin: '10px 0 0 0' }}
-            backgroundColor="#EA4335"
-          >
-            <span style={{ color: 'white' }}>Google Sign Up</span>
-          </RaisedButton>
-
-          <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexFlow: 'row nowrap', marginTop: 20 }}>
-            <FontIcon className="material-icons">
-              remove
-            </FontIcon>
-            OR
-            <FontIcon className="material-icons">
-              remove
-            </FontIcon>
-          </div>
 
           <TextField
             name="orgID"
@@ -261,21 +161,6 @@ export default class Signup extends React.Component {
           : ''
         }
 
-          <TextField
-            name="username"
-            floatingLabelText="Email Address"
-            ref={(input) => { this.emailAddress = input; }}
-            errorText={this.state.formErrors.emailAddress}
-          /><br />
-
-          <TextField
-            name="password"
-            type="password"
-            floatingLabelText="Password"
-            ref={(password) => { this.password = password; }}
-            errorText={this.state.formErrors.password}
-          />
-
           <div>
 
             <RaisedButton
@@ -284,18 +169,12 @@ export default class Signup extends React.Component {
               onClick={this.formValidate}
               style={{ margin: "35px 0 35px 0" }}
             >
-          Sign Up
+          Confirm
         </RaisedButton>
 
           </div>
-
-          <p>Already have an account? <Link to="/login">Log In</Link>.</p>
 
         </form>
       </Paper>);
   }
 }
-
-Signup.propTypes = {
-  history: PropTypes.object.isRequired,
-};

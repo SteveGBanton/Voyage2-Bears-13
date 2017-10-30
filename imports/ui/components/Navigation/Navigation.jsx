@@ -30,7 +30,6 @@ const Navigation = (props) => {
   const { authenticated, history, user, toggleMenu } = props;
   return (
     <Toolbar style={styles.toolbar}>
-
       {authenticated
         ?
           <ToolbarGroup>
@@ -48,14 +47,12 @@ const Navigation = (props) => {
             <ToolbarTitle style={{ color: 'white', paddingLeft: '20px' }} text="Learn-Map Dashboard" />
           </ToolbarGroup>
       }
-
       <ToolbarGroup>
         {authenticated
           ?
             <Link to={`/dashboard`}><RaisedButton label="Dashboard" backgroundColor="#00796B" labelStyle={{ color: 'white' }} /></Link>
           : ''
         }
-
         <IconMenu
           menuStyle={{ width: "250px" }}
           onItemTouchTap={() => this.open = null}
@@ -65,22 +62,20 @@ const Navigation = (props) => {
             </IconButton>
           }
         >
-
-          {authenticated
+        {authenticated
           ? <MenuItem primaryText="Edit Profile" onClick={() => history.push(`/profile`)} />
           : ''
         }
 
-          {authenticated
+        {authenticated
           ? <MenuItem primaryText="Sign out" onClick={() => Meteor.logout()} />
-          : <MenuItem primaryText="Sign in" onClick={() => history.push('/login')} />
+          : <MenuItem primaryText="Sign in" onClick={() => { location.href = "/login"; }} />
         }
 
-          {authenticated
+        {authenticated
           ? ''
             : <MenuItem primaryText="Create Account" onClick={() => { location.href = "/signup"; }} />
         }
-
         </IconMenu>
       </ToolbarGroup>
     </Toolbar>

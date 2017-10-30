@@ -13,6 +13,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 
 import Navigation from '../../components/Navigation/Navigation';
+import AddUsername from '../Public/AddUsername/AddUsername';
 
 import './ClientAdmin.scss';
 
@@ -33,6 +34,12 @@ export default class ClientAdmin extends React.Component {
 
   render() {
     const { loggingIn, authenticated, component, user, ...rest } = this.props;
+    const usernameAskOrLogout = (authenticated && !user.username) ?
+      <AddUsername />
+      :
+      (<Redirect to="/logout" />);
+    console.log(user);
+    console.log(rest);
     return (
       <div className="dashboard">
         <Navigation {...this.props} toggleMenu={this.toggleMenu} />
@@ -118,9 +125,9 @@ export default class ClientAdmin extends React.Component {
           <Route
             {...rest}
             render={props => (
-              authenticated
+              authenticated && user.username
                 ? (React.createElement(component, { ...props, loggingIn, authenticated, user }))
-                : (<Redirect to="/logout" />)
+                : usernameAskOrLogout
             )}
           />
         </div>
