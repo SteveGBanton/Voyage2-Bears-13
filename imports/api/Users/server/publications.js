@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import LearningPaths from '../../LearningPath/LearningPath';
 
 Meteor.publish('users.editProfile', function usersProfile() {
   return Meteor.users.find(this.userId, {
@@ -7,6 +8,13 @@ Meteor.publish('users.editProfile', function usersProfile() {
       profile: 1,
       services: 1,
     },
+  });
+});
+
+Meteor.publish('users.getMentorName', function getMentor(_id, mentor) {
+  if (mentor !== LearningPaths.findOne({ _id }).mentor) return this.ready();
+  return Meteor.users.findOne({ _id: mentor }, {
+    fields: { username: 1 },
   });
 });
 

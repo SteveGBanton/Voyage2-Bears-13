@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
-import  SimpleSchema from 'simpl-schema';
+import SimpleSchema from 'simpl-schema';
 import LearningPaths from '../LearningPath';
 
 const FIND_ALL_OPTS = {
-  sort: {},
+  sort: { aggregatedVotes: 'desc' },
   skip: 0,
   limit: Infinity,
 };
