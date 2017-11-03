@@ -4,15 +4,18 @@ import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { debounce, kebabCase } from 'lodash';
 
-import RefreshIndicator from 'material-ui/RefreshIndicator';
-import customFormValidator from '../../../../modules/custom-form-validator';
-
-// material-ui
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import RaisedButton from 'material-ui/RaisedButton';
 import { orange500 } from 'material-ui/styles/colors';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
+
+import customFormValidator from '../../../modules/custom-form-validator';
+
+if (Meteor.isClient) {
+  import './AddUsername.scss';
+};
 
 const signupFormRules = {
   username: {
@@ -69,7 +72,7 @@ export default class AddUsername extends React.Component {
       checkUser(`${input}-${number}`);
     }).bind(this);
 
-      // check if exists already
+      // check if username exists already
     function checkUser(potentialUserName) {
       Meteor.call('users.checkUsername', { potentialUserName }, (error, count) => {
         if (error) {
@@ -132,49 +135,52 @@ export default class AddUsername extends React.Component {
 
   render() {
     return (
-      <Paper className="Signup">
+      <div className="add-username">
+        <Paper className="add-username-form">
 
-        <h2>Please Choose A Username...</h2>
+          <h2>Please Choose A Username...</h2>
 
-        <form onSubmit={event => event.preventDefault()}>
+          <form onSubmit={event => event.preventDefault()}>
 
-          <TextField
-            name="orgID"
-            floatingLabelText="Pick A Username"
-            errorStyle={(this.state.formErrors.username) ? {} : { color: orange500 }}
-            value={this.state.username}
-            onChange={this.editUsername}
-            ref={(input) => { this.username = input; }}
-            errorText={(this.state.formErrors.username) ? this.state.formErrors.username : ''}
-            maxLength="22"
-          />
+            <TextField
+              name="orgID"
+              floatingLabelText="Pick A Username"
+              errorStyle={(this.state.formErrors.username) ? {} : { color: orange500 }}
+              value={this.state.username}
+              onChange={this.editUsername}
+              ref={(input) => { this.username = input; }}
+              errorText={(this.state.formErrors.username) ? this.state.formErrors.username : ''}
+              maxLength="22"
+            />
 
-          {
-          (this.state.usernameLoading)
-          ? <RefreshIndicator
-            size={25}
-            left={10}
-            top={-55}
-            status="loading"
-            style={{ display: 'inline-block', position: 'relative' }}
-          />
-          : ''
-        }
+            {
+            (this.state.usernameLoading)
+            ? <RefreshIndicator
+              size={25}
+              left={10}
+              top={0}
+              status="loading"
+              style={{ display: 'inline-block', position: 'relative' }}
+            />
+            : ''
+          }
 
-          <div>
+            <div>
 
-            <RaisedButton
-              type="submit"
-              fullWidth
-              onClick={this.formValidate}
-              style={{ margin: "35px 0 35px 0" }}
-            >
-          Confirm
-        </RaisedButton>
+              <RaisedButton
+                type="submit"
+                fullWidth
+                onClick={this.formValidate}
+                style={{ margin: "35px 0 35px 0" }}
+              >
+            Confirm
+          </RaisedButton>
 
-          </div>
+            </div>
 
-        </form>
-      </Paper>);
+          </form>
+        </Paper>
+      </div>
+    );
   }
 }

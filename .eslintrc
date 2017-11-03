@@ -19,6 +19,7 @@
     "Bert": false,
     "document": false,
     "window": false,
-    "location": false
+    "location": false,
+    "chai": false
   }
 }

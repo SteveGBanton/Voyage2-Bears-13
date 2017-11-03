@@ -28,9 +28,10 @@ const styles = {
 
 const Navigation = (props) => {
   const { authenticated, history, user, toggleMenu } = props;
+  console.log(props)
   return (
     <Toolbar style={styles.toolbar}>
-      {authenticated
+      {authenticated && toggleMenu
         ?
           <ToolbarGroup>
             <MenuIcon
@@ -62,20 +63,22 @@ const Navigation = (props) => {
             </IconButton>
           }
         >
-        {authenticated
-          ? <MenuItem primaryText="Edit Profile" onClick={() => history.push(`/profile`)} />
-          : ''
-        }
 
-        {authenticated
-          ? <MenuItem primaryText="Sign out" onClick={() => Meteor.logout()} />
-          : <MenuItem primaryText="Sign in" onClick={() => { location.href = "/login"; }} />
-        }
+          {authenticated
+            ? <MenuItem primaryText="Edit Profile" onClick={() => history.push(`/profile`)} />
+            : ''
+          }
 
-        {authenticated
-          ? ''
-            : <MenuItem primaryText="Create Account" onClick={() => { location.href = "/signup"; }} />
-        }
+          {authenticated
+            ? <MenuItem primaryText="Sign out" onClick={() => Meteor.logout()} />
+            : <MenuItem primaryText="Sign in" onClick={() => { location.href = "/login"; }} />
+          }
+
+          {authenticated
+            ? ''
+              : <MenuItem primaryText="Create Account" onClick={() => { location.href = "/signup"; }} />
+          }
+
         </IconMenu>
       </ToolbarGroup>
     </Toolbar>

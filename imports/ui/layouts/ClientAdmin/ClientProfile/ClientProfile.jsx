@@ -20,14 +20,13 @@ import customFormValidator from '../../../../modules/custom-form-validator';
 import './ClientProfile.scss';
 
 const rules = {
-  // firstName: {
-  //   required: true,
-  // },
-  // lastName: {
-  //   required: true,
-  // },
+  firstName: {
+    maxLength: 20,
+  },
+  lastName: {
+    maxLength: 20,
+  },
   emailAddress: {
-    required: true,
     email: true,
   },
   newPassword: {
@@ -36,14 +35,13 @@ const rules = {
 };
 
 const messages = {
-  // firstName: {
-  //   required: 'What\'s your first name?',
-  // },
-  // lastName: {
-  //   required: 'What\'s your last name?',
-  // },
+  firstName: {
+    maxLength: 'Please enter no more than 20 characters',
+  },
+  lastName: {
+    maxLength: 'Please enter no more than 20 characters',
+  },
   emailAddress: {
-    required: 'Need an email address here.',
     email: 'Is this email address correct?',
   },
   currentPassword: {
@@ -74,9 +72,11 @@ class ClientProfile extends React.Component {
 
   getUserType(user) {
     const userToCheck = user;
-    delete userToCheck.services.resume;
-    const service = Object.keys(userToCheck.services)[0];
-    return service === 'password' ? 'password' : 'oauth';
+    if (userToCheck.emails && userToCheck.emails[0]) {
+      return 'password'
+    } else {
+      return 'oauth'
+    }
   }
 
   resendVerification() {
@@ -90,18 +90,18 @@ class ClientProfile extends React.Component {
   }
 
   formValidate() {
-    const input = {
-      emailAddress: this.emailAddress.input.value,
-      firstName: this.firstName.input.value,
-      lastName: this.lastName.input.value,
-      currentPassword: this.currentPassword.input.value,
-      newPassword: this.newPassword.input.value,
-    };
+    const input = {};
+
+    if (this.emailAddress && this.emailAddress.input.value) input.emailAddress = this.emailAddress.input.value;
+    if (this.firstName && this.firstName.input.value) input.firstName = this.firstName.input.value;
+    if (this.lastName && this.lastName.input.value) input.lastName = this.lastName.input.value;
+    if (this.currentPassword && this.currentPassword.input.value) input.currentPassword = this.currentPassword.input.value;
+    if (this.newPassword && this.newPassword.input.value) input.newPassword = this.newPassword.input.value;
 
     const formErrors = customFormValidator(input, rules, messages);
     let currentPwdRequired = true;
 
-    if (this.newPassword.input.value && this.currentPassword.input.value === '') {
+    if ((this.newPassword && this.newPassword.input.value) && (this.currentPassword && this.currentPassword.input.value) === '') {
       formErrors.currentPassword = 'Current password is required to change password';
     } else {
       currentPwdRequired = false;
@@ -122,7 +122,6 @@ class ClientProfile extends React.Component {
 
     const profile = {
       previousEmailAddress: currentEmail,
-      emailAddress: this.emailAddress.input.value,
       profile: {
         name: {
           first: this.firstName.input.value,
@@ -131,7 +130,9 @@ class ClientProfile extends React.Component {
       },
     };
 
-    if (this.emailAddress.input.value !== currentEmail) {
+    if (this.emailAddress && this.emailAddress.input.value) profile.emailAddress = this.emailAddress.input.value;
+
+    if (this.emailAddress && this.emailAddress.input.value !== currentEmail) {
       emailChanged = true;
     }
 
@@ -146,7 +147,7 @@ class ClientProfile extends React.Component {
       }
     });
 
-    if (this.newPassword.input.value) {
+    if (this.newPassword && this.newPassword.input.value) {
       Accounts.changePassword(
         this.currentPassword.input.value,
         this.newPassword.input.value,
@@ -163,14 +164,55 @@ class ClientProfile extends React.Component {
   }
 
   renderOAuthUser(loading, user) {
-    return (<div className="OAuthProfile">
-      {Object.keys(user.services).map(service => (
-        <div key={service} className={`LoggedInWith ${service}`}>
-          <div className="ServiceIcon"><i className={`fa fa-${service === 'facebook' ? 'facebook-official' : service}`} /></div>
-          <p>{`You're logged in with ${capitalize(service)} using the email address ${user.services[service].email}.`}</p>
-        </div>
-      ))}
-    </div>);
+    return (
+      <div className="OAuthProfile">
+        {Object.keys(user.services).map(service => (
+          <div key={service} className={`LoggedInWith ${service}`}>
+            <div className="ServiceIcon"><i className={`fa fa-${service === 'facebook' ? 'facebook-official' : service}`} /></div>
+            <p>{`You're logged in with ${capitalize(service)} using the email address ${user.services[service].email}.`}</p>
+          </div>
+        ))}
+
+        <form className="profile-edit" onSubmit={event => event.preventDefault()}>
+
+          <div className="profile-edit-1">
+
+            <TextField
+              defaultValue={user.username}
+              disabled
+              name="userName"
+              floatingLabelText="Username (cannot be changed)"
+            />
+
+            <TextField
+              defaultValue={(user.profile && user.profile.name && user.profile.name.first) ? user.profile.name.first : ''}
+              name="firstName"
+              floatingLabelText="First Name"
+              ref={(input) => { this.firstName = input; }}
+              errorText={this.state.formErrors.firstName}
+            /><br />
+
+            <TextField
+              defaultValue={(user.profile && user.profile.name && user.profile.name.last) ? user.profile.name.last : ''}
+              name="lastName"
+              floatingLabelText="Last Name"
+              ref={(input) => { this.lastName = input; }}
+              errorText={this.state.formErrors.lastName}
+            /><br />
+
+            <div style={{ marginTop: 20 }}>
+
+              <RaisedButton type="submit" onClick={this.formValidate}>Update</RaisedButton>
+
+            </div>
+
+          </div>
+
+
+
+        </form>
+      </div>
+  );
 
     // TODO - add other fields to OAuth user Profile.
   }
@@ -252,7 +294,7 @@ class ClientProfile extends React.Component {
 
           <div>
 
-            <RaisedButton type="submit" onClick={this.formValidate}>Edit Profile</RaisedButton>
+            <RaisedButton type="submit" onClick={this.formValidate}>Update</RaisedButton>
 
           </div>
 
@@ -269,7 +311,6 @@ class ClientProfile extends React.Component {
 
   render() {
     const { loading, user } = this.props;
-    console.log(this.props);
     return (<div className="Profile">
       <h1>Edit Profile</h1>
       {this.renderProfileForm(loading, user)}

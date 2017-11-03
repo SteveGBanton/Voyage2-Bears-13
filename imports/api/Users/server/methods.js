@@ -38,9 +38,9 @@ const usersSendVerificationEmail = new ValidatedMethod({
 const usersEditProfile = new ValidatedMethod({
   name: 'users.editProfile',
   validate: new SimpleSchema({
-    previousEmailAddress: { type: String },
-    emailAddress: { type: String },
-    profile: { type: Object },
+    previousEmailAddress: { type: String, optional: true },
+    emailAddress: { type: String, optional: true },
+    profile: { type: Object, optional: true },
     "profile.name": { type: Object, optional: true },
     "profile.name.first": { type: String, optional: true },
     "profile.name.last": { type: String, optional: true },
@@ -59,7 +59,7 @@ const usersAddUsername = new ValidatedMethod({
   validate: new SimpleSchema({
     username: { type: String },
   }).validator(),
-  run({username}) {
+  run({ username }) {
     try {
       Meteor.users.update(this.userId, {
         $set: {

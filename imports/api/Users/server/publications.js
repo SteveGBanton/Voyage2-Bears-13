@@ -20,6 +20,8 @@ Meteor.publish(null, function () {
       savedLearningPaths: 1,
       completedResources: 1,
       votes: 1,
+      'services.facebook.email': 1,
+      profile: 1,
     },
   };
   return Meteor.users.find({ _id: this.userId }, options);

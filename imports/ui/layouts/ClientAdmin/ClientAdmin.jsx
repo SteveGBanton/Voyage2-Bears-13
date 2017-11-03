@@ -13,7 +13,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 
 import Navigation from '../../components/Navigation/Navigation';
-import AddUsername from '../Public/AddUsername/AddUsername';
+import AddUsername from '../../components/AddUsername/AddUsername';
 
 import './ClientAdmin.scss';
 
@@ -38,89 +38,94 @@ export default class ClientAdmin extends React.Component {
       <AddUsername />
       :
       (<Redirect to="/logout" />);
-    console.log(user);
-    console.log(rest);
     return (
       <div className="dashboard">
+
         <Navigation {...this.props} toggleMenu={this.toggleMenu} />
-        <div className={(this.state.menuOpen) ? "dashboard-menu" : "dashboard-menu-closed"}>
-          <Drawer
-            className="dashboard-drawer"
-            containerStyle={{ width: '250px', zIndex: '1000', marginTop: '55px', backgroundColor: '#f9f9f9', paddingTop: "20px" }}
-            open={this.state.menuOpen}
-          >
-            <Link to={`/documents`}>
-              <MenuItem
-                primaryText="View Documents"
-                leftIcon={
-                  <RemoveRedEye
-                    color="#757575"
-                    style={{ paddingLeft: "10px" }}
-                  />}
-              />
-            </Link>
-            <Link to={`/documents/new`}>
-              <MenuItem
-                primaryText="New Document"
-                leftIcon={
-                  <PersonAdd
-                    color="#757575"
-                    style={{ paddingLeft: "10px" }}
-                  />}
-              />
-            </Link>
-            <Divider
-              style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
-            />
 
-            <Link to={`/create-path`}>
-              <MenuItem
-                primaryText="Create Learning Path"
-                leftIcon={
-                  <PersonAdd
-                    color="#757575"
-                    style={{ paddingLeft: "10px" }}
-                  />}
+        {(user && user.username) ?
+          <div className={(this.state.menuOpen) ? "dashboard-menu" : "dashboard-menu-closed"}>
+            <Drawer
+              className="dashboard-drawer"
+              containerStyle={{ width: '250px', zIndex: '1000', marginTop: '55px', backgroundColor: '#f9f9f9', paddingTop: "20px" }}
+              open={this.state.menuOpen}
+            >
+              <Link to={`/documents`}>
+                <MenuItem
+                  primaryText="View Documents"
+                  leftIcon={
+                    <RemoveRedEye
+                      color="#757575"
+                      style={{ paddingLeft: "10px" }}
+                    />}
+                />
+              </Link>
+              <Link to={`/documents/new`}>
+                <MenuItem
+                  primaryText="New Document"
+                  leftIcon={
+                    <PersonAdd
+                      color="#757575"
+                      style={{ paddingLeft: "10px" }}
+                    />}
+                />
+              </Link>
+              <Divider
+                style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
               />
-            </Link>
 
-            <Link to={`/my-paths`}>
-              <MenuItem
-                primaryText="View My Paths"
-                leftIcon={
-                  <RemoveRedEye
-                    color="#757575"
-                    style={{ paddingLeft: "10px" }}
-                  />}
-              />
-            </Link>
+              <Link to={`/create-path`}>
+                <MenuItem
+                  primaryText="Create Learning Path"
+                  leftIcon={
+                    <PersonAdd
+                      color="#757575"
+                      style={{ paddingLeft: "10px" }}
+                    />}
+                />
+              </Link>
 
-            <Link to={`/my-saved-paths`}>
-              <MenuItem
-                primaryText="View Saved Paths"
-                leftIcon={
-                  <RemoveRedEye
-                    color="#757575"
-                    style={{ paddingLeft: "10px" }}
-                  />}
-              />
-            </Link>
+              <Link to={`/my-paths`}>
+                <MenuItem
+                  primaryText="View My Paths"
+                  leftIcon={
+                    <RemoveRedEye
+                      color="#757575"
+                      style={{ paddingLeft: "10px" }}
+                    />}
+                />
+              </Link>
 
-            <Divider
-              style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
-            />
-            <Link to={`/learning-paths`}>
-              <MenuItem
-                primaryText="Learning Paths (Public)"
-                leftIcon={
-                  <RemoveRedEye
-                    color="#757575"
-                    style={{ paddingLeft: "10px" }}
-                  />}
+              <Link to={`/my-saved-paths`}>
+                <MenuItem
+                  primaryText="View Saved Paths"
+                  leftIcon={
+                    <RemoveRedEye
+                      color="#757575"
+                      style={{ paddingLeft: "10px" }}
+                    />}
+                />
+              </Link>
+
+              <Divider
+                style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
               />
-            </Link>
-          </Drawer>
-        </div>
+              <Link to={`/learning-paths`}>
+                <MenuItem
+                  primaryText="Learning Paths (Public)"
+                  leftIcon={
+                    <RemoveRedEye
+                      color="#757575"
+                      style={{ paddingLeft: "10px" }}
+                    />}
+                />
+              </Link>
+            </Drawer>
+          </div>
+          :
+          ''
+        }
+
         <div className={(this.state.menuOpen) ? "inner-route" : "inner-route-full"}>
           <Route
             {...rest}

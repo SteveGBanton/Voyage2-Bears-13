@@ -178,7 +178,7 @@ export default class Signup extends React.Component {
         console.log(err);
         // handle error
       } else {
-        console.log(Meteor.user());
+        console.log();
         // successful login!
       }
     });
@@ -248,18 +248,17 @@ export default class Signup extends React.Component {
             errorText={(this.state.formErrors.username) ? this.state.formErrors.username : ''}
             maxLength="22"
           />
-
           {
-          (this.state.usernameLoading)
-          ? <RefreshIndicator
-            size={25}
-            left={10}
-            top={-55}
-            status="loading"
-            style={{ display: 'inline-block', position: 'relative' }}
-          />
-          : ''
-        }
+            (this.state.usernameLoading)
+            ? <RefreshIndicator
+              size={25}
+              left={10}
+              top={0}
+              status="loading"
+              style={{ display: 'inline-block', position: 'relative' }}
+            />
+            : ''
+          }
 
           <TextField
             name="username"
