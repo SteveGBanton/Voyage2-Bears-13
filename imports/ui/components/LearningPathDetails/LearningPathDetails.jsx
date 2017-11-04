@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
+import { Link } from 'react-router-dom';
 import Card, { CardHeader, CardMedia, CardTitle, CardActions, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import { green500, red500 } from 'material-ui/styles/colors';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import './LearningPathDetails.scss';
 
@@ -13,7 +15,7 @@ const DESCRIPTION_LENGTH = 100;
 
 class LearningPathDetails extends React.Component {
   render() {
-    const { _id, title, mentorName, description, thumbnail, aggregatedVotes } = this.props;
+    const { _id, title, mentorInstance, description, thumbnail, aggregatedVotes } = this.props;
     return (
       <Card key={_id} className="lp-details">
         <div className="lp-container">
@@ -24,7 +26,17 @@ class LearningPathDetails extends React.Component {
           </CardHeader>
           <Divider />
           <div className="lp-content">
-            <CardTitle className="lp-title" title={title} />
+            <div className="lp-title">
+              <CardTitle className="lp-title-text" title={title} />{
+                Meteor.user.savedLearningPaths &&
+                Meteor.user.savedLearningPaths.indexOf(_id) !== -1 ?
+                  <FontIcon
+                    className="fa fa-check-circle lp-user-subscribed-icon"
+                    color={green500}
+                  /> :
+                  null
+              }
+            </div>
             <CardText className="lp-description">{
               description.length > DESCRIPTION_LENGTH ?
                 `${description.slice(0, DESCRIPTION_LENGTH)}...` :
@@ -50,11 +62,22 @@ class LearningPathDetails extends React.Component {
               />
             </CardActions>
             {/* A link that points to the mentor's user page */}
-            <div className="lp-mentor">
-              <CardText className="lp-mentor-name">
-                {/* <a href="#"> */}{mentorName}{/* </a> */}
-              </CardText>
-            </div>
+            {
+              mentorInstance ?
+                <div className="lp-mentor">
+                  <CardText className="lp-mentor-name">
+                    <Link to={`/users/${mentorInstance.username}`}>{mentorInstance.username}</Link> :
+                  </CardText>
+                  {
+                    mentorInstance._id === Meteor.userId ?
+                      <Link to={`/edit-path/${_id}`}>Edit</Link> :
+                      null
+                  }
+                </div> :
+                <div className="lp-mentor">
+                  <CardText className="lp-missing-mentor">Mentor not found</CardText>
+                </div>
+            }
             <div className="clear" />
           </div>
         </div>
@@ -63,18 +86,29 @@ class LearningPathDetails extends React.Component {
   }
 }
 
-export default createContainer(({ lp }) => {
+LearningPathDetails.propTypes = {
+  _id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  mentorInstance: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
+  description: PropTypes.string.isRequired,
+  thumbnail: PropTypes.string.isRequired,
+  aggregatedVotes: PropTypes.number.isRequired,
+};
+
+export default withTracker(({ lp }) => {
   const { _id, title, mentor, description, thumbnail, aggregatedVotes } = lp;
 
   Meteor.subscribe('users.getMentorName', mentor);
 
-  // const mentorInstance = Meteor.users.find({}).fetch()[0];
-  const mentorInstance = { username: 'John Doe' };
+  const mentorInstance = Meteor.users.find({}).fetch()[0];
 
   return {
     _id,
     title,
-    mentorName: mentorInstance.username,
+    mentorInstance,
     description,
     thumbnail,
     aggregatedVotes,

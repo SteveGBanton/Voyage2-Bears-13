@@ -1,3 +1,5 @@
+@import '../../stylesheets/colors';
+
 .lp-details {
   width: 300px;
 }
@@ -11,6 +13,10 @@
   }
 }
 
+.lp-title {
+  text-align: center;
+}
+
 .lp-description {
   border-bottom: 1px inset grey;
 }
@@ -22,4 +28,9 @@
 .lp-mentor {
   float: right;
   padding: 10px 0;
+}
+
+.lp-missing-mentor {
+  border: 1px dashed $danger;
+  color: $danger;
 }

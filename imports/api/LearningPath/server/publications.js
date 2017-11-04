@@ -3,13 +3,7 @@ import { check } from 'meteor/check';
 import SimpleSchema from 'simpl-schema';
 import LearningPaths from '../LearningPath';
 
-const FIND_ALL_OPTS = {
-  sort: { aggregatedVotes: 'desc' },
-  skip: 0,
-  limit: Infinity,
-};
-
-Meteor.publish('learning-paths', (query = {}, opts = FIND_ALL_OPTS) => {
+Meteor.publish('learning-paths', (query = {}, opts) => {
   try {
     return LearningPaths.find(query, opts);
   } catch (exception) {
@@ -20,7 +14,7 @@ Meteor.publish('learning-paths', (query = {}, opts = FIND_ALL_OPTS) => {
   }
 });
 
-Meteor.publish('learning-paths.mentor', (query = {}, opts = FIND_ALL_OPTS) => {
+Meteor.publish('learning-paths.mentor', (query = {}, opts) => {
   try {
     if (!this.userId) return this.ready();
     return LearningPaths.find({ mentor: this.userId, ...query }, opts);
