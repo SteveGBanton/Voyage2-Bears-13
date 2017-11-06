@@ -15,7 +15,7 @@ export default class SearchBar extends React.Component {
   }
 
   render() {
-    const { loading, doc, history, isUserOwner } = this.props;
+    // const { loading, doc, history, isUserOwner } = this.props;
     return (
       <div className="search-bar">
         {/* TODO Search form
@@ -24,12 +24,13 @@ export default class SearchBar extends React.Component {
       </div>
     );
   }
-
 }
 // TODO edit proptypes
+/*
 SearchBar.propTypes = {
   loading: PropTypes.bool.isRequired,
   doc: PropTypes.object,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
+*/

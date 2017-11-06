@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { withTracker } from 'react-meteor-data';
+import { createContainer } from 'meteor/react-meteor-data';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import Loading from '../Loading/Loading';
@@ -10,9 +10,11 @@ import LearningPathDetails from '../LearningPathDetails/LearningPathDetails';
 
 import LearningPaths from '../../../api/LearningPath/LearningPath';
 
+import './RenderLearningPathList.scss';
+
 const DEFAULT_LIMIT = 30;
 const FIND_ALL_OPTS = {
-  sort: { aggregatedVotes: 'desc' },
+  sort: ['aggregatedVotes', 'desc'],
   limit: DEFAULT_LIMIT,
 };
 
@@ -42,7 +44,7 @@ class RenderLearningPathList extends React.Component {
 
   renderLearningPathList() {
     return this.props.learningPathList.map(lp => (
-      <LearningPathDetails lp={lp} />
+      <li key={lp._id}><LearningPathDetails lp={lp} /></li>
     ));
   }
 
@@ -65,14 +67,14 @@ class RenderLearningPathList extends React.Component {
           Link on each to go to the individual learning path view.
 
         */}
-        {/* Let me know if you want this to be different */}
         <SearchBar />
 
         {
           !loading ?
-            <div className="lp-list">{this.renderLearningPathList()}</div> :
+            <ul className="lp-list">{this.renderLearningPathList()}</ul> :
             <Loading />
         }
+
         <RaisedButton label="Load More" disabled={loading} primary={!loading} />
       </div>
     );
@@ -88,13 +90,13 @@ RenderLearningPathList.propTypes = {
   ).isRequired,
 };
 
-export default withTracker(({ filter }) => {
+export default createContainer(({ filter }) => {
   const subscription = Meteor.subscribe('learning-paths', filter, FIND_ALL_OPTS);
-  const learningPathList = LearningPaths.find({});
+  const learningPathList = LearningPaths.find({}).fetch();
 
   return {
     defaultFilter: filter,
     loading: !subscription.ready(),
     learningPathList,
   };
-});
+}, RenderLearningPathList);

@@ -1,30 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
+import RenderLearningPathList from '../../../components/RenderLearningPathList/RenderLearningPathList';
 import Loading from '../../../components/Loading/Loading';
 
-class LearningPaths extends React.Component {
+export default class LearningPaths extends React.Component {
 
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { loading, doc, history, isUserOwner } = this.props;
+    // const { loading, doc, history, isUserOwner } = this.props;
     return (
-        (!loading) ?
-          <div className="all-learning-paths">
-            <h1>All Learning Paths</h1>
+      <div className="learning-paths">
+        {/* TODO Create learning path categories  */}
 
-            {/* TODO Create learning path categories  */}
-
-            {/* TODO Add categories users can browse */}
-
-          </div>
-          : ''
+        {/* TODO Add categories users can browse */}
+        <RenderLearningPathList filter={{}} />
+      </div>
     );
   }
 }
@@ -37,8 +34,8 @@ LearningPaths.propTypes = {
   // history: PropTypes.object.isRequired,
 };
 
-export default createContainer(({ match }) => {
-
+/*
+export default withTracker(({ match }) => {
   //
   // const subscription = Meteor.subscribe('learningPaths.viewOne', learningPathId);
   // const learningPath = LearningPaths.findOne(documentId)
@@ -49,3 +46,4 @@ export default createContainer(({ match }) => {
     // isUserOwner: (!!learningPath.owner)
   };
 }, LearningPaths);
+*/

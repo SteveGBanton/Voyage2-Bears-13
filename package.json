@@ -37,6 +37,7 @@
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-meteor": "^4.0.1",
     "eslint-plugin-react": "^7.0.1",
+    "faker": "^4.1.0",
     "namor": "^1.0.1",
     "sinon": "^4.0.1"
   }

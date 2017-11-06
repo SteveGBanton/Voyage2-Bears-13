@@ -5,6 +5,11 @@ import LearningPaths from '../LearningPath';
 
 Meteor.publish('learning-paths', (query = {}, opts) => {
   try {
+    check(query, Object);
+    check(opts, {
+      sort: Array,
+      limit: Number,
+    });
     return LearningPaths.find(query, opts);
   } catch (exception) {
     throw new Meteor.Error(
@@ -16,6 +21,11 @@ Meteor.publish('learning-paths', (query = {}, opts) => {
 
 Meteor.publish('learning-paths.mentor', (query = {}, opts) => {
   try {
+    check(query, Object);
+    check(opts, {
+      sort: Object,
+      limit: Number,
+    });
     if (!this.userId) return this.ready();
     return LearningPaths.find({ mentor: this.userId, ...query }, opts);
   } catch (exception) {

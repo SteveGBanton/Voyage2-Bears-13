@@ -5,9 +5,13 @@ import SimpleSchema from 'simpl-schema';
 import { MIN_TITLE_LENGTH, MAX_TITLE_LENGTH } from './LearningPath';
 
 const resourceSchema = new SimpleSchema({
+  _id: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Id,
+  },
+
   title: {
     type: String,
-    label: "Name of resource",
     min: MIN_TITLE_LENGTH,
     max: MAX_TITLE_LENGTH,
   },
