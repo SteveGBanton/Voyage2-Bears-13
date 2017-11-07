@@ -1,5 +1,12 @@
 import rateLimit from '../../modules/rate-limit';
 
+// Deny all client-side updates to user documents
+// Security issue in meteor
+// https://guide.meteor.com/accounts.html#dont-use-profile
+Meteor.users.deny({
+  update() { return true; }
+});
+
 const addSavedLearningPath = new ValidatedMethod({
   name: 'users.addSavedLearningPath',
   validate: new SimpleSchema({

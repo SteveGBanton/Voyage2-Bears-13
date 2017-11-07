@@ -1,41 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 
-import RaisedButton from 'material-ui/RaisedButton';
+import LearningPathEditor from '../../../components/LearningPathEditor/LearningPathEditor';
 
-import Loading from '../../../components/Loading/Loading';
-
-export default class CreatePath extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { loading, doc, history, isUserOwner } = this.props;
-    return (
-      <div className="create-path">
-        <h1>Create A Learning Path</h1>
-
-        {/* TODO
-
-          Form To Create Paths
-
-          Call
-
-          <LearningPathEditor />
-
-        */}
-
-      </div>
+const CreatePath = ({ history }) => (
+  <div className="create-path">
+    <h1>Create A Learning Path</h1>
+    <LearningPathEditor history={history} />
+  </div>
     );
-  }
-}
 
-// TODO edit proptypes
 CreatePath.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
+
+export default CreatePath;

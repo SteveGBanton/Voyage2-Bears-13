@@ -47,8 +47,6 @@ const ClientDashboard = ({ loading, documents, match, history, ...rest }) => (!l
 
     <h1>Documents</h1>
 
-    { console.log(rest) }
-
     <Tabs
       style={{ width: '100%', marginBottom: "30px" }}
       inkBarStyle={{ backgroundColor: '#00BCD4' }}

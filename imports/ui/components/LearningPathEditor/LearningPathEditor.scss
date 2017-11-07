@@ -1,0 +1,122 @@
+//////////////
+// Layout Rules
+//////////////
+
+.learning-path-editor {
+  display: flex;
+}
+
+.innerDroppable {
+  width: 95%;
+  margin: 5px;
+}
+
+// Layout of the initial input boxes
+.path-description-input {
+  display: flex;
+  flex-flow: column nowrap;
+  .paper-box {
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  .skill-input {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: baseline;
+    width: 310px;
+  }
+  .skill-list {
+    display: flex;
+    flex-flow: row wrap;
+    width: 300px;
+  }
+}
+
+//////////////
+// Modules
+//////////////
+
+.title-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row nowrap;
+}
+
+.title-box-left {
+  flex: 1 1;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  .heading-number {
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: 22px;
+    margin-right: 10px;
+    width: 30px;
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+  .heading-title {
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: 22px;
+    margin-right: 10px;
+  }
+}
+
+.title-box-button {
+  flex: 0 0;
+  margin-left: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: row wrap;
+}
+
+.fields-box {
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.draggableComponents {
+  border-radius: 2px;
+  user-select: none;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.dropped-components {
+  border-radius: 2px;
+  user-select: none;
+}
+
+.resource-buttons {
+  margin: 30px 30px 10px 20px;
+}
+
+//////////////
+// State Rules
+//////////////
+
+.grab-cursor {
+  &:hover {
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+  }
+}
+
+.grab-cursor:active {
+  cursor: -webkit-grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: grabbing !important;
+}

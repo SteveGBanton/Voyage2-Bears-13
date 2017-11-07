@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
+import rateLimit from '../../../modules/rate-limit';
+
 import getPrivateFile from '../../../modules/server/get-private-file';
 import parseMarkdown from '../../../modules/parse-markdown';
 
@@ -8,8 +10,14 @@ const remoteGet = new ValidatedMethod({
   validate: null,
   run(getThis) {
     try {
-      console.log('getting from ... ' + getThis);
-      return HTTP.get(getThis);
+      const options = {
+        timeout: 3000,
+        headers: {
+          ACCEPT: 'text/html',
+          USER_AGENT: 'Learn-Map/0.1',
+        },
+      };
+      return HTTP.get(getThis, options);
     } catch (e) {
       throw new Meteor.Error('500', e);
     }
@@ -23,4 +31,13 @@ Meteor.methods({
     check(fileName, String);
     return parseMarkdown(getPrivateFile(`pages/${fileName}.md`));
   },
+});
+
+rateLimit({
+  methods: [
+    'utility.remoteGet',
+    'utility.getPage',
+  ],
+  limit: 5,
+  timeRange: 1000,
 });
