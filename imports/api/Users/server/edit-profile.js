@@ -6,17 +6,25 @@ let action;
 
 const updateUser = (userId, { previousEmailAddress, emailAddress, profile }) => {
   try {
-    Meteor.users.update(userId, {
-      $set: {
-        'emails.0.address': emailAddress,
-        profile,
-      },
-    });
-
-    if (emailAddress !== previousEmailAddress) {
+    if (emailAddress) {
       Meteor.users.update(userId, {
         $set: {
-          'emails.0.verified': false,
+          'emails.0.address': emailAddress,
+        },
+      });
+
+      if (emailAddress !== previousEmailAddress) {
+        Meteor.users.update(userId, {
+          $set: {
+            'emails.0.verified': false,
+          },
+        });
+      }
+    }
+    if (profile) {
+      Meteor.users.update(userId, {
+        $set: {
+          profile
         },
       });
     }

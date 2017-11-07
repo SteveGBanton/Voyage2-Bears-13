@@ -1,5 +1,5 @@
-@import './colors';
 @import './reset';
+@import './colors';
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400');
 
@@ -103,14 +103,21 @@ label {
   width: 380px;
   padding: 40px;
   margin: 40px 0 100px 0;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+}
+
+.NotFound {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-top: 50px;
 }
 
 .Login {
   width: 380px;
   padding: 40px;
   margin: 40px 0 100px 0;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
 }
 
 .Logout {
@@ -137,7 +144,9 @@ label {
 }
 
 .profile-edit > * {
-  padding: 30px 60px 0 0;
+  display: inline-block;
+  padding: 30px 10px 0 0;
+  width: 340px;
 }
 
 .pointer {

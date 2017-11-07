@@ -7,12 +7,10 @@ import { withRouter } from 'react-router';
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
-import PersonAdd from 'material-ui/svg-icons/social/person-add';
 
 import './Navigation.scss';
 
@@ -26,15 +24,14 @@ const styles = {
     zIndex: 1200,
     boxShadow: 'rgba(0, 0, 0, 0.18) 0px 2px 6px, rgba(0, 0, 0, 0.18) 0px 3px 4px',
   },
-}
+};
 
-const Navigation = props => {
+const Navigation = (props) => {
   const { authenticated, history, user, toggleMenu } = props;
-  const current = ( authenticated ) ? user.current : '';
+  console.log(props)
   return (
     <Toolbar style={styles.toolbar}>
-
-      {authenticated
+      {authenticated && toggleMenu
         ?
           <ToolbarGroup>
             <MenuIcon
@@ -51,43 +48,42 @@ const Navigation = props => {
             <ToolbarTitle style={{ color: 'white', paddingLeft: '20px' }} text="Learn-Map Dashboard" />
           </ToolbarGroup>
       }
-
       <ToolbarGroup>
         {authenticated
           ?
             <Link to={`/dashboard`}><RaisedButton label="Dashboard" backgroundColor="#00796B" labelStyle={{ color: 'white' }} /></Link>
           : ''
         }
-
         <IconMenu
-          menuStyle={{width: "250px"}}
+          menuStyle={{ width: "250px" }}
           onItemTouchTap={() => this.open = null}
           iconButtonElement={
-            <IconButton touch={true}>
+            <IconButton touch>
               <NavigationExpandMoreIcon color="white" />
             </IconButton>
           }
         >
 
-        {authenticated
-          ? <MenuItem primaryText="Edit Profile" onClick={() => history.push(`/profile`)} />
-          : ''
-        }
+          {authenticated
+            ? <MenuItem primaryText="Edit Profile" onClick={() => history.push(`/profile`)} />
+            : ''
+          }
 
-        {authenticated
-          ? <MenuItem primaryText="Sign out" onClick={() => Meteor.logout()} />
-          : <MenuItem primaryText="Sign in" onClick={() => history.push('/login')} />
-        }
+          {authenticated
+            ? <MenuItem primaryText="Sign out" onClick={() => Meteor.logout()} />
+            : <MenuItem primaryText="Sign in" onClick={() => { location.href = "/login"; }} />
+          }
 
-        {authenticated
-          ? ''
-          : <MenuItem primaryText="Create Account" onClick={() => history.push('/signup')} />
-        }
+          {authenticated
+            ? ''
+              : <MenuItem primaryText="Create Account" onClick={() => { location.href = "/signup"; }} />
+          }
 
         </IconMenu>
       </ToolbarGroup>
     </Toolbar>
-)}
+  );
+};
 
 Navigation.defaultProps = {
   name: '',

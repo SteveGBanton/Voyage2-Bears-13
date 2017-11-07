@@ -8,8 +8,9 @@ import { Bert } from 'meteor/themeteorchef:bert';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import FontIcon from 'material-ui/FontIcon';
+import Paper from 'material-ui/Paper';
 
-import OAuthLoginButtons from '../../../components/OAuthLoginButtons/OAuthLoginButtons.jsx';
 import customFormValidator from '../../../../modules/custom-form-validator';
 
 const rules = {
@@ -74,12 +75,72 @@ class Login extends React.Component {
     });
   }
 
+  signUpFacebook() {
+    Meteor.loginWithFacebook({
+      requestPermissions: ['public_profile', 'email'],
+    }, (err) => {
+      if (err) {
+        console.log(err);
+        // handle error
+      } else {
+        console.log(Meteor.user());
+        // successful login!
+      }
+    });
+  }
+
+  signUpGoogle() {
+    Meteor.loginWithGoogle({
+      requestPermissions: ['email'],
+    }, (err) => {
+      if (err) {
+        console.log(err);
+        // handle error
+      } else {
+        console.log(Meteor.user());
+        // successful login!
+      }
+    });
+  }
+
   render() {
     return (
-      <div className="Login">
+      <Paper className="Login">
         <h2>Sign In To Your Account</h2>
 
         <form onSubmit={event => event.preventDefault()}>
+
+          <RaisedButton
+            type="submit"
+            fullWidth
+            onClick={this.signUpFacebook}
+            style={{ margin: '10px 0 0 0' }}
+            backgroundColor="#3b5998"
+          >
+            <span style={{ color: 'white' }}>
+            Facebook Sign In
+          </span>
+          </RaisedButton>
+
+          <RaisedButton
+            type="submit"
+            fullWidth
+            onClick={this.signUpGoogle}
+            style={{ margin: '10px 0 0 0' }}
+            backgroundColor="#EA4335"
+          >
+            <span style={{ color: 'white' }}>Google Sign In</span>
+          </RaisedButton>
+
+          <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexFlow: 'row nowrap', marginTop: 20 }}>
+            <FontIcon className="material-icons">
+              remove
+            </FontIcon>
+            OR
+            <FontIcon className="material-icons">
+              remove
+            </FontIcon>
+          </div>
 
           <TextField
             name="username"
@@ -108,7 +169,7 @@ class Login extends React.Component {
         </form>
 
 
-      </div>);
+      </Paper>);
   }
 }
 
@@ -117,47 +178,3 @@ Login.propTypes = {
 };
 
 export default Login;
-
-/* <Row>
-  <Col xs={12} sm={6} md={5} lg={4}>
-    <h4 className="page-header">Log In</h4>
-    <Row>
-      <Col xs={12}>
-        <OAuthLoginButtons
-          services={['facebook', 'github', 'google']}
-          emailMessage={{
-            offset: 100,
-            text: 'Log In with an Email Address',
-          }}
-        />
-      </Col>
-    </Row>
-    <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-      <FormGroup>
-        <ControlLabel>Email Address</ControlLabel>
-        <input
-          type="email"
-          name="emailAddress"
-          ref={emailAddress => (this.emailAddress = emailAddress)}
-          className="form-control"
-        />
-      </FormGroup>
-      <FormGroup>
-        <ControlLabel className="clearfix">
-          <span className="pull-left">Password</span>
-          <Link className="pull-right" to="/recover-password">Forgot password?</Link>
-        </ControlLabel>
-        <input
-          type="password"
-          name="password"
-          ref={password => (this.password = password)}
-          className="form-control"
-        />
-      </FormGroup>
-      <Button type="submit" bsStyle="success">Log In</Button>
-      <AccountPageFooter>
-        <p>{'Don\'t have an account?'} <Link to="/signup">Sign Up</Link>.</p>
-      </AccountPageFooter>
-    </form>
-  </Col>
-</Row> */

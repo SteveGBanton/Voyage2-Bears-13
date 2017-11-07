@@ -8,18 +8,7 @@ import LearningPathEditor from '../LearningPathEditor';
 
 chai.use(jsxChai);
 
-describe('my module', function () {
-  it('jsx test - div can be detected inside JSX', function () {
-    const actual = (
-      <div>
-        <h1>Hello!</h1>
-        <div>Included text</div>
-      </div>
-    );
-    const expected = <div>Included text</div>;
-    expect(actual).to.include(expected);
-  });
-
+describe('LearningPathEditor.jsx', function () {
   it('Learning path editor renders', function () {
 
     const renderer = TestUtils.createRenderer();
