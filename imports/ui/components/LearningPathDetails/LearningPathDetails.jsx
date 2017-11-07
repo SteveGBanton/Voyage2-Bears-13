@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import Card, { CardHeader, CardMedia, CardTitle, CardActions, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
+// import FontIcon from 'material-ui/FontIcon';
 import { green500, red500 } from 'material-ui/styles/colors';
 import { createContainer } from 'meteor/react-meteor-data';
 
@@ -49,7 +49,17 @@ class LearningPathDetails extends React.Component {
   }
 
   render() {
-    const { _id, title, mentorInstance, description, thumbnail, aggregatedVotes, voteVal } = this.props;
+    const {
+      _id,
+      title,
+      mentor,
+      mentorName,
+      description,
+      thumbnail,
+      aggregatedVotes,
+      voteVal,
+    } = this.props;
+
     return (
       <Card className="lp-details-container">
         <CardHeader className="lp-header">
@@ -108,23 +118,16 @@ class LearningPathDetails extends React.Component {
               onClick={this.downvoteHandler}
             />
           </CardActions>
-
-          {
-            mentorInstance ?
-              <div className="lp-mentor">
-                <CardText className="lp-mentor-name">
-                  <Link to={`/users/${mentorInstance.username}`}>{mentorInstance.username}</Link> :
-                </CardText>
-                {
-                  mentorInstance._id === Meteor.userId ?
-                    <Link to={`/edit-path/${_id}`}>Edit</Link> :
-                    null
-                }
-              </div> :
-              <div className="lp-mentor">
-                <CardText className="lp-missing-mentor">Mentor not found</CardText>
-              </div>
-          }
+          <div className="lp-mentor">
+            <CardText className="lp-mentor-name">
+              <Link to={`/users/${mentorName}`}>{mentorName}</Link>
+            </CardText>
+            {
+              mentor === Meteor.userId ?
+                <Link to={`/edit-path/${_id}`}>Edit</Link> :
+                null
+            }
+          </div>
           <div className="clear" />
         </div>
       </Card>
@@ -135,10 +138,8 @@ class LearningPathDetails extends React.Component {
 LearningPathDetails.propTypes = {
   _id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  /* mentorInstance: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-  }).isRequired, */
+  mentor: PropTypes.string.isRequired,
+  mentorName: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   thumbnail: PropTypes.string.isRequired,
   aggregatedVotes: PropTypes.number.isRequired,
@@ -146,11 +147,7 @@ LearningPathDetails.propTypes = {
 };
 
 export default createContainer(({ lp }) => {
-  const { _id, title, mentor, description, thumbnail, aggregatedVotes } = lp;
-
-  // Meteor.subscribe('users.getMentorName', mentor);
-
-  // const mentorInstance = Meteor.users.find({}).fetch()[0];
+  const { _id, title, mentor, mentorName, description, thumbnail, aggregatedVotes } = lp;
 
   const voteVal = learningPathsGetVote.call({ _id });
 
@@ -158,6 +155,7 @@ export default createContainer(({ lp }) => {
     _id,
     title,
     mentor,
+    mentorName,
     description,
     thumbnail,
     aggregatedVotes,

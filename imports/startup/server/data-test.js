@@ -45,6 +45,7 @@ Meteor.startup(() => {
         title: generateTitle(),
         description: faker.lorem.paragraphs(),
         mentor: Random.id(),
+        mentorName: faker.internet.userName(),
         thumbnail: faker.image.image(),
         aggregatedVotes: 0,
         voted: [],

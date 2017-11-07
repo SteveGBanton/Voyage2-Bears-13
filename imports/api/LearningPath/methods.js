@@ -8,8 +8,8 @@ import LearningPaths from './LearningPath';
 
 import { castVote, findVote } from './vote-method-helpers';
 
-const insertSchema = LearningPaths.schema.omit('_id', 'mentor', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
-const updateSchema = LearningPaths.schema.omit('mentor', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
+const insertSchema = LearningPaths.schema.omit('_id', 'mentor', 'mentorName', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
+const updateSchema = LearningPaths.schema.omit('mentor', 'mentorName', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
 const removeSchema = LearningPaths.schema.pick('_id');
 const voteSchema = LearningPaths.schema.pick('_id');
 
@@ -25,7 +25,13 @@ const learningPathsInsert = new ValidatedMethod({
   validate: insertSchema.validator(),
   run(lp) {
     try {
-      return LearningPaths.insert({ mentor: this.userId, aggregatedVotes: 0, voted: [], ...lp });
+      return LearningPaths.insert({
+        mentor: this.userId,
+        mentorName: this.user.userName,
+        aggregatedVotes: 0,
+        voted: [],
+        ...lp,
+      });
     } catch (exception) {
       throw new Meteor.Error(
         'learning-paths.insert.error',

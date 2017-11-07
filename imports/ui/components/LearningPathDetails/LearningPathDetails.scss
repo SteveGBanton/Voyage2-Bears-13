@@ -32,7 +32,10 @@
   padding: 10px 0;
 }
 
-.lp-missing-mentor {
-  border: 1px dashed $danger;
-  color: $danger;
+.lp-mentor-name {
+  a {
+    color: $gray-darker;
+    font-size: 10px;
+    text-decoration: none;
+  }
 }

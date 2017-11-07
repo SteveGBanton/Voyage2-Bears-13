@@ -41,6 +41,10 @@ LearningPaths.schema = new SimpleSchema({
     regEx: SimpleSchema.RegEx.Id,
   },
 
+  mentorName: {
+    type: String,
+  },
+
   description: {
     type: String,
   },

@@ -30,7 +30,7 @@ function getMockMentor(mockUser) {
 
 if (Meteor.isServer) {
   const userId = Random.id();
-  const mockUser = { userId };
+  const mockUser = { userId, user: { userName: 'john-doe' } };
   const mockMentor = getMockMentor(mockUser);
   const mockData = {
     title: 'Learning Path Title',
@@ -75,6 +75,7 @@ if (Meteor.isServer) {
       learningPathsInsert._execute(mockUser, mockData);
       sinon.assert.calledWith(insertStub, {
         mentor: mockUser.userId,
+        mentorName: mockUser.user.userName,
         aggregatedVotes: 0,
         voted: [],
         ...mockData,
