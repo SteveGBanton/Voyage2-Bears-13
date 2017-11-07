@@ -35,7 +35,7 @@ LearningPaths.schema = new SimpleSchema({
     min: MIN_TITLE_LENGTH,
     max: MAX_TITLE_LENGTH,
   },
-  
+
   mentor: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
@@ -55,7 +55,16 @@ LearningPaths.schema = new SimpleSchema({
   },
 
   voted: {
+    type: Array,
+  },
+  'voted.$': {
     type: Object,
+  },
+  'voted.$.userId': {
+    type: SimpleSchema.RegEx.Id,
+  },
+  'voted.$.voteVal': {
+    type: Number,
   },
 
   skills: {
@@ -73,7 +82,7 @@ LearningPaths.schema = new SimpleSchema({
     maxCount: MAX_RESOURCES,
   },
   'resources.$': {
-    type: resourceSchema.omit(['createdAt', 'updatedAt']),
+    type: resourceSchema.omit(['_id', 'createdAt', 'updatedAt']),
   },
 
   createdAt: {

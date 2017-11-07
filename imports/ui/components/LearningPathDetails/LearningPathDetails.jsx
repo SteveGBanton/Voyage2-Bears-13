@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
+import { Bert } from 'meteor/themeteorchef:bert';
 import { Link } from 'react-router-dom';
 import Card, { CardHeader, CardMedia, CardTitle, CardActions, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
@@ -11,11 +12,44 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import './LearningPathDetails.scss';
 
+import { learningPathsUpvote, learningPathsDownvote, learningPathsGetVote } from '../../../api/LearningPath/methods';
+
 const DESCRIPTION_LENGTH = 100;
 
 class LearningPathDetails extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.upvoteHandler = this.upvoteHandler.bind(this);
+    this.downvoteHandler = this.downvoteHandler.bind(this);
+  }
+
+  upvoteHandler() {
+    try {
+      learningPathsUpvote.call({ _id: this.props._id });
+    } catch (err) {
+      Bert.alert({
+        message: err.reason,
+        type: 'alert',
+        icon: 'fa-ban',
+      });
+    }
+  }
+
+  downvoteHandler() {
+    try {
+      learningPathsDownvote.call({ _id: this.props._id });
+    } catch (err) {
+      Bert.alert({
+        message: err.reason,
+        type: 'alert',
+        icon: 'fa-ban',
+      });
+    }
+  }
+
   render() {
-    const { _id, title, mentorInstance, description, thumbnail, aggregatedVotes } = this.props;
+    const { _id, title, mentorInstance, description, thumbnail, aggregatedVotes, voteVal } = this.props;
     return (
       <Card className="lp-details-container">
         <CardHeader className="lp-header">
@@ -56,18 +90,22 @@ class LearningPathDetails extends React.Component {
               className="lp-vote-btn lp-upvote"
               tooltip="Upvote!"
               iconClassName="fa fa-thumbs-o-up"
-              iconStyle={{
-                iconHoverColor: green500,
-              }}
+              iconStyle={voteVal === 1 ?
+                { color: green500 } :
+                { color: null }
+              }
+              onClick={this.upvoteHandler}
             />
             <span className="lp-vote-count">{aggregatedVotes}</span>
             <IconButton
               className="lp-vote-btn lp-downvote"
               tooltip="Downvote..."
               iconClassName="fa fa-thumbs-o-down"
-              iconStyle={{
-                iconHoverColor: red500,
-              }}
+              iconStyle={voteVal === -1 ?
+                { color: red500 } :
+                { color: null }
+              }
+              onClick={this.downvoteHandler}
             />
           </CardActions>
 
@@ -97,13 +135,14 @@ class LearningPathDetails extends React.Component {
 LearningPathDetails.propTypes = {
   _id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  /*mentorInstance: PropTypes.shape({
+  /* mentorInstance: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
-  }).isRequired,*/
+  }).isRequired, */
   description: PropTypes.string.isRequired,
   thumbnail: PropTypes.string.isRequired,
   aggregatedVotes: PropTypes.number.isRequired,
+  voteVal: PropTypes.number.isRequired,
 };
 
 export default createContainer(({ lp }) => {
@@ -113,6 +152,8 @@ export default createContainer(({ lp }) => {
 
   // const mentorInstance = Meteor.users.find({}).fetch()[0];
 
+  const voteVal = learningPathsGetVote.call({ _id });
+
   return {
     _id,
     title,
@@ -120,5 +161,6 @@ export default createContainer(({ lp }) => {
     description,
     thumbnail,
     aggregatedVotes,
+    voteVal,
   };
 }, LearningPathDetails);

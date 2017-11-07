@@ -6,14 +6,16 @@ import rateLimit from '../../modules/rate-limit';
 
 import LearningPaths from './LearningPath';
 
+import { castVote, findVote } from './vote-method-helpers';
+
 const insertSchema = LearningPaths.schema.omit('_id', 'mentor', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
 const updateSchema = LearningPaths.schema.omit('mentor', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
 const removeSchema = LearningPaths.schema.pick('_id');
 const voteSchema = LearningPaths.schema.pick('_id');
 
 const UNAUTH_ERROR_MSG = 'Unauthorized access';
-const NOT_LOGGED_IN_ERROR = 'You must be logged in to vote';
-const MENTOR_VOTE_ERROR_MSG = 'Cannot vote own created Learning Path';
+const NOT_LOGGED_IN_ERROR = 'You must be logged in to vote.';
+const MENTOR_VOTE_ERROR_MSG = 'Cannot vote own created Learning Path.';
 
 const UPVOTE_VALUE = 1;
 const DOWNVOTE_VALUE = -UPVOTE_VALUE;
@@ -23,7 +25,7 @@ const learningPathsInsert = new ValidatedMethod({
   validate: insertSchema.validator(),
   run(lp) {
     try {
-      return LearningPaths.insert({ mentor: this.userId, aggregatedVotes: 0, voted: {}, ...lp });
+      return LearningPaths.insert({ mentor: this.userId, aggregatedVotes: 0, voted: [], ...lp });
     } catch (exception) {
       throw new Meteor.Error(
         'learning-paths.insert.error',
@@ -68,35 +70,6 @@ const learningPathsRemove = new ValidatedMethod({
   },
 });
 
-// Helper used in voting methods
-function castVote(aggregatedVotes, voted, voteVal) {
-  let newVoted;
-  let newAggregatedVotes;
-
-  if (_.has(voted, this.userId)) { // The user has voted
-    if (voted[this.userId] === voteVal) { // Has voted this way
-      // The user's vote is removed and the value is subtracted from aggregated votes
-      newVoted = _.omit(voted, this.userId);
-      newAggregatedVotes = aggregatedVotes - voteVal;
-    } else if (voted[this.userId] === -voteVal) { // Has voted the opposite way
-      // The user's vote is changed to this value and the value is doubled and
-      // added to aggregated votes
-      newVoted = voted;
-      newVoted[this.userId] = voteVal;
-      newAggregatedVotes = aggregatedVotes + (voteVal * 2);
-    }
-  } else { // The user is voting without a vote already being casted
-    // The user is added to the voted users and the vote value is added to
-    // the aggregate vote
-    newVoted = voted;
-    newVoted[this.userId] = voteVal;
-    newAggregatedVotes = aggregatedVotes + voteVal;
-  }
-
-  // Return for immediate use in `LearningPaths.update`
-  return { voted: newVoted, aggregatedVotes: newAggregatedVotes };
-}
-
 const learningPathsUpvote = new ValidatedMethod({
   name: 'learning-paths.upvote',
   validate: voteSchema.validator(),
@@ -104,18 +77,16 @@ const learningPathsUpvote = new ValidatedMethod({
     try {
       const { _id } = lp;
       const { mentor, voted, aggregatedVotes } = LearningPaths.findOne({ _id });
+
+      if (!this.userId) throw new Meteor.Error('learning-paths.upvote.error', NOT_LOGGED_IN_ERROR);
       // Mentors cannot rate own LearningPath
-      if (!this.user) throw new Meteor.Error('learning-paths.upvote.error', NOT_LOGGED_IN_ERROR);
       if (mentor === this.userId) throw new Meteor.Error('learning-paths.upvote.error', MENTOR_VOTE_ERROR_MSG);
 
       const voteData = castVote.call(this, aggregatedVotes, voted, UPVOTE_VALUE);
 
-      LearningPaths.update({ _id }, { $set: { ...voteData } });
+      LearningPaths.update({ _id }, { $set: voteData });
     } catch (exception) {
-      throw new Meteor.Error(
-        'learning-paths.upvote.error',
-        `Error upvoting Learning Path. ${exception}`,
-      );
+      throw exception;
     }
   },
 });
@@ -127,18 +98,34 @@ const learningPathsDownvote = new ValidatedMethod({
     try {
       const { _id } = lp;
       const { mentor, voted, aggregatedVotes } = LearningPaths.findOne({ _id });
+
+      if (!this.userId) throw new Meteor.Error('learning-paths.upvote.error', NOT_LOGGED_IN_ERROR);
       // Mentors cannot rate own LearningPath
-      if (!this.user) throw new Meteor.Error('learning-paths.upvote.error', NOT_LOGGED_IN_ERROR);
       if (mentor === this.userId) throw new Meteor.Error('learning-paths.upvote.error', MENTOR_VOTE_ERROR_MSG);
 
       const voteData = castVote.call(this, aggregatedVotes, voted, DOWNVOTE_VALUE);
 
       LearningPaths.update({ _id }, { $set: { ...voteData } });
     } catch (exception) {
-      throw new Meteor.Error(
-        'learning-paths.upvote.error',
-        `Error upvoting Learning Path. ${exception}`,
-      );
+      throw exception;
+    }
+  },
+});
+
+const learningPathsGetVote = new ValidatedMethod({
+  name: 'learning-paths.get-vote',
+  validate: voteSchema.validator(),
+  run(lp) {
+    try {
+      if (!this.userId) return 0;
+      const { _id } = lp;
+      const { voted } = LearningPaths.findOne({ _id });
+      const index = findVote(voted, this.userId);
+
+      if (index !== -1) return voted[index].voteVal;
+      return 0;
+    } catch (exception) {
+      throw exception;
     }
   },
 });
@@ -149,6 +136,7 @@ export {
   learningPathsRemove,
   learningPathsUpvote,
   learningPathsDownvote,
+  learningPathsGetVote,
 };
 
 rateLimit({

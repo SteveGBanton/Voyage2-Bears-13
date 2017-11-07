@@ -30,7 +30,7 @@ function getMockMentor(mockUser) {
 
 if (Meteor.isServer) {
   const userId = Random.id();
-  const mockUser = { user: { _id: userId }, userId };
+  const mockUser = { userId };
   const mockMentor = getMockMentor(mockUser);
   const mockData = {
     title: 'Learning Path Title',
@@ -39,12 +39,14 @@ if (Meteor.isServer) {
     skills: ['JS', 'HTML', 'CSS'],
     resources: [
       {
+        _id: Random.id(),
         title: 'Resource Title1',
         description: 'Resource description1',
         url: 'https://fakeurl1.com',
         thumbnail: 'https://fakeurl1.com/thumbnail.jpg',
       },
       {
+        _id: Random.id(),
         title: 'Resource Title2',
         description: 'Resource description2',
         url: 'https://fakeurl2.com',
@@ -74,7 +76,7 @@ if (Meteor.isServer) {
       sinon.assert.calledWith(insertStub, {
         mentor: mockUser.userId,
         aggregatedVotes: 0,
-        voted: {},
+        voted: [],
         ...mockData,
       });
     });
@@ -149,9 +151,9 @@ if (Meteor.isServer) {
 
     it('should increase the aggregatedVotes', function () {
       const lpId = { _id: Random.id() };
-      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: {}, aggregatedVotes: 0 });
+      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: [], aggregatedVotes: 0 });
 
-      const expected = { voted: { [mockUser.userId]: 1 }, aggregatedVotes: 1 };
+      const expected = { voted: [{ userId: mockUser.userId, voteVal: 1 }], aggregatedVotes: 1 };
 
       learningPathsUpvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -161,11 +163,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: { [mockUser.userId]: 1 },
+        voted: [{ userId: mockUser.userId, voteVal: 1 }],
         aggregatedVotes: 1,
       });
 
-      const expected = { voted: {}, aggregatedVotes: 0 };
+      const expected = { voted: [], aggregatedVotes: 0 };
 
       learningPathsUpvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -175,11 +177,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: { [mockUser.userId]: -1 },
+        voted: [{ userId: mockUser.userId, voteVal: -1 }],
         aggregatedVotes: -1,
       });
 
-      const expected = { voted: { [mockUser.userId]: 1 }, aggregatedVotes: 1 };
+      const expected = { voted: [{ userId: mockUser.userId, voteVal: 1 }], aggregatedVotes: 1 };
 
       learningPathsUpvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -223,9 +225,9 @@ if (Meteor.isServer) {
 
     it('should decrease the aggregatedVotes', function () {
       const lpId = { _id: Random.id() };
-      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: {}, aggregatedVotes: 0 });
+      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: [], aggregatedVotes: 0 });
 
-      const expected = { voted: { [mockUser.userId]: -1 }, aggregatedVotes: -1 };
+      const expected = { voted: [{ userId: mockUser.userId, voteVal: -1 }], aggregatedVotes: -1 };
 
       learningPathsDownvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -235,11 +237,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: { [mockUser.userId]: -1 },
+        voted: [{ userId: mockUser.userId, voteVal: -1 }],
         aggregatedVotes: -1,
       });
 
-      const expected = { voted: {}, aggregatedVotes: 0 };
+      const expected = { voted: [], aggregatedVotes: 0 };
 
       learningPathsDownvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -249,11 +251,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: { [mockUser.userId]: 1 },
+        voted: [{ userId: mockUser.userId, voteVal: 1 }],
         aggregatedVotes: 1,
       });
 
-      const expected = { voted: { [mockUser.userId]: -1 }, aggregatedVotes: -1 };
+      const expected = { voted: [{ userId: mockUser.userId, voteVal: -1 }], aggregatedVotes: -1 };
 
       learningPathsDownvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });

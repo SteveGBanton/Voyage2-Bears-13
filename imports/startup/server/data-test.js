@@ -47,7 +47,7 @@ Meteor.startup(() => {
         mentor: Random.id(),
         thumbnail: faker.image.image(),
         aggregatedVotes: 0,
-        voted: {},
+        voted: [],
         skills: generateSkills(),
         resources: generateResources(),
       });
