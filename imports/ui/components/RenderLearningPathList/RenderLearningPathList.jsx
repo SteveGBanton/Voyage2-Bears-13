@@ -30,6 +30,8 @@ class RenderLearningPathList extends React.Component {
       */
       page: 1,
     };
+
+    this.loadMoreHandler = this.loadMoreHandler.bind(this);
   }
 
   loadMoreHandler() {
@@ -76,7 +78,12 @@ class RenderLearningPathList extends React.Component {
             <Loading />
         }
 
-        <RaisedButton label="Load More" disabled={loading} primary={!loading} />
+        <RaisedButton
+          label="Load More"
+          disabled={loading}
+          primary={!loading}
+          onClick={this.loadMoreHandler}
+        />
       </div>
     );
   }

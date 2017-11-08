@@ -39,7 +39,7 @@ function generateResources() {
 Meteor.startup(() => {
   LearningPaths.remove({});
   if (LearningPaths.find({}).count() === 0) {
-    const COLLECTION_NUMBER = 9;
+    const COLLECTION_NUMBER = 60;
     _.times(COLLECTION_NUMBER, () => {
       LearningPaths.insert({
         title: generateTitle(),
