@@ -70,12 +70,14 @@ class LearningPathDetails extends React.Component {
 
     return (
       <Card className="lp-details-container">
-        <CardHeader className="lp-header">
-          <CardMedia className="lp-media">
-            <img className="lp-thumbnail" src={thumbnail} alt={title} />
-          </CardMedia>
-        </CardHeader>
-        <Divider />
+        <Link to={`/learning-paths/${_id}`}>
+          <CardHeader className="lp-header">
+            <CardMedia className="lp-media">
+              <img className="lp-thumbnail" src={thumbnail} alt={title} />
+            </CardMedia>
+          </CardHeader>
+          <Divider />
+        </Link>
         <div className="lp-content">
           <div className="lp-title">
             <CardTitle

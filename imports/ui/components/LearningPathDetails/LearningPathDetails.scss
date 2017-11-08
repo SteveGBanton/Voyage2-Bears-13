@@ -4,6 +4,11 @@
   height: 440px;
   margin: 20px;
   width: 300px;
+
+  a {
+    color: $gray-dark;
+    text-decoration: none;
+  }
 }
 
 .lp-media {
