@@ -1,7 +1,7 @@
 @import '../../stylesheets/colors';
 
 .lp-details-container {
-  height: 460px;
+  height: 440px;
   margin: 20px;
   width: 300px;
 }
@@ -21,6 +21,12 @@
 
 .lp-description {
   border-bottom: 1px inset grey;
+}
+
+.lp-skills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .lp-votes {
