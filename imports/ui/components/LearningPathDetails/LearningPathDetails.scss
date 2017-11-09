@@ -41,12 +41,14 @@
 .lp-mentor {
   float: right;
   padding: 10px 0;
-}
 
-.lp-mentor-name {
   a {
     color: $gray-darker;
     font-size: 10px;
     text-decoration: none;
+  }
+
+  .lp-edit-link {
+    color: $cb-red;
   }
 }

@@ -39,7 +39,10 @@ Meteor.publish('learning-paths.mentor', (query = {}, opts) => {
 Meteor.publish('learning-paths.view', (lpId) => {
   try {
     check(lpId, SimpleSchema.RegEx.Id);
-    return LearningPaths.findOne({ _id: lpId });
+    return LearningPaths.find({ _id: { $eq: lpId } }, {
+      sort: ['_id', 'desc'],
+      limit: 1,
+    });
   } catch (exception) {
     throw new Meteor.Error(
       'learning-paths.view.error',
@@ -53,7 +56,7 @@ Meteor.publish('learning-paths.resource', (lpId, resourceId) => {
   try {
     check(lpId, SimpleSchema.RegEx.Id);
     check(resourceId, SimpleSchema.RegEx.Id);
-    return LearningPaths.findOne({
+    return LearningPaths.find({
       _id: lpId,
       resources: {
         $elemMatch: { $eq: resourceId },

@@ -27,6 +27,7 @@ const resourceSchema = new SimpleSchema({
 
   thumbnail: {
     type: String,
+    required: false,
     regEx: SimpleSchema.RegEx.Url,
   },
 

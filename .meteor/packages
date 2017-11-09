@@ -38,3 +38,4 @@ practicalmeteor:faker
 practicalmeteor:mocha
 practicalmeteor:chai
 react-meteor-data
+meteortoys:allthings

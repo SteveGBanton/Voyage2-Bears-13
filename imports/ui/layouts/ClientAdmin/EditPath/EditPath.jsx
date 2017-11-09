@@ -38,7 +38,10 @@ export default createContainer(({ match }) => {
   // console.log(LearningPaths.find({}).fetch());
 
   const pathId = match.params.learningPathId;
-  const subscription = Meteor.subscribe('learning-paths.view', pathId);
+  const subscription = Meteor.subscribe('learning-paths', { _id: { $eq: pathId } }, {
+    sort: ['_id', 'desc'],
+    limit: 1,
+  });
   const learningPathDoc = LearningPaths.findOne(pathId);
 
   return {

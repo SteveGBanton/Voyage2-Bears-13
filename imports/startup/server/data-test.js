@@ -1,4 +1,4 @@
-import { Random } from 'meteor/random';
+/* import { Random } from 'meteor/random';
 import faker from 'faker';
 import _ from 'lodash';
 
@@ -39,7 +39,7 @@ function generateResources() {
 Meteor.startup(() => {
   LearningPaths.remove({});
   if (LearningPaths.find({}).count() === 0) {
-    const COLLECTION_NUMBER = 60;
+    const COLLECTION_NUMBER = 3;
     _.times(COLLECTION_NUMBER, () => {
       LearningPaths.insert({
         title: generateTitle(),
@@ -55,3 +55,4 @@ Meteor.startup(() => {
     });
   }
 });
+*/

@@ -51,6 +51,7 @@ LearningPaths.schema = new SimpleSchema({
 
   thumbnail: {
     type: String,
+    required: false,
     regEx: SimpleSchema.RegEx.Url,
   },
 

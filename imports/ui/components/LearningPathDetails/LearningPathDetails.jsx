@@ -127,12 +127,12 @@ class LearningPathDetails extends React.Component {
           <div className="lp-mentor">
             <CardText className="lp-mentor-name">
               <Link to={`/users/${mentorName}`}>{mentorName}</Link>
+              {
+                mentor === Meteor.userId() ?
+                  <span> | <Link className="lp-edit-link" to={`/learning-path/${_id}/edit`}>Edit</Link></span> :
+                  null
+              }
             </CardText>
-            {
-              mentor === Meteor.userId ?
-                <Link className="lp-edit-link" to={`/edit-path/${_id}`}>Edit</Link> :
-                null
-            }
           </div>
           <div className="clear" />
         </div>
@@ -147,9 +147,13 @@ LearningPathDetails.propTypes = {
   mentor: PropTypes.string.isRequired,
   mentorName: PropTypes.string.isRequired,
   skills: PropTypes.arrayOf(PropTypes.string).isRequired,
-  thumbnail: PropTypes.string.isRequired,
+  thumbnail: PropTypes.string,
   aggregatedVotes: PropTypes.number.isRequired,
   voteVal: PropTypes.number.isRequired,
+};
+
+LearningPathDetails.defaultProps = {
+  thumbnail: "",
 };
 
 export default createContainer(({ lp }) => {

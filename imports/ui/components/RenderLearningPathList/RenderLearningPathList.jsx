@@ -13,6 +13,11 @@ import LearningPaths from '../../../api/LearningPath/LearningPath';
 
 import './RenderLearningPathList.scss';
 
+// DELETE BELOW
+import faker from 'faker';
+import { Random } from 'meteor/random';
+// DELETE ABOVE
+
 const DEFAULT_LIMIT = 30;
 const FIND_ALL_OPTS = {
   sort: ['aggregatedVotes', 'desc'],

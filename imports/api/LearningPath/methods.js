@@ -27,7 +27,7 @@ const learningPathsInsert = new ValidatedMethod({
     try {
       return LearningPaths.insert({
         mentor: this.userId,
-        mentorName: this.user.userName,
+        mentorName: Meteor.user().username,
         aggregatedVotes: 0,
         voted: [],
         ...lp,

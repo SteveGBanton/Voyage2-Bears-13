@@ -30,7 +30,7 @@ function getMockMentor(mockUser) {
 
 if (Meteor.isServer) {
   const userId = Random.id();
-  const mockUser = { userId, user: { userName: 'john-doe' } };
+  const mockUser = { userId, user: { username: 'john-doe' } };
   const mockMentor = getMockMentor(mockUser);
   const mockData = {
     title: 'Learning Path Title',
@@ -66,16 +66,19 @@ if (Meteor.isServer) {
 
   describe('learningPathsInsert', function () {
     let insertStub;
+    let usernameStub;
 
     beforeEach(function () {
       insertStub = sandbox.stub(LearningPaths, 'insert');
+      usernameStub = sandbox.stub(Meteor, 'user');
     });
 
     it('should call LearningPaths.insert', function () {
+      usernameStub.returns({ username: 'john-doe' });
       learningPathsInsert._execute(mockUser, mockData);
       sinon.assert.calledWith(insertStub, {
         mentor: mockUser.userId,
-        mentorName: mockUser.user.userName,
+        mentorName: mockUser.user.username,
         aggregatedVotes: 0,
         voted: [],
         ...mockData,
