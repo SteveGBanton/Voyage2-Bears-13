@@ -1,4 +1,4 @@
-/* import { Random } from 'meteor/random';
+import { Random } from 'meteor/random';
 import faker from 'faker';
 import _ from 'lodash';
 
@@ -48,11 +48,10 @@ Meteor.startup(() => {
         mentorName: faker.internet.userName(),
         thumbnail: faker.image.image(),
         aggregatedVotes: 0,
-        voted: [],
+        voted: {},
         skills: generateSkills(),
         resources: generateResources(),
       });
     });
   }
 });
-*/

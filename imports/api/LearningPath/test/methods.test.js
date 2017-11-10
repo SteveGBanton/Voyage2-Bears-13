@@ -80,7 +80,7 @@ if (Meteor.isServer) {
         mentor: mockUser.userId,
         mentorName: mockUser.user.username,
         aggregatedVotes: 0,
-        voted: [],
+        voted: {},
         ...mockData,
       });
     });
@@ -155,9 +155,9 @@ if (Meteor.isServer) {
 
     it('should increase the aggregatedVotes', function () {
       const lpId = { _id: Random.id() };
-      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: [], aggregatedVotes: 0 });
+      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: {}, aggregatedVotes: 0 });
 
-      const expected = { voted: [{ userId: mockUser.userId, voteVal: 1 }], aggregatedVotes: 1 };
+      const expected = { voted: { [mockUser.userId]: 1 }, aggregatedVotes: 1 };
 
       learningPathsUpvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -167,11 +167,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: [{ userId: mockUser.userId, voteVal: 1 }],
+        voted: { [mockUser.userId]: 1 },
         aggregatedVotes: 1,
       });
 
-      const expected = { voted: [], aggregatedVotes: 0 };
+      const expected = { voted: { [mockUser.userId]: 0 }, aggregatedVotes: 0 };
 
       learningPathsUpvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -181,11 +181,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: [{ userId: mockUser.userId, voteVal: -1 }],
+        voted: { [mockUser.userId]: -1 },
         aggregatedVotes: -1,
       });
 
-      const expected = { voted: [{ userId: mockUser.userId, voteVal: 1 }], aggregatedVotes: 1 };
+      const expected = { voted: { [mockUser.userId]: 1 }, aggregatedVotes: 1 };
 
       learningPathsUpvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -200,7 +200,7 @@ if (Meteor.isServer) {
       });
 
       assert.throws(() => {
-        learningPathsUpvote._execute({ user: null }, lpId);
+        learningPathsUpvote._execute({ userId: null }, lpId);
       }, 'You must be logged in to vote');
     });
 
@@ -213,7 +213,7 @@ if (Meteor.isServer) {
       });
 
       assert.throws(() => {
-        learningPathsUpvote._execute({ user: { _id: mockMentor }, userId: mockMentor }, lpId);
+        learningPathsUpvote._execute({ userId: mockMentor }, lpId);
       }, 'Cannot vote own created Learning Path');
     });
   });
@@ -229,9 +229,9 @@ if (Meteor.isServer) {
 
     it('should decrease the aggregatedVotes', function () {
       const lpId = { _id: Random.id() };
-      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: [], aggregatedVotes: 0 });
+      findStub.withArgs(lpId).returns({ mentor: mockMentor, voted: {}, aggregatedVotes: 0 });
 
-      const expected = { voted: [{ userId: mockUser.userId, voteVal: -1 }], aggregatedVotes: -1 };
+      const expected = { voted: { [mockUser.userId]: -1 }, aggregatedVotes: -1 };
 
       learningPathsDownvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -241,11 +241,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: [{ userId: mockUser.userId, voteVal: -1 }],
+        voted: { [mockUser.userId]: -1 },
         aggregatedVotes: -1,
       });
 
-      const expected = { voted: [], aggregatedVotes: 0 };
+      const expected = { voted: { [mockUser.userId]: 0 }, aggregatedVotes: 0 };
 
       learningPathsDownvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -255,11 +255,11 @@ if (Meteor.isServer) {
       const lpId = { _id: Random.id() };
       findStub.withArgs(lpId).returns({
         mentor: mockMentor,
-        voted: [{ userId: mockUser.userId, voteVal: 1 }],
+        voted: { [mockUser.userId]: 1 },
         aggregatedVotes: 1,
       });
 
-      const expected = { voted: [{ userId: mockUser.userId, voteVal: -1 }], aggregatedVotes: -1 };
+      const expected = { voted: { [mockUser.userId]: -1 }, aggregatedVotes: -1 };
 
       learningPathsDownvote._execute(mockUser, lpId);
       sinon.assert.calledWith(updateStub, lpId, { $set: expected });
@@ -274,7 +274,7 @@ if (Meteor.isServer) {
       });
 
       assert.throws(() => {
-        learningPathsDownvote._execute({ user: null }, lpId);
+        learningPathsDownvote._execute({ userId: null }, lpId);
       }, 'You must be logged in to vote');
     });
 
@@ -287,7 +287,7 @@ if (Meteor.isServer) {
       });
 
       assert.throws(() => {
-        learningPathsDownvote._execute({ user: { _id: mockMentor }, userId: mockMentor }, lpId);
+        learningPathsDownvote._execute({ userId: mockMentor }, lpId);
       }, 'Cannot vote own created Learning Path');
     });
   });

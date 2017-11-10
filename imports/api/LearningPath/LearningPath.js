@@ -60,16 +60,7 @@ LearningPaths.schema = new SimpleSchema({
   },
 
   voted: {
-    type: Array,
-  },
-  'voted.$': {
     type: Object,
-  },
-  'voted.$.userId': {
-    type: SimpleSchema.RegEx.Id,
-  },
-  'voted.$.voteVal': {
-    type: Number,
   },
 
   skills: {
@@ -105,6 +96,6 @@ LearningPaths.schema = new SimpleSchema({
   },
 });
 
-LearningPaths.attachSchema(LearningPaths.schema.omit('_id'));
+// LearningPaths.attachSchema(LearningPaths.schema.omit('_id'));
 
 export default LearningPaths;

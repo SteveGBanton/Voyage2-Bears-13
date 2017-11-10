@@ -38,7 +38,7 @@ Meteor.publish('users.getSingle', function (username) {
       completedResources: 1,
       votes: 1,
       username: 1,
-      profile: 1
+      profile: 1,
     },
   };
 

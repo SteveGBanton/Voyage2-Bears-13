@@ -6,7 +6,7 @@ import rateLimit from '../../modules/rate-limit';
 
 import LearningPaths from './LearningPath';
 
-import { castVote, findVote } from './vote-method-helpers';
+import castVote from '../../modules/vote-method-helpers';
 
 const insertSchema = LearningPaths.schema.omit('_id', 'mentor', 'mentorName', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
 const updateSchema = LearningPaths.schema.omit('mentor', 'mentorName', 'aggregatedVotes', 'voted', 'createdAt', 'updatedAt');
@@ -29,7 +29,7 @@ const learningPathsInsert = new ValidatedMethod({
         mentor: this.userId,
         mentorName: Meteor.user().username,
         aggregatedVotes: 0,
-        voted: [],
+        voted: {},
         ...lp,
       });
     } catch (exception) {
@@ -88,9 +88,17 @@ const learningPathsUpvote = new ValidatedMethod({
       // Mentors cannot rate own LearningPath
       if (mentor === this.userId) throw new Meteor.Error('learning-paths.upvote.error', MENTOR_VOTE_ERROR_MSG);
 
-      const voteData = castVote.call(this, aggregatedVotes, voted, UPVOTE_VALUE);
+      const { voteContext, newAggregatedVotes } = castVote.call(
+        this,
+        aggregatedVotes,
+        voted,
+        UPVOTE_VALUE,
+      );
 
-      LearningPaths.update({ _id }, { $set: voteData });
+      LearningPaths.update(
+        { _id },
+        { $set: { aggregatedVotes: newAggregatedVotes, voted: { ...voted, ...voteContext } } },
+      );
     } catch (exception) {
       throw exception;
     }
@@ -109,27 +117,17 @@ const learningPathsDownvote = new ValidatedMethod({
       // Mentors cannot rate own LearningPath
       if (mentor === this.userId) throw new Meteor.Error('learning-paths.upvote.error', MENTOR_VOTE_ERROR_MSG);
 
-      const voteData = castVote.call(this, aggregatedVotes, voted, DOWNVOTE_VALUE);
+      const { voteContext, newAggregatedVotes } = castVote.call(
+        this,
+        aggregatedVotes,
+        voted,
+        DOWNVOTE_VALUE,
+      );
 
-      LearningPaths.update({ _id }, { $set: { ...voteData } });
-    } catch (exception) {
-      throw exception;
-    }
-  },
-});
-
-const learningPathsGetVote = new ValidatedMethod({
-  name: 'learning-paths.get-vote',
-  validate: voteSchema.validator(),
-  run(lp) {
-    try {
-      if (!this.userId) return 0;
-      const { _id } = lp;
-      const { voted } = LearningPaths.findOne({ _id });
-      const index = findVote(voted, this.userId);
-
-      if (index !== -1) return voted[index].voteVal;
-      return 0;
+      LearningPaths.update(
+        { _id },
+        { $set: { aggregatedVotes: newAggregatedVotes, voted: { ...voted, ...voteContext } } },
+      );
     } catch (exception) {
       throw exception;
     }
@@ -142,7 +140,6 @@ export {
   learningPathsRemove,
   learningPathsUpvote,
   learningPathsDownvote,
-  learningPathsGetVote,
 };
 
 rateLimit({

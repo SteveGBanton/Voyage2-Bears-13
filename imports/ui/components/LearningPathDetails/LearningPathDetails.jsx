@@ -7,17 +7,13 @@ import Card, { CardHeader, CardMedia, CardTitle, CardActions, CardText } from 'm
 import Chip from 'material-ui/Chip';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
-// import FontIcon from 'material-ui/FontIcon';
 import { green500, red500 } from 'material-ui/styles/colors';
-import { createContainer } from 'meteor/react-meteor-data';
+
+import { learningPathsUpvote, learningPathsDownvote } from '../../../api/LearningPath/methods';
 
 import './LearningPathDetails.scss';
 
-import { learningPathsUpvote, learningPathsDownvote, learningPathsGetVote } from '../../../api/LearningPath/methods';
-
-const DESCRIPTION_LENGTH = 100;
-
-class LearningPathDetails extends React.Component {
+export default class LearningPathDetails extends React.Component {
   constructor(props) {
     super(props);
 
@@ -27,7 +23,8 @@ class LearningPathDetails extends React.Component {
 
   upvoteHandler() {
     try {
-      learningPathsUpvote.call({ _id: this.props._id });
+      const { _id } = this.props.lp;
+      learningPathsUpvote.call({ _id });
     } catch (err) {
       Bert.alert({
         message: err.reason,
@@ -39,7 +36,8 @@ class LearningPathDetails extends React.Component {
 
   downvoteHandler() {
     try {
-      learningPathsDownvote.call({ _id: this.props._id });
+      const { _id } = this.props.lp;
+      learningPathsDownvote.call({ _id });
     } catch (err) {
       Bert.alert({
         message: err.reason,
@@ -50,7 +48,8 @@ class LearningPathDetails extends React.Component {
   }
 
   renderSkills() {
-    return this.props.skills.map((skill, i) => (
+    const { skills } = this.props.lp;
+    return skills.map((skill, i) => (
       <Chip className="lp-skill" key={`skill-${i + 1}`} style={{ margin: '5px 5px 15px 5px' }}>
         {skill}
       </Chip>),
@@ -65,12 +64,12 @@ class LearningPathDetails extends React.Component {
       mentorName,
       thumbnail,
       aggregatedVotes,
-      voteVal,
-    } = this.props;
+      voted,
+    } = this.props.lp;
 
     return (
       <Card className="lp-details-container">
-        <Link to={`/learning-paths/${_id}`}>
+        <Link to={`/learning-path/${_id}`}>
           <CardHeader className="lp-header">
             <CardMedia className="lp-media">
               <img className="lp-thumbnail" src={thumbnail} alt={title} />
@@ -106,7 +105,7 @@ class LearningPathDetails extends React.Component {
               className="lp-vote-btn lp-upvote"
               tooltip="Upvote!"
               iconClassName="fa fa-thumbs-o-up"
-              iconStyle={voteVal === 1 ?
+              iconStyle={voted[Meteor.userId()] === 1 ?
                 { color: green500 } :
                 { color: null }
               }
@@ -117,7 +116,7 @@ class LearningPathDetails extends React.Component {
               className="lp-vote-btn lp-downvote"
               tooltip="Downvote..."
               iconClassName="fa fa-thumbs-o-down"
-              iconStyle={voteVal === -1 ?
+              iconStyle={voted[Meteor.userId()] === -1 ?
                 { color: red500 } :
                 { color: null }
               }
@@ -126,7 +125,7 @@ class LearningPathDetails extends React.Component {
           </CardActions>
           <div className="lp-mentor">
             <CardText className="lp-mentor-name">
-              <Link to={`/users/${mentorName}`}>{mentorName}</Link>
+              <Link to={`/user/${mentorName}`}>{mentorName}</Link>
               {
                 mentor === Meteor.userId() ?
                   <span> | <Link className="lp-edit-link" to={`/learning-path/${_id}/edit`}>Edit</Link></span> :
@@ -142,33 +141,14 @@ class LearningPathDetails extends React.Component {
 }
 
 LearningPathDetails.propTypes = {
-  _id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  mentor: PropTypes.string.isRequired,
-  mentorName: PropTypes.string.isRequired,
-  skills: PropTypes.arrayOf(PropTypes.string).isRequired,
-  thumbnail: PropTypes.string,
-  aggregatedVotes: PropTypes.number.isRequired,
-  voteVal: PropTypes.number.isRequired,
+  lp: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    mentor: PropTypes.string.isRequired,
+    mentorName: PropTypes.string.isRequired,
+    skills: PropTypes.arrayOf(PropTypes.string).isRequired,
+    thumbnail: PropTypes.string,
+    aggregatedVotes: PropTypes.number.isRequired,
+    voted: PropTypes.shape({}).isRequired,
+  }).isRequired,
 };
-
-LearningPathDetails.defaultProps = {
-  thumbnail: "",
-};
-
-export default createContainer(({ lp }) => {
-  const { _id, title, mentor, mentorName, skills, thumbnail, aggregatedVotes } = lp;
-
-  const voteVal = learningPathsGetVote.call({ _id });
-
-  return {
-    _id,
-    title,
-    mentor,
-    mentorName,
-    skills,
-    thumbnail,
-    aggregatedVotes,
-    voteVal,
-  };
-}, LearningPathDetails);

@@ -11,6 +11,8 @@ import Loading from '../../../components/Loading/Loading';
 
 import { default as LearningPathCollection } from '../../../../api/LearningPath/LearningPath';
 
+import './LearningPaths.scss';
+
 const FILTER_OPTIONS = ['title', 'description', 'skills'];
 const DEFAULT_LIMIT = 30;
 const FIND_ALL_OPTS = {
@@ -43,16 +45,20 @@ class LearningPaths extends React.Component {
   render() {
     const { loading, learningPathList, filterOpts, location, history } = this.props;
     return (
-      <div className="learning-paths">
+      <div className="LearningPaths">
+        <div className="LearningPaths-header">
+          <SearchBar
+            loading={loading}
+            filterOpts={filterOpts}
+            location={location}
+            history={history}
+          />
+
+          <h2>Learning Paths</h2>
+        </div>
         {/* TODO Create learning path categories  */}
 
         {/* TODO Add categories users can browse */}
-        <SearchBar
-          loading={loading}
-          filterOpts={filterOpts}
-          location={location}
-          history={history}
-        />
 
         {
           !loading ?
@@ -60,12 +66,15 @@ class LearningPaths extends React.Component {
             <Loading />
         }
 
-        <RaisedButton
-          label="Load More"
-          disabled={loading}
-          primary={!loading}
-          onClick={this.loadMoreHandler}
-        />
+        <div className="LearningPaths-btn-panel">
+          <RaisedButton
+            className="LearningPaths-load-more-btn"
+            label="Load More"
+            disabled={loading}
+            primary={!loading}
+            onClick={this.loadMoreHandler}
+          />
+        </div>
       </div>
     );
   }
@@ -86,7 +95,6 @@ LearningPaths.propTypes = {
 function parseQueryString(search) {
   const QUERY_REG_EXP = new RegExp(`(?:${FILTER_OPTIONS.join('|')})=[A-Za-z0-9 ]+`);
   let query = search.match(QUERY_REG_EXP);
-  console.log(query);
   if (!query) return null;
 
   query = _.head(query).split('=');

@@ -38,7 +38,7 @@ Meteor.publish('learning-paths.mentor', (query = {}, opts) => {
 
 Meteor.publish('learning-paths.view', (lpId) => {
   try {
-    check(lpId, SimpleSchema.RegEx.Id);
+    check(lpId, String);
     return LearningPaths.find({ _id: lpId });
   } catch (exception) {
     throw new Meteor.Error(
