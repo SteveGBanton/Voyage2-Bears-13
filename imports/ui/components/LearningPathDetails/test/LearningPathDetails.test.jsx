@@ -18,7 +18,7 @@ import IconButton from 'material-ui/IconButton';
 import { green500, red500 } from 'material-ui/styles/colors';
 import { MemoryRouter, Link } from 'react-router-dom';
 
-import LearningPathDetails from '../LearningPathDetails';
+import LearningPathDetails, { DEFAULT_THUMBNAIL } from '../LearningPathDetails';
 
 import { learningPathsUpvote, learningPathsDownvote } from '../../../../api/LearningPath/methods';
 
@@ -86,6 +86,28 @@ if (Meteor.isClient) {
       const actual = renderer.getRenderOutput();
 
       const expected = `to="/learning-path/${lpId}"`;
+
+      expect(actual).to.include(expected);
+    });
+
+    it('should render a default thumbnail if no thumbnail is provided', function () {
+      const renderer = TestUtils.createRenderer();
+
+      renderer.render(
+        <LearningPathDetails
+          lp={{
+            ..._.omit(lp, ['thumbnail']),
+            thumbnail: DEFAULT_THUMBNAIL,
+          }}
+          user={user}
+          userId={userId}
+        />,
+      );
+      const actual = renderer.getRenderOutput();
+
+      const expected = (
+        <img className="lp-thumbnail" src={DEFAULT_THUMBNAIL} alt={lp.title} />
+      );
 
       expect(actual).to.include(expected);
     });

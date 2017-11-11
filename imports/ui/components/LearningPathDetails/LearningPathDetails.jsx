@@ -14,6 +14,9 @@ import { learningPathsUpvote, learningPathsDownvote } from '../../../api/Learnin
 
 if (Meteor.isClient) import './LearningPathDetails.scss';
 
+// We should proobably have a default image hosted in the S3
+export const DEFAULT_THUMBNAIL = 'https://cdn.pixabay.com/photo/2016/03/04/19/36/gears-1236578_960_720.jpg';
+
 export default class LearningPathDetails extends React.Component {
   constructor(props) {
     super(props);
@@ -74,7 +77,11 @@ export default class LearningPathDetails extends React.Component {
         <Link to={`/learning-path/${_id}`}>
           <CardHeader className="lp-header">
             <CardMedia className="lp-media">
-              <img className="lp-thumbnail" src={thumbnail} alt={title} />
+              <img className="lp-thumbnail" src={
+                thumbnail ?
+                  thumbnail :
+                  DEFAULT_THUMBNAIL
+              } alt={title} />
             </CardMedia>
           </CardHeader>
           <Divider />
