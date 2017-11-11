@@ -43,7 +43,7 @@ class LearningPaths extends React.Component {
   }
 
   render() {
-    const { loading, learningPathList, filterOpts, location, history } = this.props;
+    const { loading, learningPathList, filterOpts, location, history, user, userId } = this.props;
     return (
       <div className="LearningPaths">
         <div className="LearningPaths-header">
@@ -62,7 +62,11 @@ class LearningPaths extends React.Component {
 
         {
           !loading ?
-            <RenderLearningPathList learningPathList={learningPathList} /> :
+            <RenderLearningPathList
+              learningPathList={learningPathList}
+              user={user}
+              userId={userId}
+            /> :
             <Loading />
         }
 
@@ -90,6 +94,8 @@ LearningPaths.propTypes = {
   filterOpts: PropTypes.arrayOf(PropTypes.string).isRequired,
   location: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({}).isRequired,
+  user: PropTypes.shape({}).isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 function parseQueryString(search) {
@@ -102,7 +108,7 @@ function parseQueryString(search) {
   return { [query[0]]: { $elemMatch: { $regex: new RegExp(query[1], 'i') } } };
 }
 
-export default createContainer(({ location, history }) => {
+export default createContainer(({ location, history, user }) => {
   const search = location.search;
   let selector = {};
   const query = parseQueryString(search);
@@ -113,6 +119,8 @@ export default createContainer(({ location, history }) => {
   const subscription = Meteor.subscribe('learning-paths', selector, FIND_ALL_OPTS);
   const learningPathList = LearningPathCollection.find().fetch();
 
+  const userId = user._id;
+
   return {
     loading: !subscription.ready(),
     learningPathList,
@@ -120,5 +128,7 @@ export default createContainer(({ location, history }) => {
     filterOpts: FILTER_OPTIONS,
     location,
     history,
+    user,
+    userId,
   };
 }, LearningPaths);

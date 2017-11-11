@@ -7,8 +7,9 @@ import './RenderLearningPathList.scss';
 
 export default class RenderLearningPathList extends React.Component {
   renderLearningPathList() {
-    return this.props.learningPathList.map(lp => (
-      <li key={lp._id}><LearningPathDetails lp={lp} /></li>
+    const { learningPathList, user, userId } = this.props;
+    return learningPathList.map(lp => (
+      <li key={lp._id}><LearningPathDetails lp={lp} user={user} userId={userId} /></li>
     ));
   }
 
@@ -46,4 +47,6 @@ RenderLearningPathList.propTypes = {
   learningPathList: PropTypes.arrayOf(
     PropTypes.shape({}),
   ).isRequired,
+  userId: PropTypes.string.isRequired,
+  user: PropTypes.shape({}).isRequired,
 };

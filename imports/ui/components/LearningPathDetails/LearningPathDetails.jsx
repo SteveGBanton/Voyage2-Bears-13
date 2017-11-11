@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { Link } from 'react-router-dom';
 import Card, { CardHeader, CardMedia, CardTitle, CardActions, CardText } from 'material-ui/Card';
+import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
@@ -11,7 +12,7 @@ import { green500, red500 } from 'material-ui/styles/colors';
 
 import { learningPathsUpvote, learningPathsDownvote } from '../../../api/LearningPath/methods';
 
-import './LearningPathDetails.scss';
+if (Meteor.isClient) import './LearningPathDetails.scss';
 
 export default class LearningPathDetails extends React.Component {
   constructor(props) {
@@ -66,6 +67,7 @@ export default class LearningPathDetails extends React.Component {
       aggregatedVotes,
       voted,
     } = this.props.lp;
+    const { user, userId } = this.props;
 
     return (
       <Card className="lp-details-container">
@@ -76,36 +78,35 @@ export default class LearningPathDetails extends React.Component {
             </CardMedia>
           </CardHeader>
           <Divider />
-        </Link>
-        <div className="lp-content">
           <div className="lp-title">
             <CardTitle
               className="lp-title-text"
               title={title}
               titleStyle={{ fontSize: '18px' }}
             />
-            {/*
-              TODO Uncomment this out when we have the savedLearningPaths field added to Users
-
-              Meteor.user.savedLearningPaths &&
-              Meteor.user.savedLearningPaths.indexOf(_id) !== -1 ?
+            {
+              user &&
+              user.savedLearningPaths &&
+              user.savedLearningPaths.indexOf(_id) !== -1 ?
                 <FontIcon
                   className="fa fa-check-circle lp-user-subscribed-icon"
                   color={green500}
                 /> :
                 null
-            */}
+            }
+            <div className="lp-skills">
+              {this.renderSkills()}
+            </div>
+            <Divider />
           </div>
-          <div className="lp-skills">
-            {this.renderSkills()}
-          </div>
-          <Divider />
+        </Link>
+        <div className="lp-content">
           <CardActions className="lp-votes">
             <IconButton
               className="lp-vote-btn lp-upvote"
               tooltip="Upvote!"
               iconClassName="fa fa-thumbs-o-up"
-              iconStyle={voted[Meteor.userId()] === 1 ?
+              iconStyle={voted[userId] === 1 ?
                 { color: green500 } :
                 { color: null }
               }
@@ -116,7 +117,7 @@ export default class LearningPathDetails extends React.Component {
               className="lp-vote-btn lp-downvote"
               tooltip="Downvote..."
               iconClassName="fa fa-thumbs-o-down"
-              iconStyle={voted[Meteor.userId()] === -1 ?
+              iconStyle={voted[userId] === -1 ?
                 { color: red500 } :
                 { color: null }
               }
@@ -127,7 +128,7 @@ export default class LearningPathDetails extends React.Component {
             <CardText className="lp-mentor-name">
               <Link to={`/user/${mentorName}`}>{mentorName}</Link>
               {
-                mentor === Meteor.userId() ?
+                mentor === userId ?
                   <span> | <Link className="lp-edit-link" to={`/learning-path/${_id}/edit`}>Edit</Link></span> :
                   null
               }
@@ -151,4 +152,8 @@ LearningPathDetails.propTypes = {
     aggregatedVotes: PropTypes.number.isRequired,
     voted: PropTypes.shape({}).isRequired,
   }).isRequired,
+  user: PropTypes.shape({}).isRequired,
+  userId: PropTypes.string.isRequired,
 };
+
+console.log(LearningPathDetails);

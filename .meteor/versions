@@ -56,6 +56,8 @@ logging@1.1.17
 mdg:validated-method@1.1.0
 meteor@1.7.2
 meteor-base@1.1.0
+meteortesting:browser-tests@0.1.1
+meteortesting:mocha@0.4.4
 meteortoys:allthings@4.0.0
 meteortoys:authenticate@4.0.0
 meteortoys:autopub@4.0.0

@@ -35,7 +35,8 @@ mdg:validated-method
 http@1.2.12
 edgee:slingshot
 practicalmeteor:faker
-practicalmeteor:mocha
 practicalmeteor:chai
 react-meteor-data
 meteortoys:allthings
+meteortesting:mocha
+practicalmeteor:mocha
