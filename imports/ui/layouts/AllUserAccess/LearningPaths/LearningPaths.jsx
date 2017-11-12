@@ -11,11 +11,11 @@ import Loading from '../../../components/Loading/Loading';
 
 import { default as LearningPathCollection } from '../../../../api/LearningPath/LearningPath';
 
-import './LearningPaths.scss';
+if (Meteor.isClient) import './LearningPaths.scss';
 
-const FILTER_OPTIONS = ['title', 'description', 'skills'];
+export const FILTER_OPTIONS = ['title', 'description', 'skills'];
 const DEFAULT_LIMIT = 30;
-const FIND_ALL_OPTS = {
+export const FIND_ALL_OPTS = {
   sort: ['aggregatedVotes', 'desc'],
   limit: DEFAULT_LIMIT,
 };
@@ -141,3 +141,5 @@ export default createContainer(({ location, history, user }) => {
     userId,
   };
 }, LearningPaths);
+
+export { LearningPaths as LearningPathsTest };
