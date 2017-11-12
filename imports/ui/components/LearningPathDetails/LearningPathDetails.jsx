@@ -162,5 +162,3 @@ LearningPathDetails.propTypes = {
   user: PropTypes.shape({}).isRequired,
   userId: PropTypes.string.isRequired,
 };
-
-console.log(LearningPathDetails);

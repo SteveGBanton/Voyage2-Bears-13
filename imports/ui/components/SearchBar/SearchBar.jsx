@@ -6,13 +6,13 @@ import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-import './SearchBar.scss';
+if (Meteor.isClient) import './SearchBar.scss';
 
-const FILTER_MENU_STYLE = {
+export const FILTER_MENU_STYLE = {
   color: 'white',
   textAlign: 'left',
 };
-const BUTTON_STYLE = {
+export const BUTTON_STYLE = {
   margin: '10px',
 };
 
@@ -106,6 +106,7 @@ export default class SearchBar extends React.Component {
         }
 
         <RaisedButton
+          className="search-bar-Search-btn"
           label="Search"
           disabled={loading}
           primary={!loading}
@@ -113,6 +114,7 @@ export default class SearchBar extends React.Component {
           style={BUTTON_STYLE}
         />
         <RaisedButton
+          className="search-bar-Clear-btn"
           label="Clear"
           disabled={loading}
           secondary={!loading}
@@ -128,6 +130,11 @@ export default class SearchBar extends React.Component {
 SearchBar.propTypes = {
   loading: PropTypes.bool.isRequired,
   filterOpts: PropTypes.arrayOf(PropTypes.string).isRequired,
-  location: PropTypes.shape({}).isRequired,
-  history: PropTypes.shape({}).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+    search: PropTypes.string,
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
