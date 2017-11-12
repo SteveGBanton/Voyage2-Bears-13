@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import LearningPathDetails from '../LearningPathDetails/LearningPathDetails';
 
-import './RenderLearningPathList.scss';
+if (Meteor.isClient) import './RenderLearningPathList.scss';
 
 export default class RenderLearningPathList extends React.Component {
   renderLearningPathList() {
@@ -45,7 +45,16 @@ export default class RenderLearningPathList extends React.Component {
 // TODO edit proptypes
 RenderLearningPathList.propTypes = {
   learningPathList: PropTypes.arrayOf(
-    PropTypes.shape({}),
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      mentor: PropTypes.string.isRequired,
+      mentorName: PropTypes.string.isRequired,
+      skills: PropTypes.arrayOf(PropTypes.string).isRequired,
+      thumbnail: PropTypes.string,
+      aggregatedVotes: PropTypes.number.isRequired,
+      voted: PropTypes.shape({}).isRequired,
+    }),
   ).isRequired,
   userId: PropTypes.string.isRequired,
   user: PropTypes.shape({}).isRequired,

@@ -88,7 +88,16 @@ class LearningPaths extends React.Component {
 LearningPaths.propTypes = {
   loading: PropTypes.bool.isRequired,
   learningPathList: PropTypes.arrayOf(
-    PropTypes.shape({}),
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      mentor: PropTypes.string.isRequired,
+      mentorName: PropTypes.string.isRequired,
+      skills: PropTypes.arrayOf(PropTypes.string).isRequired,
+      thumbnail: PropTypes.string,
+      aggregatedVotes: PropTypes.number.isRequired,
+      voted: PropTypes.shape({}).isRequired,
+    }),
   ).isRequired,
   selector: PropTypes.shape({}).isRequired,
   filterOpts: PropTypes.arrayOf(PropTypes.string).isRequired,

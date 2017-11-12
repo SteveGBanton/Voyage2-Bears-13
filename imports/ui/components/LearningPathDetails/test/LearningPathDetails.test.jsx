@@ -22,50 +22,26 @@ import LearningPathDetails, { DEFAULT_THUMBNAIL } from '../LearningPathDetails';
 
 import { learningPathsUpvote, learningPathsDownvote } from '../../../../api/LearningPath/methods';
 
+import { generateLearningPathData, getTestDoc } from '../../../../modules/test-helpers';
+
 chai.use(jsxChai);
 
 const ERROR_MSG = 'This is a Bert alert';
 
-function generateMentorId(userId) {
-  let mentor;
-  do {
-    mentor = Random.id()
-  } while (mentor === userId);
-
-  return mentor;
-}
-
-function getTestDoc(lpComponent) {
-  return (
-    <MuiThemeProvider>
-      <MemoryRouter initialEntries={['/learning-paths']}>
-        {lpComponent}
-      </MemoryRouter>
-    </MuiThemeProvider>
-  );
-}
-
 if (Meteor.isClient) {
-  const lpId = Random.id();
-  const user = { savedLearningPaths: [lpId] };
-  const userId = Random.id();
-  const mentor = generateMentorId(userId);
-  const mentorName = 'JohnDoe';
-
-  const lp = {
-    _id: lpId,
-    title: 'Test Title',
-    mentor,
-    mentorName,
-    skills: ['JS', 'CSS', 'React.js'],
-    thumbnail: 'https://cdn.pixabay.com/photo/2017/11/09/16/16/man-2933984__340.jpg',
-    aggregatedVotes: 0,
-    voted: {},
-  };
-
-  const lpComponent = (<LearningPathDetails lp={lp} user={user} userId={userId} />);
-
   describe('LearningPathDetails.jsx', function () {
+    const user = { savedLearningPaths: [] };
+    const userId = Random.id();
+    const lp = generateLearningPathData(userId, false);
+
+    const defaultProps = {
+      lp,
+      user,
+      userId,
+    };
+
+    const lpComponent = (<LearningPathDetails {...defaultProps} />);
+
     it('should render', function () {
       const renderer = TestUtils.createRenderer();
 
@@ -85,7 +61,7 @@ if (Meteor.isClient) {
       renderer.render(lpComponent);
       const actual = renderer.getRenderOutput();
 
-      const expected = `to="/learning-path/${lpId}"`;
+      const expected = `to="/learning-path/${lp._id}"`;
 
       expect(actual).to.include(expected);
     });
@@ -95,12 +71,8 @@ if (Meteor.isClient) {
 
       renderer.render(
         <LearningPathDetails
-          lp={{
-            ..._.omit(lp, ['thumbnail']),
-            thumbnail: DEFAULT_THUMBNAIL,
-          }}
-          user={user}
-          userId={userId}
+          lp={generateLearningPathData(userId, false, { thumbnail: DEFAULT_THUMBNAIL })}
+          {..._.pick(defaultProps, ['user', 'userId'])}
         />,
       );
       const actual = renderer.getRenderOutput();
@@ -115,7 +87,12 @@ if (Meteor.isClient) {
     it('should render a subscribed icon if user has path saved', function () {
       const renderer = TestUtils.createRenderer();
 
-      renderer.render(lpComponent);
+      renderer.render(
+        <LearningPathDetails
+          user={{ savedLearningPaths: [lp._id] }}
+          {..._.pick(defaultProps, ['lp', 'userId'])}
+        />,
+      );
       const actual = renderer.getRenderOutput();
 
       const expected = (
@@ -137,13 +114,13 @@ if (Meteor.isClient) {
       const expected = (
         <div className="lp-skills">
           <Chip className="lp-skill" key="skill-1" style={{ margin: '5px 5px 15px 5px' }}>
-            JS
+            js
           </Chip>
           <Chip className="lp-skill" key="skill-2" style={{ margin: '5px 5px 15px 5px' }}>
-            CSS
+            css
           </Chip>
           <Chip className="lp-skill" key="skill-3" style={{ margin: '5px 5px 15px 5px' }}>
-            React.js
+            react-js
           </Chip>
         </div>
       );
@@ -155,13 +132,11 @@ if (Meteor.isClient) {
       const renderer = TestUtils.createRenderer();
 
       renderer.render(<LearningPathDetails
-        lp={{
-          ..._.omit(lp, ['voted', 'aggregatedVotes']),
+        lp={generateLearningPathData(userId, false, {
           aggregatedVotes: 1,
           voted: { [userId]: 1 },
-        }}
-        user={user}
-        userId={userId}
+        })}
+        {..._.pick(defaultProps, ['user', 'userId'])}
       />,
       );
       const lpInstance = renderer._instance._instance;
@@ -184,13 +159,11 @@ if (Meteor.isClient) {
       const renderer = TestUtils.createRenderer();
 
       renderer.render(<LearningPathDetails
-        lp={{
-          ..._.omit(lp, ['voted', 'aggregatedVotes']),
+        lp={generateLearningPathData(userId, false, {
           aggregatedVotes: -1,
           voted: { [userId]: -1 },
-        }}
-        user={user}
-        userId={userId}
+        })}
+        {..._.pick(defaultProps, ['user', 'userId'])}
       />,
       );
       const lpInstance = renderer._instance._instance;
@@ -217,7 +190,7 @@ if (Meteor.isClient) {
       const actual = renderer.getRenderOutput();
 
       const expected = (
-        <Link to={`/user/${mentorName}`}>{mentorName}</Link>
+        <Link to={`/user/${lp.mentorName}`}>{lp.mentorName}</Link>
       );
       expect(actual).to.include(expected);
     });
@@ -226,18 +199,14 @@ if (Meteor.isClient) {
       const renderer = TestUtils.createRenderer();
 
       renderer.render(<LearningPathDetails
-        lp={{
-          ..._.omit(lp, ['mentor']),
-          mentor: userId,
-        }}
-        user={user}
-        userId={userId}
+        lp={generateLearningPathData(userId, true, { _id: lp._id })}
+        {..._.pick(defaultProps, ['user', 'userId'])}
       />);
 
       const actual = renderer.getRenderOutput();
 
       const expected = (
-        <Link className="lp-edit-link" to={`/learning-path/${lpId}/edit`}>Edit</Link>
+        <Link className="lp-edit-link" to={`/learning-path/${lp._id}/edit`}>Edit</Link>
       );
       expect(actual).to.include(expected);
     });
@@ -250,7 +219,7 @@ if (Meteor.isClient) {
       const upvoteBtn = TestUtils.findRenderedDOMComponentWithClass(testDoc, 'lp-vote-btn lp-upvote');
       TestUtils.Simulate.click(upvoteBtn);
 
-      sinon.assert.calledWith(upvoteStub, { _id: lpId });
+      sinon.assert.calledWith(upvoteStub, _.pick(lp, '_id'));
 
       upvoteStub.restore();
     });
@@ -284,7 +253,7 @@ if (Meteor.isClient) {
       const downvoteBtn = TestUtils.findRenderedDOMComponentWithClass(testDoc, 'lp-vote-btn lp-downvote');
       TestUtils.Simulate.click(downvoteBtn);
 
-      sinon.assert.calledWith(downvoteStub, { _id: lpId });
+      sinon.assert.calledWith(downvoteStub, _.pick(lp, '_id'));
 
       downvoteStub.restore();
     });
