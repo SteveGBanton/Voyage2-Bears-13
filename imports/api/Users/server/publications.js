@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
+import LearningPaths from '../../LearningPath/LearningPath';
 
 Meteor.publish('users.editProfile', function () {
   return Meteor.users.find(this.userId, {
@@ -37,7 +38,7 @@ Meteor.publish('users.getSingle', function (username) {
       completedResources: 1,
       votes: 1,
       username: 1,
-      profile: 1
+      profile: 1,
     },
   };
 

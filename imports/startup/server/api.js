@@ -1,5 +1,5 @@
-import '../../api/Documents/methods';
-import '../../api/Documents/server/publications';
+// import '../../api/Documents/methods';
+// import '../../api/Documents/server/publications';
 
 import '../../api/LearningPath/methods';
 import '../../api/LearningPath/server/publications';

@@ -9,9 +9,9 @@ const resourceSchema = new SimpleSchema({
     type: String,
     regEx: SimpleSchema.RegEx.Id,
   },
+
   title: {
     type: String,
-    label: "Name of resource",
     min: MIN_TITLE_LENGTH,
     max: MAX_TITLE_LENGTH,
   },
@@ -27,6 +27,7 @@ const resourceSchema = new SimpleSchema({
 
   thumbnail: {
     type: String,
+    required: false,
     regEx: SimpleSchema.RegEx.Url,
   },
 

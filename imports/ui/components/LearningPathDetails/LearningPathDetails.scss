@@ -1,0 +1,54 @@
+@import '../../stylesheets/colors';
+
+.lp-details-container {
+  height: 440px;
+  margin: 20px;
+  width: 300px;
+
+  a {
+    color: $gray-dark;
+    text-decoration: none;
+  }
+}
+
+.lp-media {
+  margin: 0 auto;
+  width: 100%;
+
+  .lp-thumbnail {
+    width: 100%;
+  }
+}
+
+.lp-title {
+  text-align: center;
+}
+
+.lp-description {
+  border-bottom: 1px inset grey;
+}
+
+.lp-skills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lp-votes {
+  float: left;
+}
+
+.lp-mentor {
+  float: right;
+  padding: 10px 0;
+
+  a {
+    color: $gray-darker;
+    font-size: 10px;
+    text-decoration: none;
+  }
+
+  .lp-edit-link {
+    color: $cb-red;
+  }
+}
