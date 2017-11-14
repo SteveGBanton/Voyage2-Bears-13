@@ -114,30 +114,6 @@ const App = props => (
                   />
                   <ClientAdmin
                     exact
-                    path="/documents"
-                    component={ClientDocuments}
-                    {...props}
-                  />
-                  <ClientAdmin
-                    exact
-                    path="/documents/new"
-                    component={ClientNewDocument}
-                    {...props}
-                  />
-                  <ClientAdmin
-                    exact
-                    path="/documents/edit/:_id"
-                    component={ClientEditDocument}
-                    {...props}
-                  />
-                  <ClientAdmin
-                    exact
-                    path="/documents/:_id"
-                    component={ClientViewDocument}
-                    {...props}
-                  />
-                  <ClientAdmin
-                    exact
                     path="/profile"
                     component={ClientProfile}
                     {...props}

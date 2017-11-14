@@ -50,30 +50,6 @@ export default class ClientAdmin extends React.Component {
               containerStyle={{ width: '250px', zIndex: '1000', marginTop: '55px', backgroundColor: '#f9f9f9', paddingTop: "20px" }}
               open={this.state.menuOpen}
             >
-              <Link to={`/documents`}>
-                <MenuItem
-                  primaryText="View Documents"
-                  leftIcon={
-                    <RemoveRedEye
-                      color="#757575"
-                      style={{ paddingLeft: "10px" }}
-                    />}
-                />
-              </Link>
-              <Link to={`/documents/new`}>
-                <MenuItem
-                  primaryText="New Document"
-                  leftIcon={
-                    <PersonAdd
-                      color="#757575"
-                      style={{ paddingLeft: "10px" }}
-                    />}
-                />
-              </Link>
-              <Divider
-                style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
-              />
-
               <Link to={`/create-path`}>
                 <MenuItem
                   primaryText="Create Learning Path"

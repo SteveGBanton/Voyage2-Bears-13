@@ -60,7 +60,7 @@ label {
 .inner-route {
   width: calc(100% - 250px);
   height: 100%;
-  padding: 60px 60px 0 60px;
+  padding: 60px 3vw 0 3vw;
 }
 
 .dashboard-menu-closed {
@@ -71,9 +71,8 @@ label {
 .inner-route-full {
   width: 100%;
   height: 100%;
-  padding: 60px 60px 0 60px;
+  padding: 60px 3vw 0 3vw;
 }
-
 
 .all-access {
   display: flex;

@@ -84,7 +84,10 @@ class LearningPaths extends React.Component {
   }
 }
 
-// TODO edit proptypes
+LearningPaths.defaultProps = {
+  user: null,
+}
+
 LearningPaths.propTypes = {
   loading: PropTypes.bool.isRequired,
   learningPathList: PropTypes.arrayOf(
@@ -103,7 +106,7 @@ LearningPaths.propTypes = {
   filterOpts: PropTypes.arrayOf(PropTypes.string).isRequired,
   location: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({}).isRequired,
-  user: PropTypes.shape({}).isRequired,
+  user: PropTypes.shape({}),
   userId: PropTypes.string.isRequired,
 };
 
@@ -118,6 +121,7 @@ function parseQueryString(search) {
 }
 
 export default createContainer(({ location, history, user }) => {
+
   const search = location.search;
   let selector = {};
   const query = parseQueryString(search);
@@ -126,9 +130,9 @@ export default createContainer(({ location, history, user }) => {
   }
 
   const subscription = Meteor.subscribe('learning-paths', selector, FIND_ALL_OPTS);
-  const learningPathList = LearningPathCollection.find().fetch();
+  const learningPathList = LearningPathCollection.find(selector).fetch();
 
-  const userId = user._id;
+  const userId = (user) ? user._id : null;
 
   return {
     loading: !subscription.ready(),

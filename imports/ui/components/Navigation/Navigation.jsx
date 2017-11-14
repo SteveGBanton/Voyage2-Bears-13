@@ -28,7 +28,6 @@ const styles = {
 
 const Navigation = (props) => {
   const { authenticated, history, user, toggleMenu } = props;
-  console.log(props)
   return (
     <Toolbar style={styles.toolbar}>
       {authenticated && toggleMenu

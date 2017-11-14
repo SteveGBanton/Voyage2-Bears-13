@@ -94,7 +94,7 @@ export default class LearningPathDetails extends React.Component {
             {
               user &&
               user.savedLearningPaths &&
-              user.savedLearningPaths.indexOf(_id) !== -1 ?
+              user.savedLearningPaths[_id] ?
                 <FontIcon
                   className="fa fa-check-circle lp-user-subscribed-icon"
                   color={green500}
