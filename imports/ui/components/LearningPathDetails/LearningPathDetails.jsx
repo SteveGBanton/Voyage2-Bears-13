@@ -92,7 +92,6 @@ export default class LearningPathDetails extends React.Component {
               titleStyle={{ fontSize: '18px' }}
             />
             {
-              user &&
               user.savedLearningPaths &&
               user.savedLearningPaths[_id] ?
                 <FontIcon
