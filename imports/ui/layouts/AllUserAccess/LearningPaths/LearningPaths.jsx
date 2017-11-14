@@ -126,7 +126,7 @@ export default createContainer(({ location, history, user }) => {
   }
 
   const subscription = Meteor.subscribe('learning-paths', selector, FIND_ALL_OPTS);
-  const learningPathList = LearningPathCollection.find().fetch();
+  const learningPathList = LearningPathCollection.find(selector).fetch();
 
   const userId = user._id;
 

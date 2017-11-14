@@ -89,7 +89,7 @@ if (Meteor.isClient) {
 
       renderer.render(
         <LearningPathDetails
-          user={{ savedLearningPaths: [lp._id] }}
+          user={{ savedLearningPaths: { [lp._id]: true } }}
           {..._.pick(defaultProps, ['lp', 'userId'])}
         />,
       );
