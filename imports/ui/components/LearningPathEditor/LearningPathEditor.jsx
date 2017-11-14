@@ -40,6 +40,7 @@ const pathMessages = {
   title: {
     required: 'Please enter a title for your Learning Path.',
     minLength: 'Please enter at least 10 characters for your Title.',
+    maxLength: 'Please enter no more than 30 characters for your Title.',
   },
   description: {
     required: 'Please enter a short description to explain what this Learning Path teaches, and why it is important.',
