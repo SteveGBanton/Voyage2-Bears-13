@@ -166,7 +166,7 @@ const LearningPathView = ({ loading, learningPathDoc, history, user }) => (
                             </FontIcon>
                             }
                           />
-                          Mark As Complete
+                          Mark Complete
                       </Chip>
                       </div>
                       :

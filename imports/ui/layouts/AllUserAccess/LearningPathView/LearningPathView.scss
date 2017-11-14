@@ -1,5 +1,8 @@
+@import '../../../stylesheets/mixins';
+
 .learning-path-view-container {
   width: 100%;
+  font-weight: 300;
   display: flex;
   justify-content: center;
   flex-flow: row nowrap;
@@ -15,6 +18,7 @@
       margin-bottom: 100px;
       margin-top: 30px;
       h1 {
+        font-weight: 300;
         margin-bottom: 0;
         margin-right: 30px;
       }
@@ -22,6 +26,9 @@
         padding: 20px;
         width: 100px;
       }  
+    }
+    h3 {
+      font-weight: 300;
     }
     .skill-list {
       display: flex;
@@ -39,7 +46,7 @@
     .resource-box {
       margin-bottom: 50px;
       .title-resource {
-        margin-bottom: 15px;
+        margin-bottom: 25px;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
@@ -73,15 +80,16 @@
           h3 {
             margin: 0;
             line-height: 120%;
+            font-weight: 300;
           }
         } 
       }
       img {
         margin: 15px;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        
       }
       .description {
-        margin-bottom: 30px;
+        margin-bottom: 40px;
         line-height: 140%;
       }
       .link-and-mark {
@@ -98,3 +106,10 @@
   }  
 }
 
+@include breakpoint(tablet) {
+  .title-resource-number-title {
+    h3 {
+      font-size: 22px;
+    }
+  } 
+}

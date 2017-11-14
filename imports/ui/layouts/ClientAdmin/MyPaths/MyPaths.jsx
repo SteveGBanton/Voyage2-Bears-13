@@ -20,6 +20,8 @@ class MyPaths extends React.Component {
           <div className="my-paths">
             <h1>Edit Learning Paths You've Created</h1>
 
+            
+
             {/* TODO
 
              Display all Paths user has created using RenderLearningPathList component.
