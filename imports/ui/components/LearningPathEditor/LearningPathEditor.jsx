@@ -347,7 +347,11 @@ export default class LearningPathEditor extends React.Component {
       } else {
         const confirmation = existingPathId ? 'Learning Path Updated!' : 'Learning Path Added!';
         Bert.alert(confirmation, 'success');
-        history.push(`/my-paths/`);
+
+        // Fixes problem with React-Router keeping scroll position on navigation, in some cases.
+        window.scrollTo(0, 0);
+
+        history.push(`/learning-path/${documentId}/`);
       }
     });
   }
