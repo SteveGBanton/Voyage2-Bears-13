@@ -452,7 +452,7 @@ export default class LearningPathEditor extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="editor-wrapper">
         <div className="path-description-input">
           <Paper className="paper-box">
             <h4>{'Enter a Goal / Title'}</h4>
@@ -571,7 +571,7 @@ export default class LearningPathEditor extends React.Component {
               {provided => (
                 <div
                   ref={provided.innerRef}
-                  className="inner-droppable"
+                  className="inner-droppable-container"
                 >
                   <div
                     className="inner-droppable"
@@ -616,7 +616,10 @@ export default class LearningPathEditor extends React.Component {
                                   edit
                                 </FontIcon>
                                   <p className="heading-title">
-                                    {item.title}
+                                    {(item.title.length < 55) ?
+                                      item.title
+                                      :
+                                      `${item.title.substring(0,55)}...`}
                                   </p>
                                 </div>
                                 <div className="title-box-button">
