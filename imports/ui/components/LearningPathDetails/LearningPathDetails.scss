@@ -1,27 +1,52 @@
 @import '../../stylesheets/colors';
 
 .lp-details-container {
-  height: 440px;
-  margin: 20px;
+  margin: 0 20px 20px 20px;
   width: 300px;
-
   a {
-    color: $gray-dark;
+    color: $primary-color;
     text-decoration: none;
+  }
+  .lp-header-media {
+    vertical-align: top;
+    height: 180px;
+    width: calc(100% + 1px);
+    background-size: cover;
+    background-position: 50% 50%;
+    opacity: 0.85;
+    transition: opacity 0.5s cubic-bezier(.25,.8,.25,1);
+    .save-chip {
+      position: relative;
+      top: 135px;
+      left: 14px;
+      margin: 0;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
   }
 }
 
 .lp-media {
-  margin: 0 auto;
-  width: 100%;
-
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row nowrap;
   .lp-thumbnail {
-    width: 100%;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    margin-bottom: 16px;
   }
 }
 
 .lp-title {
-  text-align: center;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  color: $primary-color;
 }
 
 .lp-description {
@@ -41,10 +66,9 @@
 .lp-mentor {
   float: right;
   padding: 10px 0;
-
   a {
-    color: $gray-darker;
-    font-size: 10px;
+    color: $primary-color;
+    font-size: 13px;
     text-decoration: none;
   }
 

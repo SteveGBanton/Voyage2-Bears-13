@@ -83,6 +83,7 @@ class LearningPaths extends React.Component {
 
 LearningPaths.defaultProps = {
   user: null,
+  userId: null,
 }
 
 LearningPaths.propTypes = {
@@ -104,7 +105,7 @@ LearningPaths.propTypes = {
   location: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({}).isRequired,
   user: PropTypes.shape({}),
-  userId: PropTypes.string.isRequired,
+  userId: PropTypes.string,
 };
 
 function parseQueryString(search) {

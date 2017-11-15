@@ -9,13 +9,14 @@ import Chip from 'material-ui/Chip';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import { green500, red500 } from 'material-ui/styles/colors';
+import Avatar from 'material-ui/Avatar';
 
 import { learningPathsUpvote, learningPathsDownvote } from '../../../api/LearningPath/methods';
 
 if (Meteor.isClient) import './LearningPathDetails.scss';
 
 // We should proobably have a default image hosted in the S3
-export const DEFAULT_THUMBNAIL = 'https://cdn.pixabay.com/photo/2016/03/04/19/36/gears-1236578_960_720.jpg';
+export const DEFAULT_THUMBNAIL = 'https://preview.ibb.co/ixzQ8R/gears.jpg';
 
 export default class LearningPathDetails extends React.Component {
   constructor(props) {
@@ -54,7 +55,7 @@ export default class LearningPathDetails extends React.Component {
   renderSkills() {
     const { skills } = this.props.lp;
     return skills.map((skill, i) => (
-      <Chip className="lp-skill" key={`skill-${i + 1}`} style={{ margin: '5px 5px 15px 5px' }}>
+      <Chip className="lp-skill" key={`skill-${i + 1}`} style={{ margin: 3 }}>
         {skill}
       </Chip>),
     );
@@ -69,49 +70,60 @@ export default class LearningPathDetails extends React.Component {
       thumbnail,
       aggregatedVotes,
       voted,
+      resources
     } = this.props.lp;
     const { user, userId } = this.props;
 
     return (
       <Card className="lp-details-container">
-        <Link to={`/learning-path/${_id}`}>
-          <CardHeader className="lp-header">
-            <CardMedia className="lp-media">
-              <img className="lp-thumbnail" src={
-                thumbnail ?
-                  thumbnail :
-                  DEFAULT_THUMBNAIL
-              } alt={title} />
-            </CardMedia>
-          </CardHeader>
+        <div
+          className="lp-header-media"
+          style={{ backgroundImage: `url(${thumbnail ? thumbnail : (resources[0].thumbnail) ? resources[0].thumbnail : DEFAULT_THUMBNAIL})` }}
+          alt={title}
+        >
+          {(user && user.savedLearningPaths[_id]) ?
+              <Chip
+                onClick={() => Meteor.call('users.toggleSaveLearningPath', { learningPathId: _id })}
+                backgroundColor="#FFC0CB"
+                labelColor="#424242"
+                className="save-chip"
+              >
+                <Avatar color="red" backgroundColor="#FFB6C1" icon={<FontIcon className="material-icons">favorite</FontIcon>} />
+                Saved
+              </Chip>
+            :
+            user ?
+              <Chip
+                onClick={() => Meteor.call('users.toggleSaveLearningPath', { learningPathId: _id })}
+                className="save-chip"
+              >
+                <Avatar color="#FFF" icon={<FontIcon className="material-icons">favorite</FontIcon>} />
+                Save
+              </Chip>
+              :
+              ''
+          }
+        </div>
           <Divider />
           <div className="lp-title">
-            <CardTitle
-              className="lp-title-text"
-              title={title}
-              titleStyle={{ fontSize: '18px' }}
-            />
-            {
-              user.savedLearningPaths &&
-              user.savedLearningPaths[_id] ?
-                <FontIcon
-                  className="fa fa-check-circle lp-user-subscribed-icon"
-                  color={green500}
-                /> :
-                null
-            }
+            <Link to={`/learning-path/${_id}`}>
+              <CardTitle
+                className="lp-title-text"
+                title={title}
+                titleStyle={{ fontSize: '18px', color: '#009688' }}
+              />
+            </Link>
             <div className="lp-skills">
               {this.renderSkills()}
             </div>
             <Divider />
           </div>
-        </Link>
         <div className="lp-content">
           <CardActions className="lp-votes">
             <IconButton
               className="lp-vote-btn lp-upvote"
               tooltip="Upvote!"
-              iconClassName="fa fa-thumbs-o-up"
+              iconClassName="fa fa-chevron-up"
               iconStyle={voted[userId] === 1 ?
                 { color: green500 } :
                 { color: null }
@@ -122,7 +134,7 @@ export default class LearningPathDetails extends React.Component {
             <IconButton
               className="lp-vote-btn lp-downvote"
               tooltip="Downvote..."
-              iconClassName="fa fa-thumbs-o-down"
+              iconClassName="fa fa-chevron-down"
               iconStyle={voted[userId] === -1 ?
                 { color: red500 } :
                 { color: null }
@@ -132,7 +144,7 @@ export default class LearningPathDetails extends React.Component {
           </CardActions>
           <div className="lp-mentor">
             <CardText className="lp-mentor-name">
-              <Link to={`/user/${mentorName}`}>{mentorName}</Link>
+              by <Link to={`/user/${mentorName}`}>{mentorName}</Link>
               {
                 mentor === userId ?
                   <span> | <Link className="lp-edit-link" to={`/learning-path/${_id}/edit`}>Edit</Link></span> :
@@ -147,6 +159,11 @@ export default class LearningPathDetails extends React.Component {
   }
 }
 
+LearningPathDetails.defaultProps = {
+  user: null,
+  userId: null,
+}
+
 LearningPathDetails.propTypes = {
   lp: PropTypes.shape({
     _id: PropTypes.string.isRequired,
@@ -158,6 +175,6 @@ LearningPathDetails.propTypes = {
     aggregatedVotes: PropTypes.number.isRequired,
     voted: PropTypes.shape({}).isRequired,
   }).isRequired,
-  user: PropTypes.shape({}).isRequired,
-  userId: PropTypes.string.isRequired,
+  user: PropTypes.shape({}),
+  userId: PropTypes.string,
 };
