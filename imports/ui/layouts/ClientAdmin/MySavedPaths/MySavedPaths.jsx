@@ -19,8 +19,8 @@ class MySavedPaths extends React.Component {
     const { loading, savedPaths, user } = this.props;
     return (
       <div className="saved-paths">
-        {console.log(loading)}
-        <h1>Learning Paths You Have Saved</h1>
+
+        <h1>Your Saved Learning Paths</h1>
 
         <div className="path-list">
           {
@@ -50,7 +50,7 @@ MySavedPaths.propTypes = {
 
 export default createContainer(({ user }) => {
 
-  const opts = { sort: ['aggregatedVotes', 'desc'], limit: 2 };
+  const opts = { sort: ['aggregatedVotes', 'desc'], limit: 500 };
 
   const savedPathsIDs = [];
   const keys = Object.keys(user.savedLearningPaths)
