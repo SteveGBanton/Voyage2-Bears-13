@@ -51,7 +51,7 @@ const UserView = ({ loading, history, user, createdPaths, savedPaths }) => {
         </div>
         <div className="learning-lists">
 
-          <h2>Last 10 Learning Paths Created</h2>
+          <h2>Recent Learning Paths Created</h2>
 
           <div className="path-list">
             {
@@ -66,7 +66,7 @@ const UserView = ({ loading, history, user, createdPaths, savedPaths }) => {
           </div>
 
 
-          <h2>Last 10 Saved Learning Paths</h2>
+          <h2>Recent Saved Learning Paths</h2>
 
           <div className="path-list">
             {
@@ -116,21 +116,18 @@ export default createContainer(({ match }) => {
   const username = match.params.username;
   const subscription = Meteor.subscribe('users.getSingle', username);
   const user = Meteor.users.findOne({ username });
-  const opts = { sort: ['aggregatedVotes', 'desc'], limit: 10 }
+  const opts = { sort: ['aggregatedVotes', 'desc'], limit: 6 }
+  const subscriptionPaths = (user) ? Meteor.subscribe('learning-paths', {}, opts) : null;
 
-  const subscriptionOwnerPaths = Meteor.subscribe('learning-paths', { mentor: user._id }, opts);
-  const createdPaths = LearningPathCollection.find({ mentor: user._id }).fetch();
+  const createdPaths = (user) ? LearningPathCollection.find({ mentor: user._id }).fetch() : []
+
   const savedPathsIDs = [];
-
-  const keys = Object.keys(user.savedLearningPaths);
-
+  const keys = (user) ? Object.keys(user.savedLearningPaths) : [];
   for (let i = 0; i < keys.length; i += 1) {
     if (user.savedLearningPaths[keys[i]] === true) {
       savedPathsIDs.push(keys[i]);
     }
   }
-
-  const subscriptionSavedPaths = Meteor.subscribe('learning-paths', savedPathsIDs, opts);
   const savedPaths = LearningPathCollection.find({"_id" : { "$in" : savedPathsIDs}}).fetch();
 
   return {

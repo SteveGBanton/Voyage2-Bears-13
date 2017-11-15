@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
+import RenderLearningPathList from '../../../components/RenderLearningPathList/RenderLearningPathList';
+
+import LearningPathCollection from '../../../../api/LearningPath/LearningPath';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -10,48 +13,59 @@ class MySavedPaths extends React.Component {
 
   constructor(props) {
     super(props);
-
   }
 
   render() {
-    const { loading, learningPathList, history, user } = this.props;
+    const { loading, savedPaths, user } = this.props;
     return (
-        (!loading) ?
-          <div className="saved-paths">
-            <h1>Learning Paths You Have Saved</h1>
+      <div className="saved-paths">
+        {console.log(loading)}
+        <h1>Learning Paths You Have Saved</h1>
 
-            {/* TODO
+        <div className="path-list">
+          {
+            !loading ?
+              <RenderLearningPathList
+                learningPathList={savedPaths}
+                user={user}
+                userId={user._id}
+              /> :
+              <Loading />
+          }
+        </div>
 
-             Display all Paths user has saved using RenderLearningPathList component.
-
-             <RenderLearningPathList
-               learningPathList={learningPathList}
-               user={user}
-             />
-
-            */}
-
-          </div>
-          : ''
+      </div>
     );
   }
 }
 
-// TODO edit proptypes
+MySavedPaths.defaultProps = {
+  savedPaths: [],
+}
 MySavedPaths.propTypes = {
   loading: PropTypes.bool.isRequired,
-  learningPathList: PropTypes.object,
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  savedPaths: PropTypes.arrayOf(PropTypes.shape({})),
+  user: PropTypes.shape({}).isRequired,
 };
 
-export default createContainer(({ match }) => {
+export default createContainer(({ user }) => {
 
-  // Get Ids of paths user has saved from user object, add to local array using:
-  // const savedIds = Object.keys(user.savedLearningPaths);
-  // Get each learning path object from DB.
+  const opts = { sort: ['aggregatedVotes', 'desc'], limit: 2 };
+
+  const savedPathsIDs = [];
+  const keys = Object.keys(user.savedLearningPaths)
+  for (let i = 0; i < keys.length; i += 1) {
+    if (user.savedLearningPaths[keys[i]] === true) {
+      savedPathsIDs.push(keys[i]);
+    }
+  }
+  const subscription = Meteor.subscribe('learning-paths', {}, opts);
+  const savedPaths = LearningPathCollection.find({ _id: { $in: savedPathsIDs } }).fetch();
 
   return {
+    loading: false,
+    user,
+    savedPaths,
     // learningPathList: learningPathList
   };
 }, MySavedPaths);
