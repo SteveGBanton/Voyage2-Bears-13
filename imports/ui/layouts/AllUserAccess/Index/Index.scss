@@ -4,20 +4,16 @@
 .Index {
   margin: auto;
   width: 100%;
-
-  h3 {
-    font-size: 18px;
-  }
+  margin-bottom: 100px;
 
   a {
-    color: $accent-color;
+    text-decoration: none;
   }
 
 }
 
 .Index-header {
-  padding: 30px;
-  padding-bottom: 75px;
+  padding: 70px 30px 75px 30px;
   background: $primary;
   text-align: center;
   color: #fff;
@@ -68,7 +64,6 @@
 .Index-featured {
   margin: 10px;
   margin-top: -55px;
-
   .Index-featuredCardWrap {
     display: flex;
     flex-wrap: wrap;

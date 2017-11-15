@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
+import RenderLearningPathList from '../../../components/RenderLearningPathList/RenderLearningPathList';
+
+import LearningPathCollection from '../../../../api/LearningPath/LearningPath';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -14,46 +17,44 @@ class MyPaths extends React.Component {
   }
 
   render() {
-    const { loading, learningPathList, history, user } = this.props;
+    const { loading, createdPaths, user } = this.props;
     return (
-        (!loading) ?
-          <div className="my-paths">
-            <h1>Edit Learning Paths You've Created</h1>
-
-            {/* TODO
-
-             Display all Paths user has created using RenderLearningPathList component.
-
-             Buttons to edit etc.
-
-             <RenderLearningPathList
-               learningPathList={learningPathList}
-               user={user}
-             />
-
-            */}
-
-          </div>
-          : ''
+      <div className="my-paths">
+        <h1>Your Learning Paths</h1>
+        <div className="path-list">
+          {
+            !loading ?
+              <RenderLearningPathList
+                learningPathList={createdPaths}
+                user={user}
+                userId={user._id}
+              /> :
+              <Loading />
+          }
+        </div>
+      </div>
     );
   }
 }
 
-// TODO edit proptypes
-MyPaths.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  learningPathList: PropTypes.object,
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+MyPaths.defaultProps = {
+  createdPaths: [],
 };
 
-export default createContainer(({ match }) => {
+MyPaths.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  createdPaths: PropTypes.arrayOf(PropTypes.shape({})),
+  user: PropTypes.shape({}).isRequired,
+};
 
-  // Load all paths user has created from DB.
-  // call subscription that only allows us to see the learning paths from this userId.
-  // Each learning path should have an ownerId property on it.
+export default createContainer(({ user }) => {
+  const opts = { sort: ['aggregatedVotes', 'desc'], limit: 500 };
+  const subscription = Meteor.subscribe('learning-paths', { mentor: user._id }, opts);
+  const createdPaths = LearningPathCollection.find({ mentor: user._id }).fetch();
 
   return {
-    // learningPathList: learningPathList
+    loading: !subscription.ready(),
+    user,
+    createdPaths,
   };
 }, MyPaths);

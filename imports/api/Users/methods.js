@@ -1,4 +1,6 @@
 import rateLimit from '../../modules/rate-limit';
+import SimpleSchema from 'simpl-schema';
+
 
 // Deny all client-side updates to user documents
 // Security issue in meteor
@@ -7,15 +9,25 @@ Meteor.users.deny({
   update() { return true; }
 });
 
-const addSavedLearningPath = new ValidatedMethod({
-  name: 'users.addSavedLearningPath',
+const usersToggleSaveLearningPath = new ValidatedMethod({
+  name: 'users.toggleSaveLearningPath',
   validate: new SimpleSchema({
     learningPathId: { type: String },
   }).validator(),
-  run(learningPathId) {
+  run({ learningPathId }) {
     try {
-      // TODO add logic to save learning path to savedLearningPaths user property.
-
+      if (!this.userId) {
+        throw new Meteor.Error('usersToggleSaveLearningPath', 'Sorry, you must be logged in to save learning paths.');
+      }
+      const state = !!Meteor.user().savedLearningPaths[learningPathId];
+      const field = `savedLearningPaths.${learningPathId}`;
+      Meteor.users.update(this.userId,
+        {
+          $set: {
+            [field]: !state,
+          },
+        },
+      );
     } catch (exception) {
       throw new Meteor.Error('users.addSavedLearningPath.error',
         `Error saving learning path. ${exception}`);
@@ -23,15 +35,26 @@ const addSavedLearningPath = new ValidatedMethod({
   },
 });
 
-const markResourceAsCompleted = new ValidatedMethod({
-  name: 'users.markResourceAsCompleted',
+const toggleCompletedResource = new ValidatedMethod({
+  name: 'users.toggleCompletedResource',
   validate: new SimpleSchema({
     resourceId: { type: String },
+    learningPathId: { type: String },
   }).validator(),
-  run(resourceId) {
+  run({ learningPathId, resourceId }) {
     try {
-      // TODO add logic to mark resource as complete.
-
+      if (!this.userId) {
+        throw new Meteor.Error('userstoggleCompletedResource', 'Sorry, you must be logged in to complete resources.');
+      }
+      const state = (Meteor.user().completedResources[learningPathId]) ? !!Meteor.user().completedResources[learningPathId][resourceId] : false;
+      const field = `completedResources.${learningPathId}.${resourceId}`;
+      Meteor.users.update(this.userId,
+        {
+          $set: {
+            [field]: !state,
+          },
+        },
+      );
     } catch (exception) {
       throw new Meteor.Error('users.addSavedLearningPath.error',
         `Error marking resource as complete. ${exception}`);

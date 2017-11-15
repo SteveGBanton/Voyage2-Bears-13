@@ -150,7 +150,7 @@ export default class Signup extends React.Component {
             } else {
               Meteor.call('users.sendVerificationEmail');
               Bert.alert('Welcome!', 'success');
-              history.push(`/dashboard`);
+              history.push(`/create-path`);
             }
           });
       }
@@ -192,7 +192,6 @@ export default class Signup extends React.Component {
         console.log(err);
         // handle error
       } else {
-        console.log(Meteor.user());
         // successful login!
       }
     });

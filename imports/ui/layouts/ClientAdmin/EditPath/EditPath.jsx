@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import RaisedButton from 'material-ui/RaisedButton';
-
 import LearningPaths from '../../../../api/LearningPath/LearningPath';
 import Loading from '../../../components/Loading/Loading';
 import LearningPathEditor from '../../../components/LearningPathEditor/LearningPathEditor';
@@ -24,27 +22,20 @@ const EditPath = ({ loading, learningPathDoc, history }) => (
     <Loading />
 );
 
-// TODO edit proptypes
-EditPath.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  learningPathDoc: PropTypes.object,
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+EditPath.defaultProps = {
+  learningPathDoc: {},
 };
 
+EditPath.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  learningPathDoc: PropTypes.shape({}),
+  history: PropTypes.shape({}).isRequired,
+};
 
 export default createContainer(({ match }) => {
-  // const subscriptionAll = Meteor.subscribe('learning-paths');
-  // console.log(LearningPaths.find({}).fetch());
-
   const pathId = match.params.learningPathId;
-  // const subscription = Meteor.subscribe('learning-paths', { _id: { $eq: pathId } }, {
-    // sort: ['_id', 'desc'],
-    // limit: 1,
-  // });
   const subscription = Meteor.subscribe('learning-paths.view', pathId);
   const learningPathDoc = LearningPaths.findOne(pathId);
-
   return {
     loading: !subscription.ready(),
     learningPathDoc,

@@ -6,15 +6,35 @@
   display: flex;
 }
 
-.innerDroppable {
-  width: 95%;
+.inner-droppable-container {
+  max-width: 800px;
+  min-width: 800px;
+  width: auto;
   margin: 5px;
+  flex: 1 1;
+  display: flex;
 }
+
+.inner-droppable {
+  max-width: 800px;
+  width: auto;
+  margin: 5px;
+  flex: 1 1;
+}
+
+.editor-wrapper {
+  display: flex;
+  align-items: center;
+  flex-flow: column nowrap;
+}
+
+
 
 // Layout of the initial input boxes
 .path-description-input {
   display: flex;
   flex-flow: column nowrap;
+  max-width: 800px;
   .paper-box {
     padding: 25px;
     margin-bottom: 30px;
@@ -108,6 +128,10 @@
 //////////////
 
 .grab-cursor {
+  flex: 1 1 auto;
+  max-width: 800px;
+  display: flex;
+  flex-flow: column nowrap;
   &:hover {
     cursor: -webkit-grab;
     cursor: -moz-grab;

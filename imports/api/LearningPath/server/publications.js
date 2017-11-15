@@ -3,7 +3,7 @@ import { check } from 'meteor/check';
 import SimpleSchema from 'simpl-schema';
 import LearningPaths from '../LearningPath';
 
-Meteor.publish('learning-paths', (query = {}, opts) => {
+Meteor.publish('learning-paths', (query = {}, opts = { sort: ['aggregatedVotes', 'desc'], limit: 30 }) => {
   try {
     check(query, Object);
     check(opts, {

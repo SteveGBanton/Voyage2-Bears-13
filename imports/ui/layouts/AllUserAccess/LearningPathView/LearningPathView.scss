@@ -1,0 +1,119 @@
+@import '../../../stylesheets/mixins';
+
+.learning-path-view-container {
+  width: 100%;
+  font-weight: 300;
+  display: flex;
+  justify-content: center;
+  flex-flow: row nowrap;
+  word-break: keep-all;
+  .learning-path-view-one {
+    margin: 50px 3vw 50px 3vw;
+    .title {
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: center;
+      max-width: 650px;
+      align-items: center;
+      margin-bottom: 100px;
+      margin-top: 30px;
+      h1 {
+        font-weight: 300;
+        margin-bottom: 0;
+        margin-right: 30px;
+      }
+      .save-edit-chips {
+        padding-top: 40px;
+        width: 220px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-flow: row wrap;
+      }
+    }
+    h3 {
+      font-weight: 300;
+    }
+    .skill-list {
+      display: flex;
+      flex-flow: row wrap;
+      width: 300px;
+    }
+    .paper-box {
+      max-width: 650px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    .resources {
+      padding-top: 50px;
+    }
+    .resource-box {
+      margin-bottom: 50px;
+      .title-resource {
+        margin-bottom: 25px;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        .title-resource-number-title {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          .number-box {
+            flex: 0 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: row nowrap;
+            min-width: 14px;
+            width: 14px;
+            height: 14px;
+            background-color: #009688;
+            padding: 10px;
+            margin: 15px 15px 15px 0;
+            border-radius: 100%;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+          }
+          h5 {
+            font-size: 14px;
+            color: #ffffff;
+            padding: 0;
+            margin: 0;
+          }
+          h3 {
+            margin: 0;
+            line-height: 120%;
+            font-weight: 300;
+          }
+        }
+      }
+      img {
+        margin: 15px;
+
+      }
+      .description {
+        margin-bottom: 40px;
+        line-height: 140%;
+      }
+      .link-and-mark {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        .link {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+@include breakpoint(tablet) {
+  .title-resource-number-title {
+    h3 {
+      font-size: 22px;
+    }
+  }
+}

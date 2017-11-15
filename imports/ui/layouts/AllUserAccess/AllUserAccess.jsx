@@ -13,7 +13,6 @@ const AllUserAccess = ({ loggingIn, authenticated, component, user, ...rest }) =
       user={user}
       {...rest}
     />
-    {console.log(authenticated)}
     <Route
       {...rest}
       render={props => (

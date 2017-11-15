@@ -15,7 +15,7 @@ export default class Public extends React.Component {
           render={props => (
             !authenticated ?
               (React.createElement(component, { ...props, loggingIn, authenticated })) :
-              (<Redirect to={`/dashboard`} />)
+              (<Redirect to={`/create-path`} />)
           )}
         />
       </div>

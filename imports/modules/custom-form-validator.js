@@ -84,7 +84,7 @@ export default function customFormValidator(input, rules, messages) {
         case 'maxLength':
           if (getField(field)) {
             if (!valMaxLength(getField(field), rules[field][subrule])) {
-              formErrors[field] = messages[field].maxlength;
+              formErrors[field] = messages[field].maxLength;
             }
           }
           break;

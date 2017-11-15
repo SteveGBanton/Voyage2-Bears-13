@@ -43,7 +43,7 @@ class LearningPaths extends React.Component {
   }
 
   render() {
-    const { loading, learningPathList, filterOpts, location, history, user, userId } = this.props;
+    const { loading, learningPathList, filterOpts, location, history, user, userId, subscription } = this.props;
     return (
       <div className="LearningPaths">
         <div className="LearningPaths-header">
@@ -52,14 +52,9 @@ class LearningPaths extends React.Component {
             filterOpts={filterOpts}
             location={location}
             history={history}
+            subscription={subscription}
           />
-
-          <h2>Learning Paths</h2>
         </div>
-        {/* TODO Create learning path categories  */}
-
-        {/* TODO Add categories users can browse */}
-
         {
           !loading ?
             <RenderLearningPathList
@@ -72,6 +67,7 @@ class LearningPaths extends React.Component {
 
         <div className="LearningPaths-btn-panel">
           <RaisedButton
+            style={{ margin: 30 }}
             className="LearningPaths-load-more-btn"
             label="Load More"
             disabled={loading}
@@ -84,7 +80,11 @@ class LearningPaths extends React.Component {
   }
 }
 
-// TODO edit proptypes
+LearningPaths.defaultProps = {
+  user: null,
+  userId: null,
+}
+
 LearningPaths.propTypes = {
   loading: PropTypes.bool.isRequired,
   learningPathList: PropTypes.arrayOf(
@@ -103,8 +103,8 @@ LearningPaths.propTypes = {
   filterOpts: PropTypes.arrayOf(PropTypes.string).isRequired,
   location: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({}).isRequired,
-  user: PropTypes.shape({}).isRequired,
-  userId: PropTypes.string.isRequired,
+  user: PropTypes.shape({}),
+  userId: PropTypes.string,
 };
 
 function parseQueryString(search) {
@@ -118,6 +118,7 @@ function parseQueryString(search) {
 }
 
 export default createContainer(({ location, history, user }) => {
+
   const search = location.search;
   let selector = {};
   const query = parseQueryString(search);
@@ -126,11 +127,12 @@ export default createContainer(({ location, history, user }) => {
   }
 
   const subscription = Meteor.subscribe('learning-paths', selector, FIND_ALL_OPTS);
-  const learningPathList = LearningPathCollection.find().fetch();
+  const learningPathList = LearningPathCollection.find(selector).fetch();
 
-  const userId = user._id;
+  const userId = (user) ? user._id : null;
 
   return {
+    subscription,
     loading: !subscription.ready(),
     learningPathList,
     selector,
