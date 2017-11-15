@@ -8,39 +8,11 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { Bert } from 'meteor/themeteorchef:bert';
 
 import { Tabs, Tab } from 'material-ui/Tabs';
-// import AppBar from 'material-ui/AppBar'
 
 import DocumentsCollection from '../../../../api/Documents/Documents';
 import Loading from '../../../components/Loading/Loading.jsx';
 
 import './ClientDashboard.scss';
-
-/*
-const handleRemove = (documentId) => {
-  if (confirm('Are you sure? This is permanent!')) {
-    Meteor.call('documents.remove', {documentId}, (error) => {
-      if (error) {
-        Bert.alert(error.reason, 'danger');
-      } else {
-        Bert.alert('Document deleted!', 'success');
-      }
-    });
-  }
-};
-*/
-
-/*
-const runTest = (test) => {
-  Meteor.call('utility.testMethod', {test}, (error, val) => {
-    if (error) {
-      console.log(error)
-    } else {
-      console.log(val)
-    }
-  })
-
-}
-*/
 
 const ClientDashboard = ({ loading, documents, match, history, ...rest }) => (!loading ? (
   <div className="Documents">
