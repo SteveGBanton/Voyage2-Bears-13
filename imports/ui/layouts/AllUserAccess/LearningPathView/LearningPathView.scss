@@ -11,7 +11,7 @@
     margin: 50px 3vw 50px 3vw;
     .title {
       display: flex;
-      flex-flow: row wrap;
+      flex-flow: column wrap;
       justify-content: center;
       max-width: 650px;
       align-items: center;
@@ -22,10 +22,14 @@
         margin-bottom: 0;
         margin-right: 30px;
       }
-      .save-chip {
-        padding: 20px;
-        width: 100px;
-      }  
+      .save-edit-chips {
+        padding-top: 40px;
+        width: 220px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-flow: row wrap;
+      }
     }
     h3 {
       font-weight: 300;
@@ -82,11 +86,11 @@
             line-height: 120%;
             font-weight: 300;
           }
-        } 
+        }
       }
       img {
         margin: 15px;
-        
+
       }
       .description {
         margin-bottom: 40px;
@@ -103,7 +107,7 @@
         }
       }
     }
-  }  
+  }
 }
 
 @include breakpoint(tablet) {
@@ -111,5 +115,5 @@
     h3 {
       font-size: 22px;
     }
-  } 
+  }
 }
