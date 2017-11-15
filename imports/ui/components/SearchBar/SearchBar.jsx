@@ -22,7 +22,7 @@ export default class SearchBar extends React.Component {
     super(props);
 
     this.state = {
-      searchFocused: false,
+      searchFocused: true,
       searchInput: '',
       searchFilter: 'title',
     };
@@ -34,7 +34,7 @@ export default class SearchBar extends React.Component {
   }
 
   toggleSearchFocus(toggle) {
-    this.setState({ searchFocused: toggle });
+    // this.setState({ searchFocused: toggle });
   }
 
   handleChangeSearchInput(e) {
@@ -52,6 +52,7 @@ export default class SearchBar extends React.Component {
   }
 
   handleSubmit() {
+    this.props.subscription.stop();
     const { history, location } = this.props;
     if (this.state.searchInput.length > 0) {
       history.push(`${location.pathname}?${this.state.searchFilter}=${this.state.searchInput}`);
@@ -83,7 +84,6 @@ export default class SearchBar extends React.Component {
         >
           <input
             onFocus={() => this.toggleSearchFocus(true)}
-            onBlur={() => this.toggleSearchFocus(false)}
             onChange={this.handleChangeSearchInput}
             value={this.state.searchInput}
             type="text"

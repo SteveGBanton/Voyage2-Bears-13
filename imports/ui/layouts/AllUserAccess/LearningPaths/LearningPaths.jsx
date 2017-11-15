@@ -43,7 +43,7 @@ class LearningPaths extends React.Component {
   }
 
   render() {
-    const { loading, learningPathList, filterOpts, location, history, user, userId } = this.props;
+    const { loading, learningPathList, filterOpts, location, history, user, userId, subscription } = this.props;
     return (
       <div className="LearningPaths">
         <div className="LearningPaths-header">
@@ -52,14 +52,11 @@ class LearningPaths extends React.Component {
             filterOpts={filterOpts}
             location={location}
             history={history}
+            subscription={subscription}
           />
 
           <h2>Learning Paths</h2>
         </div>
-        {/* TODO Create learning path categories  */}
-
-        {/* TODO Add categories users can browse */}
-
         {
           !loading ?
             <RenderLearningPathList
@@ -135,6 +132,7 @@ export default createContainer(({ location, history, user }) => {
   const userId = (user) ? user._id : null;
 
   return {
+    subscription,
     loading: !subscription.ready(),
     learningPathList,
     selector,
