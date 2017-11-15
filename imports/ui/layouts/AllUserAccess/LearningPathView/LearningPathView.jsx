@@ -9,6 +9,8 @@ import Avatar from 'material-ui/Avatar';
 import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
+import IconButton from 'material-ui/IconButton';
+import { green500, red500 } from 'material-ui/styles/colors';
 
 import Loading from '../../../components/Loading/Loading';
 
@@ -48,12 +50,55 @@ const LearningPathView = ({ loading, learningPathDoc, history, user }) => (
                 :
                 ''
             }
+
+            <IconButton
+              className="lp-vote-btn lp-upvote"
+              tooltip="Upvote!"
+              iconClassName="fa fa-chevron-up"
+              iconStyle={learningPathDoc.voted[user._id] === 1 ?
+                { color: green500 } :
+                { color: null }
+              }
+              onClick={() => {
+                Meteor.call("learning-paths.upvote", { _id: learningPathDoc._id }, function(err) {
+                  if(err) {
+                    Bert.alert({
+                      message: err.reason,
+                      type: 'alert',
+                      icon: 'fa-ban',
+                    });
+                  }
+                });
+              }}
+            />
+            <span className="lp-vote-count">{learningPathDoc.aggregatedVotes}</span>
+            <IconButton
+              className="lp-vote-btn lp-downvote"
+              tooltip="Downvote..."
+              iconClassName="fa fa-chevron-down"
+              iconStyle={learningPathDoc.voted[user._id] === -1 ?
+                { color: red500 } :
+                { color: null }
+              }
+              onClick={() => {
+                Meteor.call("learning-paths.downvote", { _id: learningPathDoc._id }, function(err) {
+                  if(err) {
+                    Bert.alert({
+                      message: err.reason,
+                      type: 'alert',
+                      icon: 'fa-ban',
+                    });
+                  }
+                })}
+              }
+            />
+
             {(user && learningPathDoc.mentor === user._id) ?
               <Chip
                 onClick={() => history.push(`/learning-path/${learningPathDoc._id}/edit`)}
               >
                 <Avatar color="#FFF" icon={<FontIcon className="material-icons">edit</FontIcon>} />
-                Edit Path
+                Edit
               </Chip>
               :
               ''
