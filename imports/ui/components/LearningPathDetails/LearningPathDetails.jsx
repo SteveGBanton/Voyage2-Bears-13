@@ -147,7 +147,7 @@ export default class LearningPathDetails extends React.Component {
               by <Link to={`/user/${mentorName}`}>{mentorName}</Link>
               {
                 mentor === userId ?
-                  <span> | <Link className="lp-edit-link" to={`/learning-path/${_id}/edit`}>Edit</Link></span> :
+                  <span> | <Link className="lp-edit-link" to={`/learning-path/${_id}/edit`}>edit</Link></span> :
                   null
               }
             </CardText>

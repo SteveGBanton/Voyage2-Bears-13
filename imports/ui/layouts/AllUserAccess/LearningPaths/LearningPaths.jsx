@@ -54,8 +54,6 @@ class LearningPaths extends React.Component {
             history={history}
             subscription={subscription}
           />
-
-          <h2>Learning Paths</h2>
         </div>
         {
           !loading ?
@@ -69,6 +67,7 @@ class LearningPaths extends React.Component {
 
         <div className="LearningPaths-btn-panel">
           <RaisedButton
+            style={{ margin: 30 }}
             className="LearningPaths-load-more-btn"
             label="Load More"
             disabled={loading}

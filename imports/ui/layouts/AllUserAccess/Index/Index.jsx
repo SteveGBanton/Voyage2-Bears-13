@@ -1,5 +1,9 @@
 import React from 'react';
 import { Card, CardTitle } from 'material-ui/Card';
+import IconButton from 'material-ui/IconButton';
+import { Link } from 'react-router-dom';
+import FontIcon from 'material-ui/FontIcon';
+
 
 import './Index.scss';
 
@@ -8,41 +12,35 @@ const tempFeaturedArr = [
     skill: 'JavaScript',
     description: 'Here is a short description of said skill',
     img: '/tempAssets/logos/js.png',
+    link: '/learning-paths?title=javascript',
   },
   {
     skill: 'React',
     description: 'Here is a short description of said skill',
+    link: '/learning-paths?title=react',
   },
   {
     skill: 'CSS',
     description: 'Here is a short description of said skill',
     img: '/tempAssets/logos/css3.png',
+    link: '/learning-paths?title=css',
   },
   {
     skill: 'Node',
     description: 'Here is a short description of said skill',
     img: '/tempAssets/logos/node.png',
+    link: '/learning-paths?title=node',
   },
   {
-    skill: 'HTML',
+    skill: 'HTML5',
     description: 'Here is a short description of said skill',
     img: '/tempAssets/logos/html5.png',
+    link: '/learning-paths?title=HTML5',
   },
   {
     skill: 'Algebra',
     description: 'Here is a short description of said skill',
-  },
-  {
-    skill: 'Stuff',
-    description: 'Here is a short description of said skill',
-  },
-  {
-    skill: 'More Stuff',
-    description: 'Here is a short description of said skill',
-  },
-  {
-    skill: 'All The Things',
-    description: 'Here is a short description of said skill',
+    link: '/learning-paths?title=algrebra',
   },
 ];
 
@@ -71,13 +69,27 @@ class Index extends React.Component {
 
   render() {
     const featured = tempFeaturedArr.map(x =>
-      (<Card className="Inedx-featuredCard" key={x.skill}>
-        {/* <CardMedia> */}
-        <div className="Index-featuredCardImg" style={{ backgroundImage: `url(${x.img ? x.img : 'books.jpg'})` }} alt={x.skill} />
-        {/* </CardMedia> */}
-        <CardTitle title={x.skill} subtitle={x.description} />
-      </Card>),
+      (
+        <Card className="Inedx-featuredCard" key={x.skill}>
+          <Link to={x.link}>
+            <div
+              className="Index-featuredCardImg"
+              style={{ backgroundImage: `url(${x.img ? x.img : 'books.jpg'})`
+              }}
+              alt={x.skill}
+            />
+            <CardTitle
+              style={{ textDecoration: 'none' }}
+              className="Index-cardTitle"
+              title={x.skill}
+              subtitle={x.description}
+            />
+          </Link>
+        </Card>
+    ),
     );
+
+    const { history } = this.props;
 
     return (
       <div className="Index">
@@ -86,18 +98,26 @@ class Index extends React.Component {
           // style={{backgroundImage: `url('library.jpeg')`}}
         >
           <div>
-            <h2>Learn Something Awesome</h2>
-            {/* <p>Gain skills trought curated learning paths</p> */}
+            <h1>Learn Something Awesome</h1>
           </div>
 
           <div className="Index-search">
-            <h3>Search</h3>
-            <div
+            <h3>Search Learning Paths <FontIcon
+              className="fa fa-search"
+              onClick={() => {
+                history.push('/learning-paths');
+              }}
+              style={{ fontSize: 30, color: '#FFFFF', cursor: 'pointer' }}
+            />
+              &nbsp;or Browse Categories:
+            </h3>
+
+            {/* <div
               className={
                 this.state.searchFocused ? "Index-searchInputWrap on" : "Index-searchInputWrap off"
               }
-            >
-              <input
+            > */}
+              {/* <input
                 onFocus={() => this.toggleSearchFocus(true)}
                 onBlur={() => this.toggleSearchFocus(false)}
                 onChange={this.handleChangeSearchInput}
@@ -105,8 +125,8 @@ class Index extends React.Component {
                 type="text"
                 placeholder="⌕"
                 className="Index-searchInput"
-              />
-            </div>
+              /> */}
+            {/* </div> */}
           </div>
         </div>
         <div className="Index-featured">

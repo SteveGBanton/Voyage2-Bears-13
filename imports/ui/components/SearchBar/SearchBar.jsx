@@ -13,7 +13,7 @@ export const FILTER_MENU_STYLE = {
   textAlign: 'left',
 };
 export const BUTTON_STYLE = {
-  margin: '10px',
+  margin: '10px 0 10px 30px',
 };
 
 export default class SearchBar extends React.Component {
@@ -76,11 +76,9 @@ export default class SearchBar extends React.Component {
     const { loading, filterOpts } = this.props;
     return (
       <div className="search-bar">
-        <h3>Search</h3>
+        <h1>Search</h1>
         <div
-          className={
-            this.state.searchFocused ? "search-bar-InputWrap on" : "search-bar-InputWrap off"
-          }
+          className="search-bar-InputWrap"
         >
           <input
             onFocus={() => this.toggleSearchFocus(true)}
@@ -91,36 +89,41 @@ export default class SearchBar extends React.Component {
             className="search-bar-Input"
           />
         </div>
-        {
-          filterOpts.length > 0 ?
-            <SelectField
-              floatingLabelText="Filter"
-              floatingLabelStyle={FILTER_MENU_STYLE}
-              labelStyle={FILTER_MENU_STYLE}
-              value={this.state.searchFilter}
-              onChange={this.handleMenuSelect}
-            >
-              {this.renderFilterOpts()}
-            </SelectField> :
-            null
-        }
+        <div className="search-options">
+          {
+            filterOpts.length > 0 ?
+              <SelectField
+                className="select-field"
+                floatingLabelText="Search By:"
+                floatingLabelStyle={{ color: '#FFFFFF' }}
+                labelStyle={FILTER_MENU_STYLE}
+                value={this.state.searchFilter}
+                onChange={this.handleMenuSelect}
+                style={{ width: 150 }}
+              >
+                {this.renderFilterOpts()}
+              </SelectField>
+              :
+              null
+          }
 
-        <RaisedButton
-          className="search-bar-Search-btn"
-          label="Search"
-          disabled={loading}
-          primary={!loading}
-          onClick={this.handleSubmit}
-          style={BUTTON_STYLE}
-        />
-        <RaisedButton
-          className="search-bar-Clear-btn"
-          label="Clear"
-          disabled={loading}
-          secondary={!loading}
-          onClick={this.handleClear}
-          style={BUTTON_STYLE}
-        />
+          <RaisedButton
+            className="search-bar-Search-btn"
+            label="Search"
+            disabled={loading}
+            primary={!loading}
+            onClick={this.handleSubmit}
+            style={BUTTON_STYLE}
+          />
+          <RaisedButton
+            className="search-bar-Clear-btn"
+            label="Clear"
+            disabled={loading}
+            secondary={!loading}
+            onClick={this.handleClear}
+            style={BUTTON_STYLE}
+          />
+        </div>
       </div>
     );
   }

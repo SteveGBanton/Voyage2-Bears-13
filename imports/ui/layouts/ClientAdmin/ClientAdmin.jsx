@@ -11,6 +11,7 @@ import Download from 'material-ui/svg-icons/file/file-download';
 import Delete from 'material-ui/svg-icons/action/delete';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import FontIcon from 'material-ui/FontIcon';
 
 import Navigation from '../../components/Navigation/Navigation';
 import AddUsername from '../../components/AddUsername/AddUsername';
@@ -76,24 +77,13 @@ export default class ClientAdmin extends React.Component {
                 <MenuItem
                   primaryText="View Saved Paths"
                   leftIcon={
-                    <RemoveRedEye
-                      color="#757575"
-                      style={{ paddingLeft: "10px" }}
-                    />}
-                />
-              </Link>
-
-              <Divider
-                style={{ backgroundColor: "#757575", marginTop: "16px", marginBottom: "16px" }}
-              />
-              <Link to={`/learning-paths`}>
-                <MenuItem
-                  primaryText="Learning Paths (Public)"
-                  leftIcon={
-                    <RemoveRedEye
-                      color="#757575"
-                      style={{ paddingLeft: "10px" }}
-                    />}
+                    <FontIcon
+                      className="material-icons"
+                      style={{ color: "#757575", paddingLeft: 10 }}
+                    >
+                      favorite
+                    </FontIcon>
+                  }
                 />
               </Link>
             </Drawer>

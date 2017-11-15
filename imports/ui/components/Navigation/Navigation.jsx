@@ -11,6 +11,7 @@ import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-mo
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
+import FontIcon from 'material-ui/FontIcon';
 
 import './Navigation.scss';
 
@@ -40,17 +41,34 @@ const Navigation = (props) => {
               onClick={toggleMenu}
             />
             <ToolbarSeparator />
-            <ToolbarTitle style={{ color: 'white', paddingLeft: '20px' }} text="Learn-Map Dashboard" />
+            <Link to={'/'}>
+              <ToolbarTitle style={{ color: 'white', paddingLeft: '20px' }} text="LearnMap" />
+            </Link>
           </ToolbarGroup>
         :
           <ToolbarGroup>
-            <ToolbarTitle style={{ color: 'white', paddingLeft: '20px' }} text="Learn-Map Dashboard" />
+            <Link to={'/'}>
+              <ToolbarTitle style={{ color: 'white', paddingLeft: '20px' }} text="LearnMap" />
+            </Link>
           </ToolbarGroup>
       }
       <ToolbarGroup>
+
+        <Link to={`/learning-paths`}>
+          <IconButton
+            className="search"
+            tooltip="Search learning paths"
+            iconClassName="fa fa-search"
+            iconStyle={{ color: '#FFF' }}
+            onClick={() => {
+              history.push('/learning-paths');
+            }}
+          />
+        </Link>
+
         {authenticated
           ?
-            <Link to={`/dashboard`}><RaisedButton label="Dashboard" backgroundColor="#00796B" labelStyle={{ color: 'white' }} /></Link>
+            <Link to={`/create-path`}><RaisedButton label="+ New Path" backgroundColor="#00796B" labelStyle={{ color: 'white' }} /></Link>
           : ''
         }
         <IconMenu
