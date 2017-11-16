@@ -13,18 +13,37 @@ import Loading from '../../../components/Loading/Loading';
 
 if (Meteor.isClient) import './UserView.scss';
 
-const UserView = ({ loading, history, user, createdPaths, savedPaths }) => {
-  const firstName = user && user.profile && user.profile.name ? `${user.profile.name.first}` : '';
-  const lastName = user && user.profile && user.profile.name ? `${user.profile.name.last}` : '';
+const UserView = ({
+  loading,
+  history,
+  user,
+  createdPaths,
+  savedPaths,
+  userForUserNameOnPage
+}) => {
+  const firstName = userForUserNameOnPage &&
+    userForUserNameOnPage.profile &&
+    userForUserNameOnPage.profile.name &&
+    userForUserNameOnPage.profile.name.first ?
+      `${userForUserNameOnPage.profile.name.first}`
+      :
+      '';
+  const lastName = userForUserNameOnPage &&
+    userForUserNameOnPage.profile &&
+    userForUserNameOnPage.profile.name &&
+    userForUserNameOnPage.profile.name.first ?
+      `${userForUserNameOnPage.profile.name.last}`
+      :
+      '';
   const nameDisplay = `${firstName} ${lastName}`;
   const loadOrNoUser = (
-    (user) ?
+    (userForUserNameOnPage) ?
       <Loading />
       :
       <h3 style={{ margin: 50 }}>Sorry, cannot find user.</h3>
   )
   return (
-    (!loading && user) ?
+    (!loading && userForUserNameOnPage) ?
       <div className="user-view">
         <div className="card">
           <Card
@@ -36,17 +55,15 @@ const UserView = ({ loading, history, user, createdPaths, savedPaths }) => {
 
             <CardTitle
               title={nameDisplay}
-              subtitle={user.username}
+              subtitle={userForUserNameOnPage.username}
             />
             <CardText>
-              {(user.about) ? user.about : ''
+              {(userForUserNameOnPage.about) ?
+                  userForUserNameOnPage.about
+                  :
+                  ''
               }
             </CardText>
-            {/* <CardActions>
-              <FlatButton label="Website" />
-              <FlatButton label="Facebook" />
-              <FlatButton label="Email" />
-            </CardActions> */}
           </Card>
         </div>
         <div className="learning-lists">
@@ -59,7 +76,7 @@ const UserView = ({ loading, history, user, createdPaths, savedPaths }) => {
                 <RenderLearningPathList
                   learningPathList={createdPaths}
                   user={user}
-                  userId={user._id}
+                  userId={(user) ? user._id : null}
                 /> :
                 <Loading />
             }
@@ -74,7 +91,7 @@ const UserView = ({ loading, history, user, createdPaths, savedPaths }) => {
                 <RenderLearningPathList
                   learningPathList={savedPaths}
                   user={user}
-                  userId={user._id}
+                  userId={(user) ? user._id : null}
                 /> :
                 <Loading />
             }
@@ -83,7 +100,7 @@ const UserView = ({ loading, history, user, createdPaths, savedPaths }) => {
         </div>
 
         {/*
-          Data to display about user:
+          TODO Data to display about user:
 
           First Name, Last Name
           Username
@@ -112,19 +129,24 @@ UserView.propTypes = {
   createdPaths: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
-export default createContainer(({ match }) => {
+export default createContainer(({ match, user }) => {
   const username = match.params.username;
   const subscription = Meteor.subscribe('users.getSingle', username);
-  const user = Meteor.users.findOne({ username });
+  const userForUserNameOnPage = Meteor.users.findOne({ username });
   const opts = { sort: ['aggregatedVotes', 'desc'], limit: 6 }
-  const subscriptionPaths = (user) ? Meteor.subscribe('learning-paths', {}, opts) : null;
+  const subscriptionPaths = (userForUserNameOnPage) ? Meteor.subscribe('learning-paths', {}, opts) : null;
 
-  const createdPaths = (user) ? LearningPathCollection.find({ mentor: user._id }).fetch() : []
+  const createdPaths = (userForUserNameOnPage) ?
+    LearningPathCollection
+      .find({ mentor: userForUserNameOnPage._id })
+      .fetch()
+    :
+    []
 
   const savedPathsIDs = [];
-  const keys = (user) ? Object.keys(user.savedLearningPaths) : [];
+  const keys = (userForUserNameOnPage) ? Object.keys(userForUserNameOnPage.savedLearningPaths) : [];
   for (let i = 0; i < keys.length; i += 1) {
-    if (user.savedLearningPaths[keys[i]] === true) {
+    if (userForUserNameOnPage.savedLearningPaths[keys[i]] === true) {
       savedPathsIDs.push(keys[i]);
     }
   }
@@ -135,6 +157,7 @@ export default createContainer(({ match }) => {
     user,
     createdPaths,
     savedPaths,
+    userForUserNameOnPage,
   };
 }, UserView);
 
