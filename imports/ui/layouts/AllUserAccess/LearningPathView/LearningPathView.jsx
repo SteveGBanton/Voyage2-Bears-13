@@ -19,7 +19,7 @@ import LearningPathCollection from '../../../../api/LearningPath/LearningPath';
 if (Meteor.isClient) import './LearningPathView.scss';
 
 const LearningPathView = ({ loading, learningPathDoc, history, user }) => (
-  !loading ?
+  !loading && learningPathDoc ?
     <div className="learning-path-view-container">
       <div className="learning-path-view-one">
         <div className="title">
@@ -55,7 +55,7 @@ const LearningPathView = ({ loading, learningPathDoc, history, user }) => (
               className="lp-vote-btn lp-upvote"
               tooltip="Upvote!"
               iconClassName="fa fa-chevron-up"
-              iconStyle={learningPathDoc.voted[user._id] === 1 ?
+              iconStyle={(user && learningPathDoc.voted[user._id]) === 1 ?
                 { color: green500 } :
                 { color: null }
               }
@@ -76,7 +76,7 @@ const LearningPathView = ({ loading, learningPathDoc, history, user }) => (
               className="lp-vote-btn lp-downvote"
               tooltip="Downvote..."
               iconClassName="fa fa-chevron-down"
-              iconStyle={learningPathDoc.voted[user._id] === -1 ?
+              iconStyle={(user && learningPathDoc.voted[user._id]) === -1 ?
                 { color: red500 } :
                 { color: null }
               }
