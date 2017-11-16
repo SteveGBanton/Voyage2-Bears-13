@@ -27,7 +27,6 @@ import ClientProfile from '../layouts/ClientAdmin/ClientProfile/ClientProfile';
 // Public Only pages - logged in users cannot access, will be forwarded to their dashboard
 import Signup from '../layouts/Public/Signup/Signup';
 import Login from '../layouts/Public/Login/Login';
-import Logout from '../layouts/Public/Logout/Logout';
 
 // All users pages - logged in or not logged in users can access
 import LearningPaths from '../layouts/AllUserAccess/LearningPaths/LearningPaths';
@@ -128,12 +127,6 @@ const App = props => (
                     exact
                     path="/login"
                     component={Login}
-                    {...props}
-                  />
-                  <Public
-                    exact
-                    path="/logout"
-                    component={Logout}
                     {...props}
                   />
                   <AllUserAccess

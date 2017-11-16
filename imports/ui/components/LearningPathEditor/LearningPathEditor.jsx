@@ -15,12 +15,14 @@ import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 import customFormValidator from '../../../modules/custom-form-validator';
 
-if (Meteor.isClient) {
-  import './LearningPathEditor.scss';
-}
+// if (Meteor.isClient) {
+import './LearningPathEditor.scss';
+// }
 
 const pathRules = {
   title: {
@@ -118,6 +120,9 @@ export default class LearningPathEditor extends React.Component {
     this.addSkill = this.addSkill.bind(this);
     this.clearSkills = this.clearSkills.bind(this);
     this.removeOneSkill = this.removeOneSkill.bind(this);
+    this.deleteConfirm = this.deleteConfirm.bind(this);
+    this.deletePath = this.deletePath.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
 
     this.state = {
       editingIndex: null,
@@ -129,21 +134,20 @@ export default class LearningPathEditor extends React.Component {
       resources: [],
       formErrors: {},
       formErrorsResources: {},
+      deleteDialogOpen: false,
     };
   }
 
   componentWillMount() {
     const { path } = this.props;
     if (path) {
-
       this.setState({
         title: path.title,
         description: path.description,
         skills: path.skills,
         resources: path.resources,
-      })
+      });
     }
-
   }
 
   // Handles rearranging of state when resources are dragged around.
@@ -282,6 +286,42 @@ export default class LearningPathEditor extends React.Component {
       resources: [],
       formErrors: {},
       formErrorsResources: {},
+    });
+  }
+
+  deletePath() {
+    this.setState({
+      deleteDialogOpen: true,
+    });
+  }
+
+  handleDialogClose() {
+    this.setState({
+      deleteDialogOpen: false,
+    });
+  }
+
+  deleteConfirm() {
+    if (this.props.path) {
+      Meteor.call('learning-paths.remove', { _id: this.props.path._id }, (err) => {
+        if (err) {
+          Bert.alert({
+            message: err.reason,
+            type: 'alert',
+            icon: 'fa-ban',
+          });
+        } else {
+          Bert.alert({
+            message: 'Path successfully deleted!',
+            type: 'success',
+            icon: 'fa-trash',
+          });
+          this.props.history.push('/my-paths')
+        }
+      })
+    }
+    this.setState({
+      deleteDialogOpen: false,
     });
   }
 
@@ -454,6 +494,27 @@ export default class LearningPathEditor extends React.Component {
     return (
       <div className="editor-wrapper">
         <div className="path-description-input">
+          <div className="submit-delete">
+            <RaisedButton
+              backgroundColor="#009688"
+              style={{ marginRight: 10 }}
+              onClick={this.formValidate}
+            >
+              <span style={{ color: '#FFFFFF' }}>Submit</span>
+            </RaisedButton>
+            {
+              (this.props.path) ?
+                <RaisedButton
+                  backgroundColor="#d9534f"
+                  style={{ marginRight: 10 }}
+                  onClick={this.deletePath}
+                >
+                  <span style={{ color: 'white' }}>Delete</span>
+                </RaisedButton>
+                :
+                ''
+            }
+          </div>
           <Paper className="paper-box">
             <h4>{'Enter a Goal / Title'}</h4>
             <p>{'If somebody follows this Learning Path to the end, what will they learn, or what will they become?'}</p>
@@ -552,14 +613,30 @@ export default class LearningPathEditor extends React.Component {
                 Clear All
               </RaisedButton>
               <RaisedButton
+                backgroundColor="#009688"
                 style={{ marginRight: 10 }}
                 onClick={this.formValidate}
               >
-                Submit
+                <span style={{ color: '#FFFFFF' }}>Submit</span>
               </RaisedButton>
             </div>
           </Paper>
         </div>
+        <Dialog
+          title="Delete Learning Path"
+          actions={
+            <FlatButton
+              label="Confirm"
+              keyboardFocused={true}
+              onClick={this.deleteConfirm}
+            />
+          }
+          modal={false}
+          open={this.state.deleteDialogOpen}
+          onRequestClose={this.handleDialogClose}
+        >
+          Are you sure you want to delete this Learning Path? This action cannot be undone.
+        </Dialog>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <div className="grab-cursor">
             {(this.state.formErrors.resources) ?
@@ -619,7 +696,7 @@ export default class LearningPathEditor extends React.Component {
                                     {(item.title.length < 55) ?
                                       item.title
                                       :
-                                      `${item.title.substring(0,55)}...`}
+                                      `${item.title.substring(0, 55)}...`}
                                   </p>
                                 </div>
                                 <div className="title-box-button">
