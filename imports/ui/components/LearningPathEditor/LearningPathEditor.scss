@@ -28,13 +28,19 @@
   flex-flow: column nowrap;
 }
 
-
-
 // Layout of the initial input boxes
 .path-description-input {
   display: flex;
   flex-flow: column nowrap;
   max-width: 800px;
+  .submit-delete {
+    max-width: 800px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    margin: -10px 0 30px 0;
+  }
   .paper-box {
     padding: 25px;
     margin-bottom: 30px;
