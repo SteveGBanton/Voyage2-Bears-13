@@ -328,11 +328,21 @@ export default class LearningPathEditor extends React.Component {
 
   // Validate form before submission, create formErrors.
   formValidate() {
+    // Remove thumbnail field from resources if present but no value
+    const resourceInput = this.state.resources.map((resource, index) => {
+      if (resource.thumbnail.length < 1) {
+        const resourceReturn = { ...resource }
+        delete resourceReturn.thumbnail;
+        return resourceReturn;
+      }
+      return resource;
+    });
+
     const input = {
       title: this.state.title,
       description: this.state.description,
       skills: this.state.skills,
-      resources: this.state.resources,
+      resources: resourceInput,
     };
 
     // Call validator on title, description and skills:
