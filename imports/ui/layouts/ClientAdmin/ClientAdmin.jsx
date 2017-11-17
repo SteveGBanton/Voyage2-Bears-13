@@ -38,7 +38,7 @@ export default class ClientAdmin extends React.Component {
     const usernameAskOrLogout = (authenticated && !user.username) ?
       <AddUsername />
       :
-      (<Redirect to="/" />);
+      (<Redirect to="/login" />);
     return (
       <div className="dashboard">
 
