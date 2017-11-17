@@ -8,9 +8,9 @@ import resourceSchema from './resource-schema';
 const LearningPaths = new Mongo.Collection('LearningPaths');
 
 export const MAX_SKILLS = 3;
-export const MAX_RESOURCES = 10;
-export const MIN_TITLE_LENGTH = 10;
-export const MAX_TITLE_LENGTH = 30;
+export const MAX_RESOURCES = 12;
+export const MIN_TITLE_LENGTH = 6;
+export const MAX_TITLE_LENGTH = 50;
 
 LearningPaths.allow({
   insert: () => false,
@@ -51,7 +51,7 @@ LearningPaths.schema = new SimpleSchema({
 
   thumbnail: {
     type: String,
-    required: false,
+    optional: true,
     regEx: SimpleSchema.RegEx.Url,
   },
 
