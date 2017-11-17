@@ -27,20 +27,20 @@ const resourceSchema = new SimpleSchema({
 
   thumbnail: {
     type: String,
-    required: false,
+    optional: true,
     regEx: SimpleSchema.RegEx.Url,
   },
 
   createdAt: {
     type: String,
-    required: false,
+    optional: true,
     autoValue() {
       if (!this.isSet) return (new Date()).toISOString();
     },
   },
   updatedAt: {
     type: String,
-    required: false,
+    optional: true,
     autoValue() {
       if (!this.isSet || this.isUpdate) return (new Date()).toISOString();
     },
