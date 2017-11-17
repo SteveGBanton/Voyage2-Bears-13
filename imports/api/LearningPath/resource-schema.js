@@ -29,6 +29,9 @@ const resourceSchema = new SimpleSchema({
     type: String,
     optional: true,
     regEx: SimpleSchema.RegEx.Url,
+    autoValue() {
+      if (!this.isSet) return 'http://www.learnmap.site/books.jpg';
+    },
   },
 
   createdAt: {
