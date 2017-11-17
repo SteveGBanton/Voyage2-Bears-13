@@ -434,7 +434,7 @@ export default class LearningPathEditor extends React.Component {
 
   // Add one new resource to state.
   addNewResource() {
-    if (this.state.resources < 12) {
+    if (this.state.resources.length < 12) {
       const newResourceState = [...this.state.resources];
       const newResource = {
         _id: Random.id(),
@@ -639,6 +639,15 @@ export default class LearningPathEditor extends React.Component {
                 <span style={{ color: '#FFFFFF' }}>Submit</span>
               </RaisedButton>
             </div>
+            {(this.state.formErrors.tooManyResources) ?
+              <span
+                style={{ color: 'red' }}
+              >
+                {`*${this.state.formErrors.tooManyResources}`}
+              </span>
+              :
+              ''
+            }
           </Paper>
         </div>
         <Dialog
