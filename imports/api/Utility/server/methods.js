@@ -11,7 +11,7 @@ const remoteGet = new ValidatedMethod({
   run(getThis) {
     try {
       const options = {
-        timeout: 3000,
+        timeout: 6000,
         headers: {
           ACCEPT: 'text/html',
           USER_AGENT: 'Learn-Map/0.1',
