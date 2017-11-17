@@ -27,8 +27,8 @@ import './LearningPathEditor.scss';
 const pathRules = {
   title: {
     required: true,
-    minLength: 10,
-    maxLength: 30,
+    minLength: 6,
+    maxLength: 50,
   },
   description: {
     required: true,
@@ -77,7 +77,7 @@ const resourceMessages = {
   },
   url: {
     url: 'Must be a valid URL',
-    required: 'Please enter a valid URL.',
+    required: 'Each resource must link to a page somewhere else. If you want to add your own article, create a blog post (we suggest Medium) and link to it.',
   },
   thumbnail: {
     url: 'Must be a valid URL',
@@ -182,6 +182,7 @@ export default class LearningPathEditor extends React.Component {
           this.setState({
             loadingSite: false,
           });
+          console.log(err);
         } else {
           const titleGet = (/<title(.*?)>(.*?)<\/title>/m).exec(response.content);
           const descriptionGet = (/<meta name="description" content="(.*?)"/m).exec(response.content);
@@ -423,21 +424,29 @@ export default class LearningPathEditor extends React.Component {
 
   // Add one new resource to state.
   addNewResource() {
-    const newResourceState = [...this.state.resources];
-    const newResource = {
-      _id: Random.id(),
-      title: 'Title of Resource',
-      description: '',
-      url: 'http://www.example.com',
-      thumbnail: '',
-    };
+    if (this.state.resources < 12) {
+      const newResourceState = [...this.state.resources];
+      const newResource = {
+        _id: Random.id(),
+        title: 'Title of Resource',
+        description: '',
+        url: 'http://www.example.com',
+        thumbnail: '',
+      };
 
-    newResourceState.push(newResource);
+      newResourceState.push(newResource);
 
-    this.setState({
-      resources: [...newResourceState],
-      formErrors: {},
-    });
+      this.setState({
+        resources: [...newResourceState],
+        formErrors: {},
+      });
+    } else {
+      this.setState({
+        formErrors: {
+          tooManyResources: 'Cannot use more than 12 resources in one path. If a path is very complex, please nest Learning Paths (link to other Learning Paths with sub-resources) in order to keep each learning path focused, and make it easy for others to follow!'
+        },
+      });
+    }
   }
 
   // Open editor for resource at passed in index, close other editors.
@@ -595,9 +604,9 @@ export default class LearningPathEditor extends React.Component {
             <h4>Add Resources</h4>
             <p>Provide Resources that create a path to reach the Goal.</p>
             <p>Add great online courses, articles, guides, references.</p>
-            <p>NOTE: You can also nest Learning Paths.
-              Add the link to another Learning Path to
-              simplify goals that require more steps!</p>
+            <br />
+            <p>NOTE: Add at most 12 Resources. If a topic is complex, you can also nest Learning Paths:
+              Add a link to another Learning Path in order to simplify the process of reaching the goal!</p>
 
             <div className="resource-buttons">
               <RaisedButton
