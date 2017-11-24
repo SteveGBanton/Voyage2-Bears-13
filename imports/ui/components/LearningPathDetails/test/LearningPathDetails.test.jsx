@@ -48,9 +48,7 @@ if (Meteor.isClient) {
       renderer.render(lpComponent);
       const actual = renderer.getRenderOutput();
 
-      const expected = (
-        <img className="lp-thumbnail" src={lp.thumbnail} alt={lp.title} />
-      );
+      const expected = 'favorite';
 
       expect(actual).to.include(expected);
     });
@@ -77,14 +75,12 @@ if (Meteor.isClient) {
       );
       const actual = renderer.getRenderOutput();
 
-      const expected = (
-        <img className="lp-thumbnail" src={DEFAULT_THUMBNAIL} alt={lp.title} />
-      );
+      const expected = DEFAULT_THUMBNAIL;
 
       expect(actual).to.include(expected);
     });
 
-    it('should render a subscribed icon if user has path saved', function () {
+    it('should render a saved icon if user has path saved', function () {
       const renderer = TestUtils.createRenderer();
 
       renderer.render(
@@ -95,12 +91,7 @@ if (Meteor.isClient) {
       );
       const actual = renderer.getRenderOutput();
 
-      const expected = (
-        <FontIcon
-          className="fa fa-check-circle lp-user-subscribed-icon"
-          color={green500}
-        />
-      );
+      const expected = 'Saved';
 
       expect(actual).to.include(expected);
     });
@@ -113,13 +104,13 @@ if (Meteor.isClient) {
 
       const expected = (
         <div className="lp-skills">
-          <Chip className="lp-skill" key="skill-1" style={{ margin: '5px 5px 15px 5px' }}>
+          <Chip className="lp-skill" key="skill-1" style={{ margin: 3 }}>
             js
           </Chip>
-          <Chip className="lp-skill" key="skill-2" style={{ margin: '5px 5px 15px 5px' }}>
+          <Chip className="lp-skill" key="skill-2" style={{ margin: 3 }}>
             css
           </Chip>
-          <Chip className="lp-skill" key="skill-3" style={{ margin: '5px 5px 15px 5px' }}>
+          <Chip className="lp-skill" key="skill-3" style={{ margin: 3 }}>
             react-js
           </Chip>
         </div>
@@ -143,15 +134,7 @@ if (Meteor.isClient) {
 
       const actual = renderer.getRenderOutput();
 
-      const expected = (
-        <IconButton
-          className="lp-vote-btn lp-upvote"
-          tooltip="Upvote!"
-          iconClassName="fa fa-thumbs-o-up"
-          iconStyle={{ color: green500 }}
-          onClick={lpInstance.upvoteHandler}
-        />
-      );
+      const expected = green500;
       expect(actual).to.include(expected);
     });
 
@@ -170,15 +153,8 @@ if (Meteor.isClient) {
 
       const actual = renderer.getRenderOutput();
 
-      const expected = (
-        <IconButton
-          className="lp-vote-btn lp-downvote"
-          tooltip="Downvote..."
-          iconClassName="fa fa-thumbs-o-down"
-          iconStyle={{ color: red500 }}
-          onClick={lpInstance.downvoteHandler}
-        />
-      );
+      const expected = red500;
+
       expect(actual).to.include(expected);
     });
 
@@ -206,7 +182,7 @@ if (Meteor.isClient) {
       const actual = renderer.getRenderOutput();
 
       const expected = (
-        <Link className="lp-edit-link" to={`/learning-path/${lp._id}/edit`}>Edit</Link>
+        <Link className="lp-edit-link" to={`/learning-path/${lp._id}/edit`}>edit</Link>
       );
       expect(actual).to.include(expected);
     });

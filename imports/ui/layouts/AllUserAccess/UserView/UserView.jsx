@@ -11,9 +11,9 @@ import LearningPathCollection from '../../../../api/LearningPath/LearningPath';
 
 import Loading from '../../../components/Loading/Loading';
 
-if (Meteor.isClient) import './UserView.scss';
+import './UserView.scss';
 
-const UserView = ({
+export const UserView = ({
   loading,
   history,
   user,
@@ -119,6 +119,8 @@ const UserView = ({
 UserView.defaultProps = {
   savedPaths: [],
   createdPaths: [],
+  user: null,
+  userForUserNameOnPage: null,
 }
 
 UserView.propTypes = {
@@ -127,6 +129,7 @@ UserView.propTypes = {
   history: PropTypes.shape({}).isRequired,
   savedPaths: PropTypes.arrayOf(PropTypes.shape({})),
   createdPaths: PropTypes.arrayOf(PropTypes.shape({})),
+  userForUserNameOnPage: PropTypes.shape({}),
 };
 
 export default createContainer(({ match, user }) => {
@@ -160,5 +163,3 @@ export default createContainer(({ match, user }) => {
     userForUserNameOnPage,
   };
 }, UserView);
-
-export { UserView as UserViewTest };
