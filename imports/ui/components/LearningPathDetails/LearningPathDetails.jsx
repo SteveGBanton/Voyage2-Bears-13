@@ -21,7 +21,6 @@ export const DEFAULT_THUMBNAIL = 'https://preview.ibb.co/ixzQ8R/gears.jpg';
 export default class LearningPathDetails extends React.Component {
   constructor(props) {
     super(props);
-
     this.upvoteHandler = this.upvoteHandler.bind(this);
     this.downvoteHandler = this.downvoteHandler.bind(this);
   }
@@ -57,7 +56,8 @@ export default class LearningPathDetails extends React.Component {
     return skills.map((skill, i) => (
       <Chip className="lp-skill" key={`skill-${i + 1}`} style={{ margin: 3 }}>
         {skill}
-      </Chip>),
+      </Chip>
+      ),
     );
   }
 
@@ -78,10 +78,10 @@ export default class LearningPathDetails extends React.Component {
       <Card className="lp-details-container">
         <div
           className="lp-header-media"
-          style={{ backgroundImage: `url(${thumbnail ? thumbnail : (resources[0].thumbnail) ? resources[0].thumbnail : DEFAULT_THUMBNAIL})` }}
+          style={{ backgroundImage: `url(${thumbnail ? thumbnail : (resources[0] && resources[0].thumbnail) ? resources[0].thumbnail : DEFAULT_THUMBNAIL})` }}
           alt={title}
         >
-          {(user && user.savedLearningPaths[_id]) ?
+          {(user && user.savedLearningPaths && user.savedLearningPaths[_id]) ?
               <Chip
                 onClick={() => Meteor.call('users.toggleSaveLearningPath', { learningPathId: _id })}
                 backgroundColor="#FFC0CB"
