@@ -1,12 +1,11 @@
 import rateLimit from '../../modules/rate-limit';
 import SimpleSchema from 'simpl-schema';
 
-
 // Deny all client-side updates to user documents
 // Security issue in meteor
 // https://guide.meteor.com/accounts.html#dont-use-profile
 Meteor.users.deny({
-  update() { return true; }
+  update() { return true; },
 });
 
 const usersToggleSaveLearningPath = new ValidatedMethod({
@@ -29,7 +28,7 @@ const usersToggleSaveLearningPath = new ValidatedMethod({
         },
       );
     } catch (exception) {
-      throw new Meteor.Error('users.addSavedLearningPath.error',
+      throw new Meteor.Error('users.toggleSaveLearningPath.error',
         `Error saving learning path. ${exception}`);
     }
   },
@@ -56,16 +55,18 @@ const toggleCompletedResource = new ValidatedMethod({
         },
       );
     } catch (exception) {
-      throw new Meteor.Error('users.addSavedLearningPath.error',
+      throw new Meteor.Error('users.toggleCompletedResource.error',
         `Error marking resource as complete. ${exception}`);
     }
   },
 });
 
+export { toggleCompletedResource, usersToggleSaveLearningPath }
+
 rateLimit({
   methods: [
-    'users.addSavedLearningPath',
-    'users.markResourceAsCompleted',
+    'users.toggleSaveLearningPath',
+    'users.toggleCompletedResource',
   ],
   limit: 5,
   timeRange: 1000,

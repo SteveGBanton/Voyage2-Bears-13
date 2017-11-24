@@ -20,9 +20,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import customFormValidator from '../../../modules/custom-form-validator';
 
-// if (Meteor.isClient) {
 import './LearningPathEditor.scss';
-// }
 
 const pathRules = {
   title: {

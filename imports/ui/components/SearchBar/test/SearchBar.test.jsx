@@ -28,7 +28,7 @@ if (Meteor.isClient) {
         search: '',
       },
       history: {
-        push: function push() { console.log('Pushing...'); },
+        push: function push() {},
       },
     };
 
@@ -43,48 +43,19 @@ if (Meteor.isClient) {
       const actual = renderer.getRenderOutput();
 
       const expected = (
-        <input
-          onFocus={() => instance.toggleSearchFocus(true)}
-          onBlur={() => instance.toggleSearchFocus(false)}
-          onChange={instance.handleChangeSearchInput}
-          value={instance.state.searchInput}
-          type="text"
-          placeholder="⌕"
-          className="search-bar-Input"
-        />
+        <h1>Search</h1>
       );
 
       expect(actual).to.include(expected);
     });
 
-    it('should render a SelectField of MenuItems if there are filter options', function () {
+    it('should render a MenuItem title if filter option for title', function () {
       const renderer = TestUtils.createRenderer();
       renderer.render(component);
       const instance = renderer._instance._instance;
       const actual = renderer.getRenderOutput();
 
-      const expected = (
-        <SelectField
-          floatingLabelText="Filter"
-          floatingLabelStyle={FILTER_MENU_STYLE}
-          labelStyle={FILTER_MENU_STYLE}
-          value={instance.state.searchFilter}
-          onChange={instance.handleMenuSelect}
-        >
-          <MenuItem
-            value="title"
-            primaryText="Title"
-          />
-          <MenuItem
-            value="description"
-            primaryText="Description"
-          />
-          <MenuItem
-            value="skills"
-            primaryText="Skills"
-          />
-        </SelectField>
-      );
+      const expected = 'Title';
 
       expect(actual).to.include(expected);
     });
@@ -180,6 +151,9 @@ if (Meteor.isClient) {
       const history = { push: () => {} };
       const historyStub = sinon.stub(history, 'push');
       const props = { ..._.omit(defaultProps, ['history']), history };
+      props.subscription = {
+        stop: () => {},
+      };
       const testDoc = TestUtils.renderIntoDocument(
         <MuiThemeProvider>
           <SearchBar {...props} />
@@ -200,6 +174,9 @@ if (Meteor.isClient) {
       const history = { push: () => {} };
       const historyStub = sinon.stub(history, 'push');
       const props = { ..._.omit(defaultProps, ['history']), history };
+      props.subscription = {
+        stop: () => { },
+      };
       const testDoc = TestUtils.renderIntoDocument(
         <MuiThemeProvider>
           <SearchBar {...props} />

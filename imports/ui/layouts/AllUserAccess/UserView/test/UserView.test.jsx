@@ -8,48 +8,52 @@ import { expect } from 'meteor/practicalmeteor:chai';
 import TestUtils from 'react-addons-test-utils';
 import sinon from 'sinon';
 import jsxChai from 'jsx-chai';
-import { UserViewTest } from '../UserView';
 
 chai.use(jsxChai);
 
-describe('UserView.jsx', function () {
-  it('should render', function () {
-    const renderer = TestUtils.createRenderer();
-    const user = {
-      username: 'test-username',
-    }
-    renderer.render(<UserViewTest loading={false} history={{}} user={user} />);
-    const actual = renderer.getRenderOutput();
+if (Meteor.isClient) {
+  import { UserView } from '../UserView';
 
-    const expected = (
-      <h2>Learning Paths Created</h2>
-    );
+  describe('UserView.jsx', function () {
+    it('should render when user valid', function () {
+      const renderer = TestUtils.createRenderer();
+      const userForUserNameOnPage = {
+        username: 'test-username',
+      };
+      renderer.render(<UserView loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
+      const actual = renderer.getRenderOutput();
 
-    expect(actual).to.include(expected);
+      const expected = (
+        <h2>Recent Learning Paths Created</h2>
+      );
+
+      expect(actual).to.include(expected);
+    });
+
+    it('should render a valid username on the page', function () {
+      const renderer = TestUtils.createRenderer();
+      const userForUserNameOnPage = {
+        username: 'test-username',
+      };
+      renderer.render(<UserView loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
+      const actual = renderer.getRenderOutput();
+
+      const expected = 'test-username';
+
+      expect(actual).to.include(expected);
+    });
+
+    it('should render no user message if username does not exist', function () {
+      const renderer = TestUtils.createRenderer();
+      const userForUserNameOnPage = undefined;
+
+      renderer.render(<UserView loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
+      const actual = renderer.getRenderOutput();
+
+      const expected = 'Sorry, cannot find user.';
+
+      expect(actual).to.include(expected);
+    });
   });
+}
 
-  it('should render a valid username on the page', function () {
-    const renderer = TestUtils.createRenderer();
-    const user = {
-      username: 'test-username',
-    }
-    renderer.render(<UserViewTest loading={false} history={{}} user={user} />);
-    const actual = renderer.getRenderOutput();
-
-    const expected = 'test-username';
-
-    expect(actual).to.include(expected);
-  });
-
-  it('should render nothing if username does not exist', function () {
-    const renderer = TestUtils.createRenderer();
-    const user = undefined;
-
-    renderer.render(<UserViewTest loading={false} history={{}} user={user} />);
-    const actual = renderer.getRenderOutput();
-
-    const expected = 'Sorry, cannot find user.';
-
-    expect(actual).to.include(expected);
-  });
-})

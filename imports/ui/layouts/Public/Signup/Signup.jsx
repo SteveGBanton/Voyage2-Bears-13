@@ -178,7 +178,7 @@ export default class Signup extends React.Component {
         console.log(err);
         // handle error
       } else {
-        console.log();
+        // console.log();
         // successful login!
       }
     });
