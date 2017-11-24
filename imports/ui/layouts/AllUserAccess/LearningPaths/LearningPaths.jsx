@@ -67,12 +67,12 @@ class LearningPaths extends React.Component {
 
         <div className="LearningPaths-btn-panel">
           <RaisedButton
-            style={{ margin: 30 }}
             className="LearningPaths-load-more-btn"
             label="Load More"
             disabled={loading}
             primary={!loading}
             onClick={this.loadMoreHandler}
+            style={{ margin: 30 }}
           />
         </div>
       </div>
@@ -83,10 +83,14 @@ class LearningPaths extends React.Component {
 LearningPaths.defaultProps = {
   user: null,
   userId: null,
-}
+  learningPathList: null,
+  selector: null,
+  loading: true,
+  filterOpts: FILTER_OPTIONS,
+};
 
 LearningPaths.propTypes = {
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   learningPathList: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -98,9 +102,9 @@ LearningPaths.propTypes = {
       aggregatedVotes: PropTypes.number.isRequired,
       voted: PropTypes.shape({}).isRequired,
     }),
-  ).isRequired,
-  selector: PropTypes.shape({}).isRequired,
-  filterOpts: PropTypes.arrayOf(PropTypes.string).isRequired,
+  ),
+  selector: PropTypes.shape({}),
+  filterOpts: PropTypes.arrayOf(PropTypes.string),
   location: PropTypes.shape({}).isRequired,
   history: PropTypes.shape({}).isRequired,
   user: PropTypes.shape({}),
