@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Roles } from 'meteor/alanning:roles';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -18,10 +18,6 @@ import EditPath from '../layouts/ClientAdmin/EditPath/EditPath';
 import MyPaths from '../layouts/ClientAdmin/MyPaths/MyPaths';
 import MySavedPaths from '../layouts/ClientAdmin/MySavedPaths/MySavedPaths';
 import ClientDashboard from '../layouts/ClientAdmin/ClientDashboard/ClientDashboard';
-import ClientDocuments from '../layouts/ClientAdmin/ClientDocuments/ClientDocuments';
-import ClientNewDocument from '../layouts/ClientAdmin/ClientDocuments/ClientNewDocument/ClientNewDocument';
-import ClientViewDocument from '../layouts/ClientAdmin/ClientDocuments/ClientViewDocument/ClientViewDocument';
-import ClientEditDocument from '../layouts/ClientAdmin/ClientDocuments/ClientEditDocument/ClientEditDocument';
 import ClientProfile from '../layouts/ClientAdmin/ClientProfile/ClientProfile';
 
 // Public Only pages - logged in users cannot access, will be forwarded to their dashboard

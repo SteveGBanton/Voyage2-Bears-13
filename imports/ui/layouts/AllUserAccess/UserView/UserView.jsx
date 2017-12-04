@@ -1,25 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
+
+import { Card, CardMedia, CardTitle, CardText } from 'material-ui/Card';
+
 import RenderLearningPathList from '../../../components/RenderLearningPathList/RenderLearningPathList';
-
-import RaisedButton from 'material-ui/RaisedButton';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-
 import LearningPathCollection from '../../../../api/LearningPath/LearningPath';
 
 import Loading from '../../../components/Loading/Loading';
 
 import './UserView.scss';
 
-export const UserView = ({
+const UserView = ({
   loading,
-  history,
   user,
   createdPaths,
   savedPaths,
-  userForUserNameOnPage
+  userForUserNameOnPage,
 }) => {
   const firstName = userForUserNameOnPage &&
     userForUserNameOnPage.profile &&
@@ -41,7 +38,7 @@ export const UserView = ({
       <Loading />
       :
       <h3 style={{ margin: 50 }}>Sorry, cannot find user.</h3>
-  )
+  );
   return (
     (!loading && userForUserNameOnPage) ?
       <div className="user-view">
@@ -78,7 +75,7 @@ export const UserView = ({
                   user={user}
                   userId={(user) ? user._id : null}
                 /> :
-                <Loading />
+                  <Loading />
             }
           </div>
 
@@ -93,7 +90,7 @@ export const UserView = ({
                   user={user}
                   userId={(user) ? user._id : null}
                 /> :
-                <Loading />
+                  <Loading />
             }
           </div>
 
@@ -113,20 +110,19 @@ export const UserView = ({
 
       </div>
     : loadOrNoUser
-  )
-}
+  );
+};
 
 UserView.defaultProps = {
   savedPaths: [],
   createdPaths: [],
   user: null,
   userForUserNameOnPage: null,
-}
+};
 
 UserView.propTypes = {
   loading: PropTypes.bool.isRequired,
   user: PropTypes.shape({}),
-  history: PropTypes.shape({}).isRequired,
   savedPaths: PropTypes.arrayOf(PropTypes.shape({})),
   createdPaths: PropTypes.arrayOf(PropTypes.shape({})),
   userForUserNameOnPage: PropTypes.shape({}),
@@ -136,15 +132,15 @@ export default createContainer(({ match, user }) => {
   const username = match.params.username;
   const subscription = Meteor.subscribe('users.getSingle', username);
   const userForUserNameOnPage = Meteor.users.findOne({ username });
-  const opts = { sort: ['aggregatedVotes', 'desc'], limit: 6 }
-  const subscriptionPaths = (userForUserNameOnPage) ? Meteor.subscribe('learning-paths', {}, opts) : null;
+  // const opts = { sort: ['aggregatedVotes', 'desc'], limit: 6 };
+  // const subscriptionPaths = (userForUserNameOnPage) ? Meteor.subscribe('learning-paths', {}, opts) : null;
 
   const createdPaths = (userForUserNameOnPage) ?
     LearningPathCollection
       .find({ mentor: userForUserNameOnPage._id })
       .fetch()
     :
-    []
+    [];
 
   const savedPathsIDs = [];
   const keys = (userForUserNameOnPage) ? Object.keys(userForUserNameOnPage.savedLearningPaths) : [];
@@ -153,7 +149,7 @@ export default createContainer(({ match, user }) => {
       savedPathsIDs.push(keys[i]);
     }
   }
-  const savedPaths = LearningPathCollection.find({"_id" : { "$in" : savedPathsIDs}}).fetch();
+  const savedPaths = LearningPathCollection.find({ _id: { $in: savedPathsIDs } }).fetch();
 
   return {
     loading: !subscription.ready(),
@@ -163,3 +159,5 @@ export default createContainer(({ match, user }) => {
     userForUserNameOnPage,
   };
 }, UserView);
+
+export { UserView as UserViewTest };

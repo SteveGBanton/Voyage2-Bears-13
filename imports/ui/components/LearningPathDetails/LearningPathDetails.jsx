@@ -13,7 +13,7 @@ import Avatar from 'material-ui/Avatar';
 
 import { learningPathsUpvote, learningPathsDownvote } from '../../../api/LearningPath/methods';
 
-if (Meteor.isClient) import './LearningPathDetails.scss';
+import './LearningPathDetails.scss';
 
 // We should proobably have a default image hosted in the S3
 export const DEFAULT_THUMBNAIL = 'https://preview.ibb.co/ixzQ8R/gears.jpg';

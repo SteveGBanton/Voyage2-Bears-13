@@ -9,14 +9,15 @@ import TestUtils from 'react-addons-test-utils';
 import jsxChai from 'jsx-chai';
 import _ from 'lodash';
 
-import RenderLearningPathList from '../RenderLearningPathList';
-import LearningPathDetails from '../../LearningPathDetails/LearningPathDetails';
-
-import { generateLearningPathDataList } from '../../../../modules/test-helpers';
-
-chai.use(jsxChai);
-
 if (Meteor.isClient) {
+  import RenderLearningPathList from '../RenderLearningPathList';
+  import LearningPathDetails from '../../LearningPathDetails/LearningPathDetails';
+
+  import { generateLearningPathDataList } from '../../../../modules/test-helpers';
+
+  chai.use(jsxChai);
+
+
   describe('RenderLearningPathList.jsx', function () {
     const user = { savedLearningPaths: [] };
     const userId = Random.id();

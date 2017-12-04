@@ -13,7 +13,7 @@ export const FILTER_MENU_STYLE = {
   textAlign: 'left',
 };
 export const BUTTON_STYLE = {
-  margin: '10px 0 10px 30px',
+  margin: '10px 0 10px 20px',
 };
 
 export default class SearchBar extends React.Component {
@@ -77,9 +77,6 @@ export default class SearchBar extends React.Component {
     return (
       <div className="search-bar">
         <h1>Search</h1>
-        <div
-          className="search-bar-InputWrap"
-        >
           <input
             onFocus={() => this.toggleSearchFocus(true)}
             onChange={this.handleChangeSearchInput}
@@ -88,7 +85,6 @@ export default class SearchBar extends React.Component {
             placeholder="⌕"
             className="search-bar-Input"
           />
-        </div>
         <div className="search-options">
           {
             filterOpts.length > 0 ?
@@ -106,23 +102,24 @@ export default class SearchBar extends React.Component {
               :
               null
           }
-
-          <RaisedButton
-            className="search-bar-Search-btn"
-            label="Search"
-            disabled={loading}
-            primary={!loading}
-            onClick={this.handleSubmit}
-            style={BUTTON_STYLE}
-          />
-          <RaisedButton
-            className="search-bar-Clear-btn"
-            label="Clear"
-            disabled={loading}
-            secondary={!loading}
-            onClick={this.handleClear}
-            style={BUTTON_STYLE}
-          />
+          <div>
+            <RaisedButton
+              className="search-bar-Search-btn"
+              label="Search"
+              disabled={loading}
+              primary={!loading}
+              onClick={this.handleSubmit}
+              style={BUTTON_STYLE}
+            />
+            <RaisedButton
+              className="search-bar-Clear-btn"
+              label="Clear"
+              disabled={loading}
+              secondary={!loading}
+              onClick={this.handleClear}
+              style={BUTTON_STYLE}
+            />
+          </div>
         </div>
       </div>
     );

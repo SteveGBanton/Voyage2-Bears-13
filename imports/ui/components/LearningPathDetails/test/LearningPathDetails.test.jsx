@@ -11,14 +11,11 @@ import jsxChai from 'jsx-chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip';
-import IconButton from 'material-ui/IconButton';
 import { green500, red500 } from 'material-ui/styles/colors';
-import { MemoryRouter, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import LearningPathDetails, { DEFAULT_THUMBNAIL } from '../LearningPathDetails';
+if (Meteor.isClient) import LearningPathDetails, { DEFAULT_THUMBNAIL } from '../LearningPathDetails';
 
 import { learningPathsUpvote, learningPathsDownvote } from '../../../../api/LearningPath/methods';
 

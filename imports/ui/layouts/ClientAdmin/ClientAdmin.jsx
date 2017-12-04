@@ -55,21 +55,17 @@ export default class ClientAdmin extends React.Component {
                 <MenuItem
                   primaryText="Create Learning Path"
                   leftIcon={
-                    <PersonAdd
-                      color="#757575"
-                      style={{ paddingLeft: "10px" }}
-                    />}
+                    <FontIcon style={{ paddingLeft: "10px" }} color="#757575" className="material-icons">add</FontIcon>
+                  }
                 />
               </Link>
 
               <Link to={`/my-paths`}>
                 <MenuItem
-                  primaryText="View My Paths"
+                  primaryText="My Learning Paths"
                   leftIcon={
-                    <RemoveRedEye
-                      color="#757575"
-                      style={{ paddingLeft: "10px" }}
-                    />}
+                    <FontIcon style={{ paddingLeft: "10px" }} color="#757575" className="material-icons">create</FontIcon>
+                  }
                 />
               </Link>
 

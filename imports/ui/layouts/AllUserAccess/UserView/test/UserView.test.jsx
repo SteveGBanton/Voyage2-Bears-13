@@ -12,7 +12,7 @@ import jsxChai from 'jsx-chai';
 chai.use(jsxChai);
 
 if (Meteor.isClient) {
-  import { UserView } from '../UserView';
+  import { UserViewTest } from '../UserView';
 
   describe('UserView.jsx', function () {
     it('should render when user valid', function () {
@@ -20,7 +20,7 @@ if (Meteor.isClient) {
       const userForUserNameOnPage = {
         username: 'test-username',
       };
-      renderer.render(<UserView loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
+      renderer.render(<UserViewTest loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
       const actual = renderer.getRenderOutput();
 
       const expected = (
@@ -35,7 +35,7 @@ if (Meteor.isClient) {
       const userForUserNameOnPage = {
         username: 'test-username',
       };
-      renderer.render(<UserView loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
+      renderer.render(<UserViewTest loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
       const actual = renderer.getRenderOutput();
 
       const expected = 'test-username';
@@ -47,7 +47,7 @@ if (Meteor.isClient) {
       const renderer = TestUtils.createRenderer();
       const userForUserNameOnPage = undefined;
 
-      renderer.render(<UserView loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
+      renderer.render(<UserViewTest loading={false} history={{}} userForUserNameOnPage={userForUserNameOnPage} />);
       const actual = renderer.getRenderOutput();
 
       const expected = 'Sorry, cannot find user.';
