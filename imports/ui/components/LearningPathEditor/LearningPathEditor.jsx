@@ -315,7 +315,7 @@ export default class LearningPathEditor extends React.Component {
             type: 'success',
             icon: 'fa-trash',
           });
-          this.props.history.push('/my-paths')
+          this.props.history.push('/my-paths');
         }
       })
     }
@@ -327,9 +327,9 @@ export default class LearningPathEditor extends React.Component {
   // Validate form before submission, create formErrors.
   formValidate() {
     // Remove thumbnail field from resources if present but no value
-    const resourceInput = this.state.resources.map((resource, index) => {
+    const resourceInput = this.state.resources.map((resource) => {
       if (resource.thumbnail.length < 1) {
-        const resourceReturn = { ...resource }
+        const resourceReturn = { ...resource };
         delete resourceReturn.thumbnail;
         return resourceReturn;
       }
@@ -451,7 +451,11 @@ export default class LearningPathEditor extends React.Component {
     } else {
       this.setState({
         formErrors: {
-          tooManyResources: 'Cannot use more than 12 resources in one path. If a path is very complex, please nest Learning Paths (link to other Learning Paths with sub-resources) in order to keep each learning path focused, and make it easy for others to follow!'
+          tooManyResources: `Cannot use more than 12 resources in one path. 
+            If a path is very complex, please nest Learning Paths 
+            (link to other Learning Paths with sub-resources) in 
+            order to keep each learning path focused, and make it easy for 
+            others to follow!`,
         },
       });
     }
@@ -567,22 +571,27 @@ export default class LearningPathEditor extends React.Component {
             <p>What skills will somebody learn if they follow your Learning Path?</p>
             <p>eg. react, react native, npm, webpack etc.</p>
             <div className="skill-input">
-              {/* TODO Add ability to hit enter to add skills,
-                and refocus on field after enter to quickly add another.
-              */}
-              <TextField
-                id="skills-field"
-                style={{ width: 250 }}
-                value={this.state.skillTemp}
-                floatingLabelText="Skills / Topics"
-                onChange={e => this.handlePathFieldChange(e, 'skillTemp')}
-                errorText={(this.state.formErrors && this.state.formErrors["skills.0"]) ? this.state.formErrors["skills.0"] : ''}
-              />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  this.addSkill();
+                }}
+              >
+                <TextField
+                  id="skills-field"
+                  style={{ width: 250 }}
+                  value={this.state.skillTemp}
+                  floatingLabelText="Skills / Topics"
+                  onChange={e => this.handlePathFieldChange(e, 'skillTemp')}
+                  errorText={(this.state.formErrors && this.state.formErrors["skills.0"]) ? this.state.formErrors["skills.0"] : ''}
+                />
+              </form>
               <FontIcon
                 color="rgba(0,0,0,0.3)"
                 hoverColor="rgba(0,0,0,0.7)"
                 className="material-icons pointer"
                 onClick={this.addSkill}
+                style={{ marginLeft: 5 }}
               >
                 add
               </FontIcon>
@@ -591,6 +600,7 @@ export default class LearningPathEditor extends React.Component {
                 hoverColor="rgba(0,0,0,0.7)"
                 className="material-icons pointer"
                 onClick={this.clearSkills}
+                style={{ marginLeft: 5 }}
               >
                 clear
               </FontIcon>
@@ -613,25 +623,26 @@ export default class LearningPathEditor extends React.Component {
             <p>Provide Resources that create a path to reach the Goal.</p>
             <p>Add great online courses, articles, guides, references.</p>
             <br />
-            <p>NOTE: Add at most 12 Resources. If a topic is complex, you can also nest Learning Paths:
-              Add a link to another Learning Path in order to simplify the process of reaching the goal!</p>
+            <p>NOTE: Add at most 12 Resources.&nbsp;
+              If a topic is complex, you can also nest Learning Paths:&nbsp;
+              Add a link to another Learning Path in order&nbsp;
+              to simplify the process of reaching the goal!</p>
 
             <div className="resource-buttons">
               <RaisedButton
                 style={{ marginRight: 10 }}
                 onClick={this.addNewResource}
               >
-              + Add New
+              + Add
               </RaisedButton>
               <RaisedButton
                 style={{ marginRight: 10 }}
                 onClick={this.removeAll}
               >
-                Clear All
+                Clear
               </RaisedButton>
               <RaisedButton
                 backgroundColor="#009688"
-                style={{ marginRight: 10 }}
                 onClick={this.formValidate}
               >
                 <span style={{ color: '#FFFFFF' }}>Submit</span>
@@ -653,7 +664,7 @@ export default class LearningPathEditor extends React.Component {
           actions={
             <FlatButton
               label="Confirm"
-              keyboardFocused={true}
+              keyboardFocused
               onClick={this.deleteConfirm}
             />
           }
@@ -710,63 +721,64 @@ export default class LearningPathEditor extends React.Component {
                                     onClick={this.editThis(index)}
                                     className="material-icons pointer"
                                     color={(this.state.editingIndex === index) ?
-                                    "rgba(0,0,0,0.7)"
-                                    :
-                                    "rgba(0,0,0,0.2)"
-                                  }
-                                    style={{ marginRight: 15 }}
-                                  >
-                                  edit
-                                </FontIcon>
-                                  <p className="heading-title">
-                                    {(item.title.length < 55) ?
-                                      item.title
+                                      "rgba(0,0,0,0.7)"
                                       :
-                                      `${item.title.substring(0, 55)}...`}
-                                  </p>
-                                </div>
-                                <div className="title-box-button">
-                                  <Chip
+                                      "rgba(0,0,0,0.2)"
+                                    }
                                     style={{ marginRight: 5 }}
                                   >
-                                    {item.url.substring(0, 45)}
-                                  </Chip>
-                                </div>
-                                {(this.state.formErrorsResources[index]) ?
-                                  <Chip
-                                    style={{
-                                      fontSize: 10,
-                                      backgroundColor: 'red',
-                                      color: 'white',
-                                    }}
-                                  >
-                                  error
-                                </Chip>
-                                : ''
-                              }
-                                {(this.state.resources[index].thumbnail) ?
-                                  <div className="title-box-button">
-                                    <img
-                                      alt=""
-                                      src={this.state.resources[index].thumbnail}
-                                      style={{ maxWidth: 100, maxHeight: 60 }}
-                                      onError={this.invalidImage}
-                                    />
-                                  </div>
-                                :
-                                ''
-                              }
-                                <div className="title-box-button">
+                                    edit
+                                  </FontIcon>
                                   <FontIcon
                                     onClick={this.deleteOne(index)}
                                     className="material-icons pointer"
                                     color="rgba(0,0,0,0.2)"
                                     hoverColor="rgba(0,0,0,0.5)"
+                                    style={{ marginRight: 15 }}
                                   >
-                                remove_circle
-                              </FontIcon>
+                                    remove_circle
+                                  </FontIcon>
+                                  <p className="heading-title">
+                                    {(item.title.length < 20) ?
+                                      item.title
+                                      :
+                                      `${item.title.substring(0, 55)}...`}
+                                  </p>
                                 </div>
-
+                                <div className="title-box-right">
+                                  {(this.state.resources[index].thumbnail) ?
+                                    <div className="title-box-button">
+                                      <img
+                                        alt=""
+                                        src={this.state.resources[index].thumbnail}
+                                        style={{ maxWidth: 100, maxHeight: 60 }}
+                                        onError={this.invalidImage}
+                                      />
+                                    </div>
+                                    :
+                                    ''
+                                  }
+                                  <div className="title-box-button">
+                                    <Chip
+                                      style={{ marginRight: 5 }}
+                                    >
+                                      {item.url.replace(/^https?:\/\/(www\.)?/i, "").substring(0, 16)}
+                                    </Chip>
+                                  </div>
+                                  {(this.state.formErrorsResources[index]) ?
+                                    <Chip
+                                      style={{
+                                        fontSize: 10,
+                                        backgroundColor: 'red',
+                                        color: 'white',
+                                      }}
+                                    >
+                                    error
+                                    </Chip>
+                                    :
+                                    ''
+                                  }
+                                </div>
                               </div>
                               {(this.state.editingIndex === index) ?
                                 <div className="fields-box">
@@ -868,6 +880,6 @@ LearningPathEditor.defaultProps = {
 
 // TODO edit proptypes
 LearningPathEditor.propTypes = {
-  path: PropTypes.object,
-  history: PropTypes.object.isRequired,
+  path: PropTypes.shape({}),
+  history: PropTypes.shape({}).isRequired,
 };

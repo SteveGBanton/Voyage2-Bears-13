@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import LearningPathDetails from '../LearningPathDetails/LearningPathDetails';
 
-if (Meteor.isClient) import './RenderLearningPathList.scss';
+import './RenderLearningPathList.scss';
 
 export default class RenderLearningPathList extends React.Component {
   renderLearningPathList() {
