@@ -15,7 +15,7 @@ import Chip from 'material-ui/Chip';
 import { green500, red500 } from 'material-ui/styles/colors';
 import { Link } from 'react-router-dom';
 
-import LearningPathDetails, { DEFAULT_THUMBNAIL } from '../LearningPathDetails';
+if (Meteor.isClient) import LearningPathDetails, { DEFAULT_THUMBNAIL } from '../LearningPathDetails';
 
 import { learningPathsUpvote, learningPathsDownvote } from '../../../../api/LearningPath/methods';
 

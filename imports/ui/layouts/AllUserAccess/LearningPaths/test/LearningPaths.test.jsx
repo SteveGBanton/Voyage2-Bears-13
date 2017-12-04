@@ -12,21 +12,23 @@ import _ from 'lodash';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
-import LearningPaths, {
-  LearningPathsTest,
-  FILTER_OPTIONS,
-  FIND_ALL_OPTS,
-} from '../LearningPaths';
-import RenderLearningPathList from '../../../../components/RenderLearningPathList/RenderLearningPathList';
-import Loading from '../../../../components/Loading/Loading';
-
-import { default as LearningPathCollection } from '../../../../../api/LearningPath/LearningPath';
-
-import { generateLearningPathDataList, getTestDoc } from '../../../../../modules/test-helpers';
-
-chai.use(jsxChai);
-
 if (Meteor.isClient) {
+
+  import LearningPaths, {
+    LearningPathsTest,
+    FILTER_OPTIONS,
+    FIND_ALL_OPTS,
+  } from '../LearningPaths';
+
+  import RenderLearningPathList from '../../../../components/RenderLearningPathList/RenderLearningPathList';
+  import Loading from '../../../../components/Loading/Loading';
+
+  import { default as LearningPathCollection } from '../../../../../api/LearningPath/LearningPath';
+
+  import { generateLearningPathDataList, getTestDoc } from '../../../../../modules/test-helpers';
+
+  chai.use(jsxChai);
+
   describe('LearningPaths.jsx', function () {
     const meteorReactProps = {
       location: {
