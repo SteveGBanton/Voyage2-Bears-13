@@ -124,7 +124,7 @@ const Navigation = (props) => {
             <MenuItem
               primaryText="Sign in"
               onClick={() => { location.href = "/login"; }}
-              leftIcon={<FontIcon className="material-icons">account_box</FontIcon>}
+              leftIcon={<FontIcon className="material-icons">account_circle</FontIcon>}
             />
           }
 
@@ -132,6 +132,7 @@ const Navigation = (props) => {
             <MenuItem
               primaryText="Create Account"
               onClick={() => { location.href = "/signup"; }}
+              leftIcon={<FontIcon className="material-icons">person_add</FontIcon>}
             />
             :
             ''
